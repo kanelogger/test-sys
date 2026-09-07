@@ -312,6 +312,12 @@ describe("complete", () => {
       db.close();
     }
 
+    // 环境构造后的字段级快照（作为零修改基准，含塞入的日志）
+    const beforeFailView = await kit.workflow.recording("2026-09-10");
+    expect(beforeFailView.ok).toBe(true);
+    if (!beforeFailView.ok) return;
+    const beforeFail = snapshotRows(beforeFailView.value);
+
     const done = await kit.workflow.complete(ref, {
       actualMinutes: 30,
       summary: "不应写入",
@@ -324,8 +330,6 @@ describe("complete", () => {
     const after = await kit.workflow.recording("2026-09-10");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    const row = after.value.items.find((r) => r.plan.id === target.id);
-    expect(row?.plan.status).toBe("pending");
-    expect(row?.log?.summary).toBe("违反不变量的存量日志");
+    expect(snapshotRows(after.value)).toEqual(beforeFail);
   });
 });

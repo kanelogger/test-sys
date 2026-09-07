@@ -42,6 +42,8 @@ describe("事务语义", () => {
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.status).toBe("completed");
+    expect(after.value.items[0]?.plan.id).toBe(winner.value.plan.id);
+    expect(after.value.items[0]?.plan.title).toBe(winner.value.plan.title);
     // 最终行与赢家的写入逐字段一致（输家零修改，非只属其一）
     expect(after.value.items[0]?.log?.id).toBe(winner.value.log.id);
     expect(after.value.items[0]?.log?.summary).toBe(winner.value.log.summary);

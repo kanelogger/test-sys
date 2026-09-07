@@ -321,6 +321,9 @@ describe("createBackfill", () => {
     expect(backfillRows[0]?.plan.id).toBe(winner.value.plan.id);
     expect(backfillRows[0]?.log?.id).toBe(winner.value.log.id);
     expect(backfillRows[0]?.plan.title).toBe(winner.value.plan.title);
-    expect(backfillRows[0]?.log?.summary).toBe("竞争提交");
+    expect(backfillRows[0]?.log?.summary).toBe(winner.value.log.summary);
+    expect(backfillRows[0]?.log?.actualMinutes).toBe(
+      winner.value.log.actualMinutes
+    );
   });
 });
