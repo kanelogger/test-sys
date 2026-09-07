@@ -43,7 +43,8 @@ export function useRowFeedback(reload: () => Promise<void>) {
   } | null>(null);
 
   const open = (row: PlanRow) => {
-    if (!row.pending) return;
+    // 提交进行中拒绝打开其他行：避免共享状态被重置、在途提交回调卸载新表单
+    if (!row.pending || submitting) return;
     setSuccess(null);
     setAlert(null);
     setFieldErrors({});

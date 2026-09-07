@@ -30,6 +30,8 @@ export type RowSnapshot = ReadonlyArray<{
   resourceId: string | null;
   movedToPlanItemId: string | null;
   log: {
+    id: string;
+    planItemId: string;
     date: string;
     actualMinutes: number;
     summary: string;
@@ -57,6 +59,8 @@ export function snapshotRows(view: {
     log?: {
       date: string;
       actualMinutes: number;
+      id: string;
+      planItemId: string;
       summary: string;
       scoreText?: string;
     };
@@ -77,6 +81,8 @@ export function snapshotRows(view: {
     movedToPlanItemId: row.plan.movedToPlanItemId ?? null,
     log: row.log
       ? {
+          id: row.log.id,
+          planItemId: row.log.planItemId,
           date: row.log.date,
           actualMinutes: row.log.actualMinutes,
           summary: row.log.summary,

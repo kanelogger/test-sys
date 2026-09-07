@@ -212,6 +212,7 @@ function TodayTaskRow({
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
+                disabled={feedback.submitting}
                 onClick={() =>
                   formOpenHere ? feedback.close() : feedback.open(row)
                 }

@@ -41,7 +41,8 @@ function validateResource(value: unknown, index: number) {
     return invalid(`resources[${index}].title 缺失或为空`, "title");
   }
   if (value.type === "web") {
-    if (typeof value.filename === "string") {
+    // 互斥以字段存在性判定（不看值的类型）：web 携带 filename 即拒绝
+    if ("filename" in value) {
       return invalid(`resources[${index}] 网页资源不得携带 filename`, "type");
     }
     if (typeof value.url !== "string") {
@@ -66,7 +67,7 @@ function validateResource(value: unknown, index: number) {
     };
   }
   if (value.type === "local-file") {
-    if (typeof value.url === "string") {
+    if ("url" in value) {
       return invalid(`resources[${index}] 本地文件资源不得携带 url`, "type");
     }
     if (!isNonEmptyString(value.filename)) {

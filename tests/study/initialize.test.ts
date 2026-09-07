@@ -244,6 +244,24 @@ describe("initialize", () => {
       }),
       field: "filename" as string | undefined,
     },
+    {
+      name: "web 资源携带 filename（非字符串也拒绝）",
+      loader: mutatedSeedLoader((seed) => {
+        const res = seed.resources as Array<Record<string, unknown>>;
+        const web = res.find((r) => r.type === "web")!;
+        web.filename = null;
+      }),
+      field: "type" as string | undefined,
+    },
+    {
+      name: "local-file 资源携带 url（字段存在即拒绝）",
+      loader: mutatedSeedLoader((seed) => {
+        const res = seed.resources as Array<Record<string, unknown>>;
+        const file = res.find((r) => r.type === "local-file")!;
+        file.url = null;
+      }),
+      field: "type" as string | undefined,
+    },
   ])(
     "种子校验失败为 INVALID_SEED（$name），零修改且换好种子可重试",
     async ({ loader, field }) => {

@@ -347,6 +347,7 @@ function RecordRow({ row, feedback }: { row: PlanRow; feedback: RowFeedback }) {
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
+                disabled={feedback.submitting}
                 onClick={() =>
                   formOpenHere ? feedback.close() : feedback.open(row)
                 }
