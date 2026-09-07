@@ -7,12 +7,16 @@ import type { RowFeedback } from "./useRowFeedback";
 export function CompleteFormSlot({
   feedback,
   note,
+  externalBusy,
 }: {
   feedback: RowFeedback;
   note?: ReactNode;
+  /** 页级其他命令（如补建）的提交中状态：与表单自身提交互斥（§11-2） */
+  externalBusy?: boolean;
 }) {
   const form = feedback.openForm;
   if (!form) return null;
+  const busy = feedback.submitting || externalBusy === true;
   return (
     <>
       {note}
@@ -20,7 +24,7 @@ export function CompleteFormSlot({
         planDate={form.planDate}
         fields={feedback.fields}
         fieldErrors={feedback.fieldErrors}
-        submitting={feedback.submitting}
+        submitting={busy}
         alert={feedback.alert}
         onField={feedback.setField}
         onSubmit={() => void feedback.submit()}
@@ -38,9 +42,11 @@ export function CompleteFormSlot({
 export function OrphanCompleteForm({
   feedback,
   rows,
+  externalBusy,
 }: {
   feedback: RowFeedback;
   rows: readonly PlanRow[];
+  externalBusy?: boolean;
 }) {
   const form = feedback.openForm;
   if (!form) return null;
@@ -50,7 +56,10 @@ export function OrphanCompleteForm({
       <p className="note-line">
         原任务已不在当前列表（可能已在别处变更）。表单输入已保留，请核对最新状态后重试或取消。
       </p>
-      <CompleteFormSlot feedback={feedback} />
+      <CompleteFormSlot
+        feedback={feedback}
+        {...(externalBusy !== undefined ? { externalBusy } : {})}
+      />
     </div>
   );
 }

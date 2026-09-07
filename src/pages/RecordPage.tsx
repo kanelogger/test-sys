@@ -280,7 +280,11 @@ export default function RecordPage() {
                 busy={busy}
               />
             ))}
-            <OrphanCompleteForm feedback={feedback} rows={state.view.items} />
+            <OrphanCompleteForm
+              feedback={feedback}
+              rows={state.view.items}
+              externalBusy={busy}
+            />
           </section>
 
           {isHistory ? (
@@ -388,6 +392,7 @@ function RecordRow({
         formOpenHere ? (
           <CompleteFormSlot
             feedback={feedback}
+            externalBusy={busy}
             note={
               <p className="note-line" style={{ marginTop: 10 }}>
                 补记：当天已学、现在登记；学习日保持{" "}
