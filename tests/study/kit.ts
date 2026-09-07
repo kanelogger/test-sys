@@ -16,6 +16,31 @@ export type WorkflowKit = {
   setLocal: (y: number, m: number, d: number, hh?: number, mm?: number) => void;
 };
 
+/** 行级事实快照：用于失败后原状态断言（比数量更严格） */
+export type RowSnapshot = ReadonlyArray<{
+  id: string;
+  status: string;
+  title: string;
+  plannedMinutes: number;
+  logSummary: string | null;
+}>;
+
+/** 从 recording 视图取行级事实快照（失败后原状态断言用） */
+export function snapshotRows(view: {
+  items: readonly {
+    plan: { id: string; status: string; title: string; plannedMinutes: number };
+    log?: { summary: string };
+  }[];
+}): RowSnapshot {
+  return view.items.map((row) => ({
+    id: row.plan.id,
+    status: row.plan.status,
+    title: row.plan.title,
+    plannedMinutes: row.plan.plannedMinutes,
+    logSummary: row.log?.summary ?? null,
+  }));
+}
+
 export function makeKit(
   options: Omit<StudyWorkflowOptions, "clock" | "dbName"> & {
     dbName?: string;

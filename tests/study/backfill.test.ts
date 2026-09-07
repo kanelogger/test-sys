@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeKit } from "./kit";
+import { makeKit, snapshotRows } from "./kit";
 
 /**
  * T-02 · createBackfill：无对应任务时原子创建 backfill completed 根与同日唯一日志；
@@ -104,6 +104,12 @@ describe("createBackfill", () => {
     });
     expect(done.ok).toBe(true);
 
+    // 事实变更后的字段级快照（作为旧提交零修改的基准）
+    const beforeStaleView = await kitA.workflow.recording("2026-09-07");
+    expect(beforeStaleView.ok).toBe(true);
+    if (!beforeStaleView.ok) return;
+    const beforeStale = snapshotRows(beforeStaleView.value);
+
     const stale = await kitA.workflow.createBackfill({
       draft: view.value.draft,
       noCorrespondingTaskConfirmed: true,
@@ -117,7 +123,7 @@ describe("createBackfill", () => {
     const after = await kitA.workflow.recording("2026-09-07");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items).toHaveLength(3);
+    expect(snapshotRows(after.value)).toEqual(beforeStale);
   });
 
   it("草稿读取后出现同日新补录时，旧补建提交为 STATE_CHANGED 零修改", async () => {
@@ -144,6 +150,11 @@ describe("createBackfill", () => {
     });
     expect(first.ok).toBe(true);
 
+    const afterFirst = await kitA.workflow.recording("2026-09-07");
+    expect(afterFirst.ok).toBe(true);
+    if (!afterFirst.ok) return;
+    const beforeStale = snapshotRows(afterFirst.value);
+
     // A 的旧草稿所依据事实已失效
     const stale = await kitA.workflow.createBackfill({
       draft: viewA.value.draft,
@@ -158,7 +169,7 @@ describe("createBackfill", () => {
     const after = await kitA.workflow.recording("2026-09-07");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items).toHaveLength(4);
+    expect(snapshotRows(after.value)).toEqual(beforeStale);
     expect(after.value.items[3]?.plan.title).toBe("B 的补录");
   });
 
@@ -170,6 +181,7 @@ describe("createBackfill", () => {
     const view = await kit.workflow.recording("2026-09-10");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
+    const before = snapshotRows(view.value);
 
     const done = await kit.workflow.createBackfill({
       draft: view.value.draft,
@@ -185,7 +197,7 @@ describe("createBackfill", () => {
     const after = await kit.workflow.recording("2026-09-10");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items).toHaveLength(3);
+    expect(snapshotRows(after.value)).toEqual(before);
   });
 
   it.each([
@@ -241,6 +253,7 @@ describe("createBackfill", () => {
       const view = await kit.workflow.recording("2026-09-07");
       expect(view.ok).toBe(true);
       if (!view.ok) return;
+      const before = snapshotRows(view.value);
       const plan: Record<string, unknown> = { ...validPlan };
       mutate(plan);
 
@@ -255,10 +268,11 @@ describe("createBackfill", () => {
       expect(done.error.code).toBe("INVALID_INPUT");
       expect(done.error.field).toBe(field);
 
+      // 失败后原状态：全部行字段级不变（不只数量）
       const after = await kit.workflow.recording("2026-09-07");
       expect(after.ok).toBe(true);
       if (!after.ok) return;
-      expect(after.value.items).toHaveLength(3);
+      expect(snapshotRows(after.value)).toEqual(before);
     }
   );
 

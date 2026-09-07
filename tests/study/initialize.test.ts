@@ -221,6 +221,29 @@ describe("initialize", () => {
       }),
       field: "coverage" as string | undefined,
     },
+    {
+      name: "coverage 起点偏离冻结窗口",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.coverage as Record<string, unknown>).startDate = "2026-09-01";
+      }),
+      field: "coverage" as string | undefined,
+    },
+    {
+      name: "coverage 终点不是考试前一日",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.coverage as Record<string, unknown>).endDate = "2026-10-24";
+      }),
+      field: "coverage" as string | undefined,
+    },
+    {
+      name: "本地资源 filename 携带路径",
+      loader: mutatedSeedLoader((seed) => {
+        const res = seed.resources as Array<Record<string, unknown>>;
+        const file = res.find((r) => r.type === "local-file")!;
+        file.filename = "/Users/someone/红宝书一本全.pdf";
+      }),
+      field: "filename" as string | undefined,
+    },
   ])(
     "种子校验失败为 INVALID_SEED（$name），零修改且换好种子可重试",
     async ({ loader, field }) => {

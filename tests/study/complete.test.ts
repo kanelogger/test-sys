@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeKit } from "./kit";
+import { makeKit, snapshotRows } from "./kit";
 
 /**
  * T-02 · complete：完成与唯一日志原子写入；补记不增任务、日志留计划日；
@@ -104,6 +104,7 @@ describe("complete", () => {
       if (!view.ok) return;
       const ref = view.value.items[0]?.pending;
       if (!ref) return;
+      const before = snapshotRows(view.value);
 
       const done = await kit.workflow.complete(ref, {
         actualMinutes,
@@ -115,11 +116,11 @@ describe("complete", () => {
       expect(done.error.code).toBe("INVALID_INPUT");
       expect(done.error.field).toBe(field);
 
+      // 失败后原状态：全部行字段级不变（不只数量）
       const after = await kit.workflow.recording("2026-09-10");
       expect(after.ok).toBe(true);
       if (!after.ok) return;
-      expect(after.value.items[0]?.plan.status).toBe("pending");
-      expect(after.value.items[0]?.log).toBeUndefined();
+      expect(snapshotRows(after.value)).toEqual(before);
     }
   );
 
@@ -246,6 +247,11 @@ describe("complete", () => {
       db.close();
     }
 
+    // 零修改：全部行字段级不变（含塞入的第二个 pending 原样保留）
+    const beforeFailView = await kit.workflow.recording("2026-09-10");
+    expect(beforeFailView.ok).toBe(true);
+    if (!beforeFailView.ok) return;
+    const beforeFail = snapshotRows(beforeFailView.value);
     const done = await kit.workflow.complete(ref, {
       actualMinutes: 30,
       summary: "不应写入",
@@ -254,12 +260,62 @@ describe("complete", () => {
     if (done.ok) return;
     expect(done.error.code).toBe("INVALID_STATE");
 
-    // 零修改：原项仍 pending、无日志
+    const after = await kit.workflow.recording("2026-09-10");
+    expect(after.ok).toBe(true);
+    if (!after.ok) return;
+    expect(snapshotRows(after.value)).toEqual(beforeFail);
+  });
+
+  it("存量 pending 却带有日志为 INVALID_STATE（非 STATE_CHANGED）且零修改", async () => {
+    const kit = makeKit();
+    kit.setLocal(2026, 9, 10, 8, 30);
+    await kit.workflow.initialize();
+
+    const view = await kit.workflow.recording("2026-09-10");
+    expect(view.ok).toBe(true);
+    if (!view.ok) return;
+    const target = view.value.items[0]?.plan;
+    const ref = view.value.items[0]?.pending;
+    if (!target || !ref) return;
+
+    // 环境前态构造（FLOW-01-T 特许）：原始连接塞入一条指向 pending 项的日志
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const req = indexedDB.open(kit.dbName);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    try {
+      const tx = db.transaction("studyLogs", "readwrite");
+      tx.objectStore("studyLogs").put({
+        id: crypto.randomUUID(),
+        planItemId: target.id,
+        date: target.date,
+        actualMinutes: 10,
+        summary: "违反不变量的存量日志",
+      });
+      await new Promise<void>((resolve, reject) => {
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally {
+      db.close();
+    }
+
+    const done = await kit.workflow.complete(ref, {
+      actualMinutes: 30,
+      summary: "不应写入",
+    });
+    expect(done.ok).toBe(false);
+    if (done.ok) return;
+    expect(done.error.code).toBe("INVALID_STATE");
+    expect(done.error.reason).toContain("日志");
+
     const after = await kit.workflow.recording("2026-09-10");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     const row = after.value.items.find((r) => r.plan.id === target.id);
     expect(row?.plan.status).toBe("pending");
-    expect(row?.log).toBeUndefined();
+    expect(row?.log?.summary).toBe("违反不变量的存量日志");
   });
 });

@@ -72,6 +72,17 @@ function validateResource(value: unknown, index: number) {
     if (!isNonEmptyString(value.filename)) {
       return invalid(`resources[${index}].filename 缺失或为空`, "filename");
     }
+    // 本地文件只记录文件名（需求 §二/§五）：拒绝任何路径形态
+    if (
+      value.filename.includes("/") ||
+      value.filename.includes("\\") ||
+      value.filename.includes(":")
+    ) {
+      return invalid(
+        `resources[${index}].filename 必须是纯文件名，不得包含路径`,
+        "filename"
+      );
+    }
     return {
       ok: true as const,
       value: {
@@ -232,6 +243,30 @@ export function parseAndValidateSeed(text: string): SeedResult {
   }
   const coverageStart = startDate;
   const coverageEnd = endDate;
+  // 覆盖窗口须与冻结的备考执行窗口一致（需求 §三）：起于 2026-09-06、止于考试前一日
+  if (coverageStart !== "2026-09-06") {
+    return invalid(
+      "coverage.startDate 与备考执行窗口起点 2026-09-06 不一致",
+      "coverage"
+    );
+  }
+  {
+    const exam = new Date(
+      Number(settings.examDate.slice(0, 4)),
+      Number(settings.examDate.slice(5, 7)) - 1,
+      Number(settings.examDate.slice(8, 10))
+    );
+    exam.setDate(exam.getDate() - 1);
+    const y = exam.getFullYear();
+    const m = String(exam.getMonth() + 1).padStart(2, "0");
+    const d = String(exam.getDate()).padStart(2, "0");
+    if (coverageEnd !== `${y}-${m}-${d}`) {
+      return invalid(
+        "coverage.endDate 不是考试前一日（与备考执行窗口不一致）",
+        "coverage"
+      );
+    }
+  }
 
   if (!Array.isArray(raw.resources)) {
     return invalid("resources 缺失或不是数组", "resources");

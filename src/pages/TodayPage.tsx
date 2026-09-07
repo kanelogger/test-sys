@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { initializeOnce, studyWorkflow } from "../study/react";
 import type { FailureCode, PlanRow, TodayView } from "../study";
-import { CompleteForm } from "../ui/CompleteForm";
+import { CompleteFormSlot, OrphanCompleteForm } from "../ui/CompleteFormSlot";
 import { Icon } from "../ui/Icon";
 import { PageError } from "../ui/PageError";
 import { useRowFeedback, type RowFeedback } from "../ui/useRowFeedback";
@@ -152,14 +152,17 @@ export default function TodayPage() {
         {view.items.length === 0 ? (
           <div className="empty-state">今天没有安排任务。</div>
         ) : (
-          view.items.map((row, index) => (
-            <TodayTaskRow
-              key={row.plan.id}
-              row={row}
-              orderLabel={index + 1}
-              feedback={feedback}
-            />
-          ))
+          <>
+            {view.items.map((row, index) => (
+              <TodayTaskRow
+                key={row.plan.id}
+                row={row}
+                orderLabel={index + 1}
+                feedback={feedback}
+              />
+            ))}
+            <OrphanCompleteForm feedback={feedback} rows={view.items} />
+          </>
         )}
       </section>
     </>
@@ -222,18 +225,7 @@ function TodayTaskRow({
           ) : null}
         </>
       }
-      formSlot={
-        formOpenHere && form ? (
-          <CompleteForm
-            planDate={form.planDate}
-            pending={form.ref}
-            onSuccess={(logDate) => feedback.succeeded(row.plan.id, logDate)}
-            onCancel={feedback.close}
-            onRequery={feedback.requery}
-            onAutoRefresh={feedback.refreshKeepingForm}
-          />
-        ) : null
-      }
+      formSlot={formOpenHere ? <CompleteFormSlot feedback={feedback} /> : null}
     />
   );
 }

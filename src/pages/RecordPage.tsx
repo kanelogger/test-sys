@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { initializeOnce, studyWorkflow } from "../study/react";
 import type { FailureCode, PlanRow, RecordingView } from "../study";
-import { CompleteForm } from "../ui/CompleteForm";
+import { CompleteFormSlot, OrphanCompleteForm } from "../ui/CompleteFormSlot";
 import { InlineAlert } from "../ui/InlineAlert";
 import { PageError } from "../ui/PageError";
 import { TaskRowShell } from "../ui/TaskRowShell";
@@ -63,6 +63,7 @@ export default function RecordPage() {
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<BackfillFieldName, string>>
   >({});
+  const [dateError, setDateError] = useState<string | null>(null);
   const [sectionAlert, setSectionAlert] = useState<{
     kind: "error" | "warning";
     text: string;
@@ -95,11 +96,8 @@ export default function RecordPage() {
     const view = await studyWorkflow.recording(effective);
     if (!view.ok) {
       if (view.error.code === "INVALID_INPUT") {
-        setState({
-          phase: "page-error",
-          code: view.error.code,
-          reason: view.error.reason,
-        });
+        // §11-1：日期非法贴字段处理，不替换整页；保留既有视图
+        setDateError(view.error.reason);
         return;
       }
       setState({
@@ -109,6 +107,7 @@ export default function RecordPage() {
       });
       return;
     }
+    setDateError(null);
     setState({ phase: "ready", today, view: view.value });
   }, []);
 
@@ -120,7 +119,7 @@ export default function RecordPage() {
 
   const changeDate = (next: string) => {
     setDate(next);
-    setState({ phase: "loading" });
+    setDateError(null);
     feedback.close();
     setConfirmed(false);
     setFields(EMPTY_BACKFILL);
@@ -230,13 +229,17 @@ export default function RecordPage() {
       </header>
 
       <div className="date-bar">
-        <input
-          type="date"
-          className="input"
-          value={date ?? ""}
-          {...(todayStr !== null ? { max: todayStr } : {})}
-          onChange={(event) => changeDate(event.target.value)}
-        />
+        <span className="field" style={{ marginBottom: 0 }}>
+          <input
+            type="date"
+            className={`input${dateError ? " is-invalid" : ""}`}
+            value={date ?? ""}
+            {...(todayStr !== null ? { max: todayStr } : {})}
+            onChange={(event) => changeDate(event.target.value)}
+            aria-invalid={dateError ? true : undefined}
+          />
+          {dateError ? <span className="field-error">{dateError}</span> : null}
+        </span>
         <span className="note-line">
           可为今天或历史日期登记；日志日期 =
           学习日；新建补录仅限历史日期（今天仅对今日 pending 记录完成）。
@@ -256,9 +259,15 @@ export default function RecordPage() {
             {state.view.items.length === 0 ? (
               <div className="empty-state">这一天没有记录。</div>
             ) : (
-              state.view.items.map((row) => (
-                <RecordRow key={row.plan.id} row={row} feedback={feedback} />
-              ))
+              <>
+                {state.view.items.map((row) => (
+                  <RecordRow key={row.plan.id} row={row} feedback={feedback} />
+                ))}
+                <OrphanCompleteForm
+                  feedback={feedback}
+                  rows={state.view.items}
+                />
+              </>
             )}
           </section>
 
@@ -355,21 +364,16 @@ function RecordRow({ row, feedback }: { row: PlanRow; feedback: RowFeedback }) {
         </>
       }
       formSlot={
-        formOpenHere && form ? (
-          <>
-            <p className="note-line" style={{ marginTop: 10 }}>
-              补记：当天已学、现在登记；学习日保持{" "}
-              <span className="mono">{form.planDate}</span>，任务数不增加。
-            </p>
-            <CompleteForm
-              planDate={form.planDate}
-              pending={form.ref}
-              onSuccess={(logDate) => feedback.succeeded(row.plan.id, logDate)}
-              onCancel={feedback.close}
-              onRequery={feedback.requery}
-              onAutoRefresh={feedback.refreshKeepingForm}
-            />
-          </>
+        formOpenHere ? (
+          <CompleteFormSlot
+            feedback={feedback}
+            note={
+              <p className="note-line" style={{ marginTop: 10 }}>
+                补记：当天已学、现在登记；学习日保持{" "}
+                <span className="mono">{form.planDate}</span>，任务数不增加。
+              </p>
+            }
+          />
         ) : null
       }
     />

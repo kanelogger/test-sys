@@ -1,90 +1,32 @@
-import { useState } from "react";
-import { studyWorkflow } from "../study/react";
-import type { PendingRef } from "../study";
 import { InlineAlert } from "./InlineAlert";
-
-type FieldName = "actualMinutes" | "summary" | "scoreText";
+import type { LogFieldName, LogFields } from "./useRowFeedback";
 
 /**
- * 完成行内表单（今日页「完成」与记录页「记录完成」共用）：
+ * 完成行内表单（展示组件；今日页「完成」与记录页「记录完成」共用）：
  * 仅日志三字段 + 固定显示学习日；提交中禁用；失败保留输入；
- * STATE_CHANGED 给重新查询入口（§11-1/2/3/5/7）。
+ * 状态与提交逻辑由 useRowFeedback 持有（§11-1/2/3/5/7）。
  */
 export function CompleteForm({
   planDate,
-  pending,
-  onSuccess,
+  fields,
+  fieldErrors,
+  submitting,
+  alert,
+  onField,
+  onSubmit,
   onCancel,
   onRequery,
-  onAutoRefresh,
 }: {
   planDate: string;
-  pending: PendingRef;
-  onSuccess: (logDate: string) => void;
+  fields: LogFields;
+  fieldErrors: Partial<Record<LogFieldName, string>>;
+  submitting: boolean;
+  alert: { text: string } | null;
+  onField: (name: LogFieldName, value: string) => void;
+  onSubmit: () => void;
   onCancel: () => void;
   onRequery: () => void;
-  /** STATE_CHANGED/INVALID_STATE 后主动重查当前视图（不关闭表单、保留输入） */
-  onAutoRefresh: () => void;
 }) {
-  const [actualMinutes, setActualMinutes] = useState("");
-  const [summary, setSummary] = useState("");
-  const [scoreText, setScoreText] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<FieldName, string>>
-  >({});
-  const [alert, setAlert] = useState<{ kind: "error"; text: string } | null>(
-    null
-  );
-
-  const submit = async () => {
-    if (submitting) return;
-    setSubmitting(true);
-    setFieldErrors({});
-    setAlert(null);
-    const result = await studyWorkflow.complete(pending, {
-      actualMinutes: Number(actualMinutes),
-      summary,
-      ...(scoreText.trim() !== "" ? { scoreText } : {}),
-    });
-    if (result.ok) {
-      onSuccess(result.value.log.date);
-      return;
-    }
-    setSubmitting(false);
-    const failure = result.error;
-    if (failure.code === "INVALID_INPUT") {
-      if (
-        failure.field === "actualMinutes" ||
-        failure.field === "summary" ||
-        failure.field === "scoreText"
-      ) {
-        setFieldErrors({ [failure.field]: failure.reason });
-      } else {
-        setFieldErrors({ summary: failure.reason });
-      }
-      return;
-    }
-    if (failure.code === "INVALID_STATE") {
-      // 存量数据违反不变量：如实展示 reason（区别于「在别处变更」）
-      setAlert({
-        kind: "error",
-        text: `${failure.reason}。已保留你的输入，请重新查询核对。`,
-      });
-      onAutoRefresh();
-      return;
-    }
-    if (failure.code === "STATE_CHANGED") {
-      setAlert({
-        kind: "error",
-        text: "任务状态已在别处变更。已保留你的输入，请核对最新状态后重试。",
-      });
-      onAutoRefresh();
-      return;
-    }
-    setAlert({ kind: "error", text: `${failure.reason}（未写入）` });
-  };
-
   return (
     <div className="inline-form is-open">
       <div className="inline-form-inner">
@@ -104,9 +46,9 @@ export function CompleteForm({
             step={1}
             inputMode="numeric"
             placeholder="正整数，如 45"
-            value={actualMinutes}
+            value={fields.actualMinutes}
             disabled={submitting}
-            onChange={(event) => setActualMinutes(event.target.value)}
+            onChange={(event) => onField("actualMinutes", event.target.value)}
           />
           {fieldErrors.actualMinutes ? (
             <span className="field-error">{fieldErrors.actualMinutes}</span>
@@ -120,9 +62,9 @@ export function CompleteForm({
             id={`summary-${planDate}`}
             className={`textarea${fieldErrors.summary ? " is-invalid" : ""}`}
             placeholder="学了什么、做到什么程度、遗留什么问题"
-            value={summary}
+            value={fields.summary}
             disabled={submitting}
-            onChange={(event) => setSummary(event.target.value)}
+            onChange={(event) => onField("summary", event.target.value)}
           />
           {fieldErrors.summary ? (
             <span className="field-error">{fieldErrors.summary}</span>
@@ -137,9 +79,9 @@ export function CompleteForm({
             className={`input${fieldErrors.scoreText ? " is-invalid" : ""}`}
             type="text"
             placeholder="如 52/75"
-            value={scoreText}
+            value={fields.scoreText}
             disabled={submitting}
-            onChange={(event) => setScoreText(event.target.value)}
+            onChange={(event) => onField("scoreText", event.target.value)}
           />
           {fieldErrors.scoreText ? (
             <span className="field-error">{fieldErrors.scoreText}</span>
@@ -150,7 +92,7 @@ export function CompleteForm({
             type="button"
             className={`btn btn-primary${submitting ? " is-loading" : ""}`}
             disabled={submitting}
-            onClick={() => void submit()}
+            onClick={onSubmit}
           >
             <span className="btn-spinner" />
             <span className="btn-text">
@@ -167,11 +109,7 @@ export function CompleteForm({
           </button>
         </div>
         {alert ? (
-          <InlineAlert
-            kind={alert.kind}
-            text={alert.text}
-            onRequery={onRequery}
-          />
+          <InlineAlert kind="error" text={alert.text} onRequery={onRequery} />
         ) : null}
       </div>
     </div>

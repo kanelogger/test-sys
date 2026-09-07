@@ -443,7 +443,12 @@ export function createStudyWorkflow(
         ) as Promise<PlanItem[]>,
       ]);
       if (existingLog) {
-        return err("STATE_CHANGED", "该任务已登记学习日志，请重新查询");
+        // 到达此处说明目标仍是 pending：pending 却带日志是存量不变量违例，
+        // 不是并发变更（并发完成会先令 status 变为 completed，在上一分支返回）
+        return err(
+          "INVALID_STATE",
+          "存量数据违反日志不变量：pending 任务已存在学习日志"
+        );
       }
       if (item.movedToPlanItemId) {
         return err(
