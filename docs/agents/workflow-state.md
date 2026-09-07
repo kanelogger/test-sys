@@ -8,8 +8,8 @@
 - 当前阶段：Step 0 / H-00 的真实种子、校验与四场景模型推演已完成；Step 1 领域词汇及首个闭环 interface 草案已完成；2026-09-07 完成 Step 3 / H-03 分支 B（web-design）PC 设计，见文末 DESIGN-01。COV-01 未确认，H-00 冻结放行仍阻塞，不据此宣称 H-01 正式放行；未进入应用实现。
 - 需求冻结：**未冻结**；`frozenAt = null`。覆盖字段尚待确认，不声称 JSON schema 已冻结。
 - 项目 baseline SHA：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`。
-- 本阶段 start SHA：同 baseline。tracker：本地 Markdown tracker 已配置（`docs/agents/issue-tracker.md`）；已发布 T-00–T-07（`tickets/`，一票一文件）。当前票：无；T-00 已 done（见票内完成记录），T-01 转为 ready（仅被 T-00 阻塞），待显式 `$implement`；T-02 仍受 COV-01 冻结硬前置阻塞。
-- 评审覆盖 HEAD：`4f5e118986380f1c0d75a728f291c7043a6bf2e0`（T-00，start SHA `d2eff2d7181553fda4250c63eed4666acec6fc98`，Standards/Spec 双轴 zero findings）；本阶段不宣称运行验收通过。
+- 本阶段 start SHA：同 baseline。tracker：本地 Markdown tracker 已配置（`docs/agents/issue-tracker.md`）；已发布 T-00–T-07（`tickets/`，一票一文件）。当前票：无；T-00、T-01 已 done（见各票完成记录）；T-02 仍受 COV-01 冻结硬前置阻塞，解冻前无 ready 票。
+- 评审覆盖 HEAD：T-00 → `4f5e118986380f1c0d75a728f291c7043a6bf2e0`（start `d2eff2d…`，双轴 zero findings）；T-01 → `4458e8899d3c5febe6755f042e12e21cf8799b58`（start `9d4a131…`，首轮 Spec 1 项证据记录 P2 已修复并纳入复核）；本阶段不宣称运行验收通过。
 
 ## 覆盖表示约定（生成前记录）
 
@@ -75,12 +75,21 @@ type LocalDate = string;
 type PendingRef = string & { readonly pendingRef: unique symbol };
 type BackfillDraft = string & { readonly backfillDraft: unique symbol };
 type LogInput = Pick<StudyLog, "actualMinutes" | "summary" | "scoreText">;
-type BackfillPlanInput = Pick<PlanItem,
-  "subject" | "title" | "completionCriteria" | "plannedMinutes" | "resourceId">;
-type FailureCode = "NOT_INITIALIZED" | "SEED_UNAVAILABLE" | "INVALID_SEED"
-  | "INVALID_INPUT" | "STATE_CHANGED" | "INVALID_STATE"
-  | "DUPLICATE_SUBMISSION" | "STORAGE_FAILURE";
-type Result<T> = { ok: true; value: T }
+type BackfillPlanInput = Pick<
+  PlanItem,
+  "subject" | "title" | "completionCriteria" | "plannedMinutes" | "resourceId"
+>;
+type FailureCode =
+  | "NOT_INITIALIZED"
+  | "SEED_UNAVAILABLE"
+  | "INVALID_SEED"
+  | "INVALID_INPUT"
+  | "STATE_CHANGED"
+  | "INVALID_STATE"
+  | "DUPLICATE_SUBMISSION"
+  | "STORAGE_FAILURE";
+type Result<T> =
+  | { ok: true; value: T }
   | { ok: false; error: { code: FailureCode; reason: string; field?: string } };
 interface PlanRow {
   plan: Readonly<PlanItem>;
@@ -94,7 +103,11 @@ interface TodayView {
   overdue: readonly PlanRow[];
   examDate: LocalDate;
   daysUntilExam: number;
-  budget: { plannedMinutes: number; referenceMinutes: number; exceeded: boolean };
+  budget: {
+    plannedMinutes: number;
+    referenceMinutes: number;
+    exceeded: boolean;
+  };
 }
 interface RecordingView {
   date: LocalDate;
@@ -106,28 +119,33 @@ interface Recorded {
   log: Readonly<StudyLog>;
 }
 interface StudyWorkflow {
-  initialize(): Promise<Result<{
-    outcome: "initialized" | "already-initialized"; initializedSeedVersion: string;
-  }>>;
+  initialize(): Promise<
+    Result<{
+      outcome: "initialized" | "already-initialized";
+      initializedSeedVersion: string;
+    }>
+  >;
   today(): Promise<Result<TodayView>>;
   recording(date: LocalDate): Promise<Result<RecordingView>>;
   complete(target: PendingRef, log: LogInput): Promise<Result<Recorded>>;
   createBackfill(input: {
-    draft: BackfillDraft; noCorrespondingTaskConfirmed: true;
-    plan: BackfillPlanInput; log: LogInput;
+    draft: BackfillDraft;
+    noCorrespondingTaskConfirmed: true;
+    plan: BackfillPlanInput;
+    log: LogInput;
   }): Promise<Result<Recorded>>;
 }
 ```
 
 ### FLOW-01-C 前置条件、结果与事务
 
-| 入口 | 前置条件与可观察结果 | 事务边界 |
-| --- | --- | --- |
-| initialize command | 只看 AppMeta 标记；非空返回 already-initialized 及已有版本，即使计划删空或随包版本更新也零修改。为空时加载唯一 `public/data/study-plan.seed.json`，完整校验后初始化，版本直接取 seedVersion，不生成日志、不截断过去 pending | 加载/解析/完整 seed 校验在写事务外；同一写事务内再读标记，若已初始化则不写，否则原子写入 Settings、Resource、PlanItem、AppMeta。并发首开最多一个返回 initialized；失败四部分均不留下半成品 |
-| today query | 已初始化；按本次调用的本地今日返回当日 pending/completed 与过去 pending，日内按 order 排列，逾期按 date/order。返回完成标准、资源与已完成日志；X 只计当日 pending/completed 的预计分钟，Y 取 Settings，另给考试剩余日历天数及 X > Y 提示；无当日任务为空列表 | 一次覆盖相关数据的只读事务完成关联读取与预算投影，不改变计划；本地今日由 module 取得，不用 UTC 加 24h，也不自动切换星期预算 |
-| recording query | 已初始化；日期合法且不晚于本地今日。返回该日所有状态的计划及日志，pending 才带可完成引用；历史补录优先选择对应 pending，已完成/已移动/已跳过不是“缺失任务”；草稿绑定查询日期，选择今天仅用于对今日 pending 记录完成（今天无补建入口） | 同一只读事务读取当日完整记录及关联事实，返回绑定此次快照和日期的草稿；不预写空任务或日志 |
-| complete command | 已初始化；target 来自 query，当前仍是同一 pending、无日志且该 lineage 无其他 pending；实际分钟为正整数，总结 trim 后非空，成绩文本可选。只完成原项并返回任务与唯一日志，任务数不增加，source 不变，日志日期从事务内原项 date 取得 | 单一写事务内重读目标、日志及 lineage 并校验引用和状态，再原子创建 StudyLog 与置 completed；只能在事务提交成功后返回成功 |
-| createBackfill command | 已初始化；草稿绑定早于本地今日的历史日期（绑定今天的提交返回 INVALID_INPUT、零修改）；用户已核对全系统（含其他日期 pending 与终态记录）并确认无对应任务；科目、标题、完成标准非空，预计分钟正整数，日志字段同上，可选资源须存在。原子创建 completed/backfill 根及同日唯一日志，返回 Recorded；预计分钟不取实际分钟代填 | 单一写事务内检查固定提交标识、重读当日记录及资源、验证草稿未过期，再创建 PlanItem 与 StudyLog；任一步失败均不保留，也不自动转入其他分支 |
+| 入口                   | 前置条件与可观察结果                                                                                                                                                                                                                                                                                                   | 事务边界                                                                                                                                                                                   |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| initialize command     | 只看 AppMeta 标记；非空返回 already-initialized 及已有版本，即使计划删空或随包版本更新也零修改。为空时加载唯一 `public/data/study-plan.seed.json`，完整校验后初始化，版本直接取 seedVersion，不生成日志、不截断过去 pending                                                                                            | 加载/解析/完整 seed 校验在写事务外；同一写事务内再读标记，若已初始化则不写，否则原子写入 Settings、Resource、PlanItem、AppMeta。并发首开最多一个返回 initialized；失败四部分均不留下半成品 |
+| today query            | 已初始化；按本次调用的本地今日返回当日 pending/completed 与过去 pending，日内按 order 排列，逾期按 date/order。返回完成标准、资源与已完成日志；X 只计当日 pending/completed 的预计分钟，Y 取 Settings，另给考试剩余日历天数及 X > Y 提示；无当日任务为空列表                                                           | 一次覆盖相关数据的只读事务完成关联读取与预算投影，不改变计划；本地今日由 module 取得，不用 UTC 加 24h，也不自动切换星期预算                                                                |
+| recording query        | 已初始化；日期合法且不晚于本地今日。返回该日所有状态的计划及日志，pending 才带可完成引用；历史补录优先选择对应 pending，已完成/已移动/已跳过不是“缺失任务”；草稿绑定查询日期，选择今天仅用于对今日 pending 记录完成（今天无补建入口）                                                                                  | 同一只读事务读取当日完整记录及关联事实，返回绑定此次快照和日期的草稿；不预写空任务或日志                                                                                                   |
+| complete command       | 已初始化；target 来自 query，当前仍是同一 pending、无日志且该 lineage 无其他 pending；实际分钟为正整数，总结 trim 后非空，成绩文本可选。只完成原项并返回任务与唯一日志，任务数不增加，source 不变，日志日期从事务内原项 date 取得                                                                                      | 单一写事务内重读目标、日志及 lineage 并校验引用和状态，再原子创建 StudyLog 与置 completed；只能在事务提交成功后返回成功                                                                    |
+| createBackfill command | 已初始化；草稿绑定早于本地今日的历史日期（绑定今天的提交返回 INVALID_INPUT、零修改）；用户已核对全系统（含其他日期 pending 与终态记录）并确认无对应任务；科目、标题、完成标准非空，预计分钟正整数，日志字段同上，可选资源须存在。原子创建 completed/backfill 根及同日唯一日志，返回 Recorded；预计分钟不取实际分钟代填 | 单一写事务内检查固定提交标识、重读当日记录及资源、验证草稿未过期，再创建 PlanItem 与 StudyLog；任一步失败均不保留，也不自动转入其他分支                                                    |
 
 共同错误：未初始化为 NOT_INITIALIZED；随包加载失败为 SEED_UNAVAILABLE，seed 校验失败为 INVALID_SEED；字段/日期/引用输入错误为 INVALID_INPUT，携带 reason 与适用的 field。旧引用目标消失或当前事实已变为 STATE_CHANGED；存量数据已违反日志/lineage 不变量为 INVALID_STATE；同次新建补录已提交为 DUPLICATE_SUBMISSION；事务或存储失败为 STORAGE_FAILURE。所有错误本次零修改，UI 展示原因并保留输入，不吞错或伪报成功；重复 complete 属于 STATE_CHANGED。
 
