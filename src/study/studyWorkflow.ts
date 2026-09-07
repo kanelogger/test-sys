@@ -183,8 +183,15 @@ export function createStudyWorkflow(
     } catch (cause) {
       return err("STORAGE_FAILURE", describeError(cause));
     }
-    const tx = opened.transaction(ALL_STORES, mode);
-    const stores = storesOf(tx);
+    // 连接可能刚被 versionchange 关闭：transaction()/store 访问同样可能抛错
+    let tx: IDBTransaction;
+    let stores: StudyStores;
+    try {
+      tx = opened.transaction(ALL_STORES, mode);
+      stores = storesOf(tx);
+    } catch (cause) {
+      return err("STORAGE_FAILURE", describeError(cause));
+    }
     const done = transactionDone(tx);
     done.catch(() => {
       /* 终态由下方 await 统一处理，此处仅抑制未处理拒绝告警 */

@@ -92,6 +92,28 @@ describe("initialize", () => {
     expect(view.value.overdue).toHaveLength(0);
   });
 
+  it("并发首开：两个独立连接最多一个 initialized，数据不重复写入", async () => {
+    const dbName = `study-test-${crypto.randomUUID()}`;
+    const kitA = makeKit({ dbName });
+    const kitB = makeKit({ dbName });
+
+    const [resultA, resultB] = await Promise.all([
+      kitA.workflow.initialize(),
+      kitB.workflow.initialize(),
+    ]);
+    const outcomes = [resultA, resultB].map((r) =>
+      r.ok ? r.value.outcome : `error:${r.error.code}`
+    );
+    expect(outcomes.sort()).toEqual(["already-initialized", "initialized"]);
+
+    // 四部分无重复写入：当日仍为种子三项
+    kitA.setLocal(2026, 9, 8);
+    const view = await kitA.workflow.today();
+    expect(view.ok).toBe(true);
+    if (!view.ok) return;
+    expect(view.value.items).toHaveLength(3);
+  });
+
   it("随包种子升级不覆盖已有数据（第二连接携带新版种子）", async () => {
     const kit = makeKit();
     kit.setLocal(2026, 9, 8);
@@ -174,6 +196,30 @@ describe("initialize", () => {
           "other-lineage";
       }),
       field: "lineageId" as string | undefined,
+    },
+    {
+      name: "缺失 coverage 声明",
+      loader: mutatedSeedLoader((seed) => {
+        delete seed.coverage;
+      }),
+      field: "coverage" as string | undefined,
+    },
+    {
+      name: "任务日期超出覆盖区间",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.planItems as Array<Record<string, unknown>>)[0]!.date =
+          "2026-11-01";
+      }),
+      field: "coverage" as string | undefined,
+    },
+    {
+      name: "覆盖区间内存在空日",
+      loader: mutatedSeedLoader((seed) => {
+        seed.planItems = (
+          seed.planItems as Array<Record<string, unknown>>
+        ).filter((p) => p.date !== "2026-09-06");
+      }),
+      field: "coverage" as string | undefined,
     },
   ])(
     "种子校验失败为 INVALID_SEED（$name），零修改且换好种子可重试",

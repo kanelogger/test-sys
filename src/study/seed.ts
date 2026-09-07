@@ -214,22 +214,24 @@ export function parseAndValidateSeed(text: string): SeedResult {
     defaultDailyMinutes: raw.settings.defaultDailyMinutes,
   };
 
-  // coverage 为种子顶层元数据约定（2026-09-07 COV-01 定案）：存在则校验形态，不进入实体
-  if (raw.coverage !== undefined) {
-    if (!isRecord(raw.coverage)) {
-      return invalid("coverage 不是对象", "coverage");
-    }
-    const { startDate, endDate } = raw.coverage;
-    if (
-      typeof startDate !== "string" ||
-      !isValidLocalDate(startDate) ||
-      typeof endDate !== "string" ||
-      !isValidLocalDate(endDate) ||
-      startDate > endDate
-    ) {
-      return invalid("coverage.startDate/endDate 非法或起止颠倒", "coverage");
-    }
+  // coverage 为种子顶层元数据约定（2026-09-07 COV-01 定案）：
+  // 种子须声明覆盖起止且逐日给出安排（需求 §三）；不进入实体。
+  // 星期预算仅用于离线内容校验，运行时不得因此拒绝合法种子（内容约定）。
+  if (!isRecord(raw.coverage)) {
+    return invalid("coverage 缺失或不是对象（种子须声明覆盖起止）", "coverage");
   }
+  const { startDate, endDate } = raw.coverage;
+  if (
+    typeof startDate !== "string" ||
+    !isValidLocalDate(startDate) ||
+    typeof endDate !== "string" ||
+    !isValidLocalDate(endDate) ||
+    startDate > endDate
+  ) {
+    return invalid("coverage.startDate/endDate 非法或起止颠倒", "coverage");
+  }
+  const coverageStart = startDate;
+  const coverageEnd = endDate;
 
   if (!Array.isArray(raw.resources)) {
     return invalid("resources 缺失或不是数组", "resources");
@@ -259,6 +261,30 @@ export function parseAndValidateSeed(text: string): SeedResult {
     }
     planIds.add(parsed.value.id);
     planItems.push(parsed.value);
+  }
+
+  // 逐日覆盖：所有种子任务均在覆盖区间内，且区间内每个日历日至少一项
+  const datesWithItems = new Set(planItems.map((p) => p.date));
+  for (const date of datesWithItems) {
+    if (date < coverageStart || date > coverageEnd) {
+      return invalid(`planItems 存在覆盖区间外的日期 ${date}`, "coverage");
+    }
+  }
+  const cursor = new Date(
+    Number(coverageStart.slice(0, 4)),
+    Number(coverageStart.slice(5, 7)) - 1,
+    Number(coverageStart.slice(8, 10))
+  );
+  for (;;) {
+    const y = cursor.getFullYear();
+    const m = String(cursor.getMonth() + 1).padStart(2, "0");
+    const d = String(cursor.getDate()).padStart(2, "0");
+    const current = `${y}-${m}-${d}`;
+    if (current > coverageEnd) break;
+    if (!datesWithItems.has(current)) {
+      return invalid(`覆盖区间内 ${current} 没有安排任务`, "coverage");
+    }
+    cursor.setDate(cursor.getDate() + 1);
   }
 
   return {

@@ -16,12 +16,15 @@ export function CompleteForm({
   onSuccess,
   onCancel,
   onRequery,
+  onAutoRefresh,
 }: {
   planDate: string;
   pending: PendingRef;
   onSuccess: (logDate: string) => void;
   onCancel: () => void;
   onRequery: () => void;
+  /** STATE_CHANGED/INVALID_STATE 后主动重查当前视图（不关闭表单、保留输入） */
+  onAutoRefresh: () => void;
 }) {
   const [actualMinutes, setActualMinutes] = useState("");
   const [summary, setSummary] = useState("");
@@ -62,11 +65,21 @@ export function CompleteForm({
       }
       return;
     }
-    if (failure.code === "STATE_CHANGED" || failure.code === "INVALID_STATE") {
+    if (failure.code === "INVALID_STATE") {
+      // 存量数据违反不变量：如实展示 reason（区别于「在别处变更」）
+      setAlert({
+        kind: "error",
+        text: `${failure.reason}。已保留你的输入，请重新查询核对。`,
+      });
+      onAutoRefresh();
+      return;
+    }
+    if (failure.code === "STATE_CHANGED") {
       setAlert({
         kind: "error",
         text: "任务状态已在别处变更。已保留你的输入，请核对最新状态后重试。",
       });
+      onAutoRefresh();
       return;
     }
     setAlert({ kind: "error", text: `${failure.reason}（未写入）` });

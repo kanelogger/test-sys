@@ -3,7 +3,9 @@ import { initializeOnce, studyWorkflow } from "../study/react";
 import type { FailureCode, PlanRow, TodayView } from "../study";
 import { CompleteForm } from "../ui/CompleteForm";
 import { Icon } from "../ui/Icon";
-import { InlineAlert } from "../ui/InlineAlert";
+import { PageError } from "../ui/PageError";
+import { useRowFeedback, type RowFeedback } from "../ui/useRowFeedback";
+import { TaskRowShell } from "../ui/TaskRowShell";
 
 type LoadState =
   | { phase: "loading" }
@@ -52,105 +54,8 @@ function CopyFilename({ filename }: { filename: string }) {
   );
 }
 
-function TaskRow({
-  row,
-  index,
-  justCompleted,
-  successDate,
-  onOpenForm,
-  onCloseForm,
-  onSuccess,
-  onRequery,
-  formOpen,
-}: {
-  row: PlanRow;
-  index: number;
-  justCompleted: boolean;
-  successDate: string | null;
-  onOpenForm: () => void;
-  onCloseForm: () => void;
-  onSuccess: (logDate: string) => void;
-  onRequery: () => void;
-  formOpen: boolean;
-}) {
-  const classes = ["task"];
-  if (row.plan.status === "completed") classes.push("is-completed");
-  if (justCompleted) classes.push("just-completed");
-  return (
-    <div className={classes.join(" ")}>
-      <div className="task-head">
-        <span className="task-order">{index + 1}.</span>
-        <span className="badge badge-subject">{row.plan.subject}</span>
-        <span className="task-title">{row.plan.title}</span>
-        <span className="task-minutes">{row.plan.plannedMinutes} 分钟</span>
-      </div>
-      <p className="task-criteria">完成标准：{row.plan.completionCriteria}</p>
-      {row.plan.status === "completed" && row.log ? (
-        <p className="task-log">
-          实际 <span className="mono">{row.log.actualMinutes}</span> 分钟 ·{" "}
-          {row.log.summary}
-          {row.log.scoreText ? (
-            <>
-              {" · "}
-              <span className="score">{row.log.scoreText}</span>
-            </>
-          ) : null}
-        </p>
-      ) : null}
-      <div className="task-meta">
-        {row.plan.status === "completed" ? (
-          <span className="badge badge-completed">已完成</span>
-        ) : null}
-        {row.resource ? (
-          row.resource.type === "web" ? (
-            <a
-              className="link"
-              href={row.resource.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Icon name="external" />
-              {row.resource.title}
-            </a>
-          ) : (
-            <CopyFilename filename={row.resource.filename} />
-          )
-        ) : null}
-        {row.plan.status === "pending" && row.pending ? (
-          <span className="task-actions">
-            <button
-              type="button"
-              className="btn btn-primary btn-sm"
-              onClick={formOpen ? onCloseForm : onOpenForm}
-            >
-              完成
-            </button>
-          </span>
-        ) : null}
-      </div>
-      {successDate ? (
-        <InlineAlert kind="success" text={`已记录 · 学习日 ${successDate}`} />
-      ) : null}
-      {formOpen && row.pending ? (
-        <CompleteForm
-          planDate={row.plan.date}
-          pending={row.pending}
-          onSuccess={onSuccess}
-          onCancel={onCloseForm}
-          onRequery={onRequery}
-        />
-      ) : null}
-    </div>
-  );
-}
-
 export default function TodayPage() {
   const [state, setState] = useState<LoadState>({ phase: "loading" });
-  const [openFormId, setOpenFormId] = useState<string | null>(null);
-  const [success, setSuccess] = useState<{
-    planId: string;
-    logDate: string;
-  } | null>(null);
 
   const load = useCallback(async () => {
     const init = await initializeOnce();
@@ -178,30 +83,16 @@ export default function TodayPage() {
     void load();
   }, [load]);
 
+  const feedback = useRowFeedback(load);
+
   if (state.phase === "loading") {
     return <p className="note-line">正在打开今日计划…</p>;
   }
   if (state.phase === "page-error") {
-    // §11-6 页级错误：原因 + 建议操作，不展示假数据
-    return (
-      <div className="page-error">
-        <InlineAlert
-          kind="error"
-          text={`${state.reason}（错误码 ${state.code}）`}
-        />
-        <p className="note-line">
-          请刷新页面重试；若持续失败，请检查浏览器是否禁用了 IndexedDB
-          或站点数据存储。
-        </p>
-      </div>
-    );
+    return <PageError code={state.code} reason={state.reason} />;
   }
 
   const { view } = state;
-  const requery = () => {
-    setOpenFormId(null);
-    void load();
-  };
 
   return (
     <>
@@ -262,30 +153,87 @@ export default function TodayPage() {
           <div className="empty-state">今天没有安排任务。</div>
         ) : (
           view.items.map((row, index) => (
-            <TaskRow
+            <TodayTaskRow
               key={row.plan.id}
               row={row}
-              index={index}
-              justCompleted={success?.planId === row.plan.id}
-              successDate={
-                success?.planId === row.plan.id ? success.logDate : null
-              }
-              formOpen={openFormId === row.plan.id}
-              onOpenForm={() => {
-                setSuccess(null);
-                setOpenFormId(row.plan.id);
-              }}
-              onCloseForm={() => setOpenFormId(null)}
-              onSuccess={(logDate) => {
-                const planId = row.plan.id;
-                setOpenFormId(null);
-                void load().then(() => setSuccess({ planId, logDate }));
-              }}
-              onRequery={requery}
+              orderLabel={index + 1}
+              feedback={feedback}
             />
           ))
         )}
       </section>
     </>
+  );
+}
+
+function TodayTaskRow({
+  row,
+  orderLabel,
+  feedback,
+}: {
+  row: PlanRow;
+  orderLabel: number;
+  feedback: RowFeedback;
+}) {
+  const form = feedback.openForm;
+  const formOpenHere = form?.planId === row.plan.id;
+  return (
+    <TaskRowShell
+      row={row}
+      orderLabel={orderLabel}
+      justCompleted={feedback.success?.planId === row.plan.id}
+      successDate={
+        feedback.success?.planId === row.plan.id
+          ? feedback.success.logDate
+          : null
+      }
+      metaSlot={
+        <>
+          {row.plan.status === "completed" ? (
+            <span className="badge badge-completed">已完成</span>
+          ) : null}
+          {row.resource ? (
+            row.resource.type === "web" ? (
+              <a
+                className="link"
+                href={row.resource.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Icon name="external" />
+                {row.resource.title}
+              </a>
+            ) : (
+              <CopyFilename filename={row.resource.filename} />
+            )
+          ) : null}
+          {row.plan.status === "pending" && row.pending ? (
+            <span className="task-actions">
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() =>
+                  formOpenHere ? feedback.close() : feedback.open(row)
+                }
+              >
+                完成
+              </button>
+            </span>
+          ) : null}
+        </>
+      }
+      formSlot={
+        formOpenHere && form ? (
+          <CompleteForm
+            planDate={form.planDate}
+            pending={form.ref}
+            onSuccess={(logDate) => feedback.succeeded(row.plan.id, logDate)}
+            onCancel={feedback.close}
+            onRequery={feedback.requery}
+            onAutoRefresh={feedback.refreshKeepingForm}
+          />
+        ) : null
+      }
+    />
   );
 }
