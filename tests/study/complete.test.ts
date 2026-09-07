@@ -64,6 +64,11 @@ describe("complete", () => {
     });
     expect(first.ok).toBe(true);
 
+    const afterFirst = await kit.workflow.recording("2026-09-10");
+    expect(afterFirst.ok).toBe(true);
+    if (!afterFirst.ok) return;
+    const beforeSecond = snapshotRows(afterFirst.value);
+
     const second = await kit.workflow.complete(ref, {
       actualMinutes: 99,
       summary: "重复点击不应写入",
@@ -72,12 +77,11 @@ describe("complete", () => {
     if (second.ok) return;
     expect(second.error.code).toBe("STATE_CHANGED");
 
-    // 仍只有一条日志，内容未被第二次覆盖
+    // 零修改：全部行字段级快照与首次完成后一致（仍只有原日志）
     const after = await kit.workflow.recording("2026-09-10");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items[0]?.log?.summary).toBe("完成事务章节");
-    expect(after.value.items[0]?.log?.actualMinutes).toBe(30);
+    expect(snapshotRows(after.value)).toEqual(beforeSecond);
   });
 
   it.each([
@@ -160,6 +164,11 @@ describe("complete", () => {
     });
     expect(first.ok).toBe(true);
 
+    const afterFirst = await kitA.workflow.recording("2026-09-10");
+    expect(afterFirst.ok).toBe(true);
+    if (!afterFirst.ok) return;
+    const beforeStale = snapshotRows(afterFirst.value);
+
     // 旧标签页（本连接）沿用旧引用提交
     const stale = await kitA.workflow.complete(ref, {
       actualMinutes: 45,
@@ -169,10 +178,11 @@ describe("complete", () => {
     if (stale.ok) return;
     expect(stale.error.code).toBe("STATE_CHANGED");
 
+    // 零修改：字段级快照与另一连接完成后一致
     const after = await kitA.workflow.recording("2026-09-10");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items[0]?.log?.summary).toBe("另一标签页先完成");
+    expect(snapshotRows(after.value)).toEqual(beforeStale);
   });
 
   it("两个不同 lineage 可并行完成", async () => {

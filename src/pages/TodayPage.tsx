@@ -151,19 +151,16 @@ export default function TodayPage() {
       <section className="section">
         {view.items.length === 0 ? (
           <div className="empty-state">今天没有安排任务。</div>
-        ) : (
-          <>
-            {view.items.map((row, index) => (
-              <TodayTaskRow
-                key={row.plan.id}
-                row={row}
-                orderLabel={index + 1}
-                feedback={feedback}
-              />
-            ))}
-            <OrphanCompleteForm feedback={feedback} rows={view.items} />
-          </>
-        )}
+        ) : null}
+        {view.items.map((row, index) => (
+          <TodayTaskRow
+            key={row.plan.id}
+            row={row}
+            orderLabel={index + 1}
+            feedback={feedback}
+          />
+        ))}
+        <OrphanCompleteForm feedback={feedback} rows={view.items} />
       </section>
     </>
   );

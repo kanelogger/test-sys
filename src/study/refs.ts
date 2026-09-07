@@ -1,3 +1,4 @@
+import { isRecord } from "./guard";
 import type { BackfillDraft, LocalDate, PendingRef, PlanItem } from "./types";
 
 /**
@@ -68,10 +69,9 @@ export function decodeBackfillDraft(raw: string): BackfillDraftPayload | null {
       Array.isArray(value.observed) &&
       value.observed.every(
         (item: unknown) =>
-          typeof item === "object" &&
-          item !== null &&
-          typeof (item as Record<string, unknown>).id === "string" &&
-          typeof (item as Record<string, unknown>).status === "string"
+          isRecord(item) &&
+          typeof item.id === "string" &&
+          typeof item.status === "string"
       ) &&
       typeof value.reservedPlanItemId === "string" &&
       typeof value.reservedStudyLogId === "string"

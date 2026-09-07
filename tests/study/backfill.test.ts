@@ -72,16 +72,22 @@ describe("createBackfill", () => {
     const first = await kit.workflow.createBackfill(input);
     expect(first.ok).toBe(true);
 
+    const afterFirst = await kit.workflow.recording("2026-09-07");
+    expect(afterFirst.ok).toBe(true);
+    if (!afterFirst.ok) return;
+    const beforeRetry = snapshotRows(afterFirst.value);
+
     // 同一草稿再次提交（重复点击/重试沿用同一 draft）
     const second = await kit.workflow.createBackfill(input);
     expect(second.ok).toBe(false);
     if (second.ok) return;
     expect(second.error.code).toBe("DUPLICATE_SUBMISSION");
 
+    // 零修改：字段级快照与首次提交后一致（仍只一对任务与日志）
     const after = await kit.workflow.recording("2026-09-07");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items).toHaveLength(4);
+    expect(snapshotRows(after.value)).toEqual(beforeRetry);
   });
 
   it("草稿读取后当日事实已变（pending 被完成）为 STATE_CHANGED 零修改", async () => {
@@ -304,10 +310,17 @@ describe("createBackfill", () => {
     const after = await kitA.workflow.recording("2026-09-07");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    // 同次提交只创建一对任务与日志
+    // 同次提交只创建一对任务与日志；行与赢家的 Recorded 逐字段一致
+    const backfillRows = after.value.items.filter(
+      (r) => r.plan.source === "backfill"
+    );
     expect(after.value.items).toHaveLength(4);
-    expect(
-      after.value.items.filter((r) => r.plan.source === "backfill")
-    ).toHaveLength(1);
+    expect(backfillRows).toHaveLength(1);
+    const winner = [resultA, resultB].find((r) => r.ok);
+    if (!winner || !winner.ok) return;
+    expect(backfillRows[0]?.plan.id).toBe(winner.value.plan.id);
+    expect(backfillRows[0]?.log?.id).toBe(winner.value.log.id);
+    expect(backfillRows[0]?.plan.title).toBe(winner.value.plan.title);
+    expect(backfillRows[0]?.log?.summary).toBe("竞争提交");
   });
 });

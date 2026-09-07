@@ -16,28 +16,73 @@ export type WorkflowKit = {
   setLocal: (y: number, m: number, d: number, hh?: number, mm?: number) => void;
 };
 
-/** 行级事实快照：用于失败后原状态断言（比数量更严格） */
+/** 行级事实快照：覆盖 plan 与 log 全部业务字段，用于失败后原状态断言 */
 export type RowSnapshot = ReadonlyArray<{
   id: string;
+  date: string;
   status: string;
+  source: string;
+  lineageId: string;
   title: string;
+  subject: string;
+  completionCriteria: string;
   plannedMinutes: number;
-  logSummary: string | null;
+  resourceId: string | null;
+  movedToPlanItemId: string | null;
+  log: {
+    date: string;
+    actualMinutes: number;
+    summary: string;
+    scoreText: string | null;
+  } | null;
 }>;
 
 /** 从 recording 视图取行级事实快照（失败后原状态断言用） */
 export function snapshotRows(view: {
   items: readonly {
-    plan: { id: string; status: string; title: string; plannedMinutes: number };
-    log?: { summary: string };
+    plan: {
+      id: string;
+      date: string;
+      status: string;
+      source: string;
+      lineageId: string;
+      title: string;
+      subject: string;
+      completionCriteria: string;
+      plannedMinutes: number;
+      order: number;
+      resourceId?: string;
+      movedToPlanItemId?: string;
+    };
+    log?: {
+      date: string;
+      actualMinutes: number;
+      summary: string;
+      scoreText?: string;
+    };
   }[];
 }): RowSnapshot {
   return view.items.map((row) => ({
     id: row.plan.id,
+    date: row.plan.date,
     status: row.plan.status,
+    source: row.plan.source,
+    lineageId: row.plan.lineageId,
     title: row.plan.title,
+    subject: row.plan.subject,
+    completionCriteria: row.plan.completionCriteria,
     plannedMinutes: row.plan.plannedMinutes,
-    logSummary: row.log?.summary ?? null,
+    order: row.plan.order,
+    resourceId: row.plan.resourceId ?? null,
+    movedToPlanItemId: row.plan.movedToPlanItemId ?? null,
+    log: row.log
+      ? {
+          date: row.log.date,
+          actualMinutes: row.log.actualMinutes,
+          summary: row.log.summary,
+          scoreText: row.log.scoreText ?? null,
+        }
+      : null,
   }));
 }
 

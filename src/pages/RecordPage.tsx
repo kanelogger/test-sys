@@ -258,17 +258,11 @@ export default function RecordPage() {
           <section className="section">
             {state.view.items.length === 0 ? (
               <div className="empty-state">这一天没有记录。</div>
-            ) : (
-              <>
-                {state.view.items.map((row) => (
-                  <RecordRow key={row.plan.id} row={row} feedback={feedback} />
-                ))}
-                <OrphanCompleteForm
-                  feedback={feedback}
-                  rows={state.view.items}
-                />
-              </>
-            )}
+            ) : null}
+            {state.view.items.map((row) => (
+              <RecordRow key={row.plan.id} row={row} feedback={feedback} />
+            ))}
+            <OrphanCompleteForm feedback={feedback} rows={state.view.items} />
           </section>
 
           {isHistory ? (

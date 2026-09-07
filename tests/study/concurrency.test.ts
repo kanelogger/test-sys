@@ -35,13 +35,18 @@ describe("事务语义", () => {
       r.ok ? "ok" : r.error.code
     );
     expect(outcomes.sort()).toEqual(["STATE_CHANGED", "ok"]);
+    const winner = [resultA, resultB].find((r) => r.ok);
+    if (!winner || !winner.ok) return;
 
     const after = await kitA.workflow.recording("2026-09-10");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.status).toBe("completed");
-    expect(["连接 A 完成", "连接 B 完成"]).toContainEqual(
-      after.value.items[0]?.log?.summary
+    // 最终行与赢家的写入逐字段一致（输家零修改，非只属其一）
+    expect(after.value.items[0]?.log?.id).toBe(winner.value.log.id);
+    expect(after.value.items[0]?.log?.summary).toBe(winner.value.log.summary);
+    expect(after.value.items[0]?.log?.actualMinutes).toBe(
+      winner.value.log.actualMinutes
     );
   });
 

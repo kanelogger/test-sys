@@ -48,6 +48,7 @@ export function useRowFeedback(reload: () => Promise<void>) {
     setAlert(null);
     setFieldErrors({});
     setFields(EMPTY_LOG_FIELDS);
+    setSubmitting(false);
     setOpenForm({
       planId: row.plan.id,
       planDate: row.plan.date,
@@ -81,6 +82,7 @@ export function useRowFeedback(reload: () => Promise<void>) {
       // §11-3：收起表单、主动重查、行级成功条与一次性脉冲
       const planId = openForm.planId;
       const logDate = result.value.log.date;
+      setSubmitting(false);
       setOpenForm(null);
       void reload().then(() => setSuccess({ planId, logDate }));
       return;
