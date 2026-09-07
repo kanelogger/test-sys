@@ -60,7 +60,7 @@ describe("T-00 测试工具能力", () => {
       const read = db.transaction("kv", "readonly");
       const store = read.objectStore("kv");
       await expect(requestToPromise(store.get("k1"))).resolves.toBe(
-        "committed",
+        "committed"
       );
       await expect(requestToPromise(store.get("k2"))).resolves.toBeUndefined();
     } finally {

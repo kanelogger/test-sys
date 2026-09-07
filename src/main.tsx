@@ -14,5 +14,5 @@ createRoot(container).render(
     <HashRouter>
       <App />
     </HashRouter>
-  </StrictMode>,
+  </StrictMode>
 );
