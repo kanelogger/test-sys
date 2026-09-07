@@ -109,7 +109,12 @@ export function CompleteForm({
           </button>
         </div>
         {alert ? (
-          <InlineAlert kind="error" text={alert.text} onRequery={onRequery} />
+          <InlineAlert
+            kind="error"
+            text={alert.text}
+            onRequery={onRequery}
+            requeryDisabled={submitting}
+          />
         ) : null}
       </div>
     </div>

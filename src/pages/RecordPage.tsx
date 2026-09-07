@@ -318,6 +318,7 @@ export default function RecordPage() {
               ) : null}
               {sectionAlert ? (
                 <InlineAlert
+                  requeryDisabled={busy}
                   kind={sectionAlert.kind}
                   text={sectionAlert.text}
                   {...(sectionAlert.requery ? { onRequery: requery } : {})}
