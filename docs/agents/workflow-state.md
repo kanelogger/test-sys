@@ -162,3 +162,11 @@ interface StudyWorkflow {
 - 文档验证：已抽取需求实体类型与 FLOW-01-I 的 46 行草案，以 TypeScript 5.9.3 执行 `tsc --strict --exactOptionalPropertyTypes --noEmit --target ES2022`，通过；临时校验文件不进入仓库。
 - 证据核对：已从真实 seed 与既有 Step 0 实体差分还原 7 个状态，独立检查资源引用、唯一日志、日志日期及完整 lineage 关系；135 个初始 lineage 可各有一个 pending，补记计划数不增且日志留 9/6，补建预计 20/实际 25，恢复后五部分与备份逐值相等。核对 34 份非法备份既有拒绝记录的前后哈希相等；seed SHA-256 与两份证据一致。此次不是重跑导入/状态转移实现，也未执行真实 IndexedDB、TDD 或 UI 验收。
 - 后续动作：先记录 COV-01 的确认依据与冻结时间，再按 H-01/H-03 门槛确认本契约及 PC 关键流程；只有确有未决问题才触发 prototype。相关后续票在实施前补齐各自 interface 与 seam。
+
+## PROTO-01 移动链逻辑原型结论（2026-09-07）
+
+- 唯一问题：连续移动后的末端跳过，能否让用户清楚理解原计划与最终状态。原型：`docs/proto/move-chain.prototype.html`，仅存在于 throwaway 分支 `proto/move-chain-logic`（commit a008e5b），不进入主分支产物线；纯内存单 HTML，不接 IndexedDB。
+- 结论（有限 walkthrough 支持）：可以。链视图逐段显示「已移至 YYYY-MM-DD」绝对日期、末端终态，加一行摘要「原计划日 X ｜ 最终：Y 状态 ｜ 改期 N 次 ｜ 本链待处理 Z 项」即可一眼读出原计划与最终状态；摘要建议写入移动链票的历史页界面预期。
+- 已验证情形（不变量全程零违反）：连续两次移动后跳过末端（链 pending 归零）；连续移动后完成，日志日期=执行日（补做口径）；末端删除与终态删除均拒绝且无修改，无前驱根可删；完成后重放旧引用、移动后旧标签页重放均为 STATE_CHANGED 零修改、无分叉链；同日移动零修改；多 lineage 各有 pending 互不冲突、逐链分列计数不合并。
+- 未覆盖（留给生产/后续票）：真实 IndexedDB 事务与两连接并发竞争、刷新持久性；移动到过去日期的合法性；导出快照与移动并发；跨日/夏令时时钟；任意合法序列的正确性不能由有限 walkthrough 证明。
+- 契约修订候选（移动链票实施前确认）：①末端/终态删除拒绝的 FailureCode 归属（原型按 INVALID_INPUT+reason）；②同日移动返回 ok+零修改 还是 INVALID_INPUT（原型按前者）；③重复移动/完成的 STATE_CHANGED 文案需区分「自己上一击已成功」与「他处已变更」，或引入幂等标识；④历史页链摘要格式入票。
