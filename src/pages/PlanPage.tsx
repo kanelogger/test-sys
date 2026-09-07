@@ -1,8 +1,14 @@
 export default function PlanPage() {
   return (
     <section>
-      <h2>计划</h2>
-      <p>占位页：计划增删排序与移动随 T-04 实施。</p>
+      <header className="page-head">
+        <h1 className="page-title">计划</h1>
+      </header>
+      <div className="empty-state">
+        随 T-04 提供：按日期查看、添加 / 删除 /
+        排序任务、移到其他日期、修改考试日期与默认每日分钟；逾期任务的移到今天 /
+        移到明天 / 跳过也在该票落地。
+      </div>
     </section>
   );
 }

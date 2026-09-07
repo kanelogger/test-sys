@@ -1,8 +1,12 @@
 export default function ResourcesPage() {
   return (
     <section>
-      <h2>资源</h2>
-      <p>占位页：网页资源跳转与本地 PDF 文件名随 T-05 实施。</p>
+      <header className="page-head">
+        <h1 className="page-title">资源</h1>
+      </header>
+      <div className="empty-state">
+        随 T-05 提供：网页资源点击跳转；本地 PDF 仅显示文件名并支持复制。
+      </div>
     </section>
   );
 }

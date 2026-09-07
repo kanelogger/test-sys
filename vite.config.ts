@@ -8,12 +8,34 @@ export default defineConfig({
   base: "/test-sys/",
   plugins: [react()],
   test: {
-    include: ["tests/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
-    browser: {
-      enabled: true,
-      provider: playwright(),
-      headless: true,
-      instances: [{ browser: "chromium" }],
-    },
+    projects: [
+      {
+        test: {
+          name: "chromium",
+          include: ["tests/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
+          exclude: ["tests/study/clock-dst.test.ts"],
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            headless: true,
+            instances: [{ browser: "chromium" }],
+          },
+        },
+      },
+      {
+        test: {
+          name: "chromium-dst-ny",
+          include: ["tests/study/clock-dst.test.ts"],
+          browser: {
+            enabled: true,
+            provider: playwright({
+              contextOptions: { timezoneId: "America/New_York" },
+            }),
+            headless: true,
+            instances: [{ browser: "chromium" }],
+          },
+        },
+      },
+    ],
   },
 });
