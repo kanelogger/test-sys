@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { initializeOnce, studyWorkflow } from "../study/react";
 import type { FailureCode, PlanRow, RecordingView } from "../study";
 import { CompleteFormSlot, OrphanCompleteForm } from "../ui/CompleteFormSlot";
@@ -70,8 +70,12 @@ export default function RecordPage() {
     requery: boolean;
   } | null>(null);
 
+  // 请求序号守卫：快速切换日期时旧响应不得覆盖新视图（过期响应直接丢弃）
+  const loadSeq = useRef(0);
   const load = useCallback(async (target: string | null) => {
+    const seq = ++loadSeq.current;
     const init = await initializeOnce();
+    if (seq !== loadSeq.current) return;
     if (!init.ok) {
       setState({
         phase: "page-error",
@@ -81,6 +85,7 @@ export default function RecordPage() {
       return;
     }
     const todayView = await studyWorkflow.today();
+    if (seq !== loadSeq.current) return;
     if (!todayView.ok) {
       setState({
         phase: "page-error",
@@ -90,10 +95,9 @@ export default function RecordPage() {
       return;
     }
     const today = todayView.value.date;
-    setTodayStr(today);
     const effective = target ?? today;
-    if (target === null) setDate(today);
     const view = await studyWorkflow.recording(effective);
+    if (seq !== loadSeq.current) return;
     if (!view.ok) {
       if (view.error.code === "INVALID_INPUT") {
         // §11-1：日期非法贴字段处理，不替换整页；保留既有视图
@@ -107,6 +111,8 @@ export default function RecordPage() {
       });
       return;
     }
+    setTodayStr(today);
+    if (target === null) setDate(today);
     setDateError(null);
     setState({ phase: "ready", today, view: view.value });
   }, []);
@@ -115,7 +121,10 @@ export default function RecordPage() {
     void load(date);
   }, [date, load]);
 
-  const feedback = useRowFeedback(() => load(date));
+  // 反馈 hook 的重查始终绑定当前日期（在途提交的旧日期闭包不得覆盖新视图）
+  const dateRef = useRef(date);
+  dateRef.current = date;
+  const feedback = useRowFeedback(() => load(dateRef.current));
 
   const changeDate = (next: string) => {
     setDate(next);
@@ -136,8 +145,11 @@ export default function RecordPage() {
     setFields((current) => ({ ...current, [name]: value }));
   };
 
+  // 跨命令共享提交锁：补建与记录完成互斥（§11-2 提交中禁用扩展至页级）
+  const busy = submitting || feedback.submitting;
+
   const submitBackfill = async () => {
-    if (submitting || state.phase !== "ready") return;
+    if (busy || state.phase !== "ready") return;
     setSubmitting(true);
     setFieldErrors({});
     setSectionAlert(null);
@@ -190,7 +202,7 @@ export default function RecordPage() {
         text: "该次提交已处理，未重复写入。已为你刷新当前视图。",
         requery: false,
       });
-      void load(date);
+      void load(dateRef.current);
       return;
     }
     if (failure.code === "INVALID_STATE") {
@@ -200,7 +212,7 @@ export default function RecordPage() {
         text: `${failure.reason}。已保留你的输入，请重新查询核对。`,
         requery: true,
       });
-      void load(date);
+      void load(dateRef.current);
       return;
     }
     if (failure.code === "STATE_CHANGED") {
@@ -210,7 +222,7 @@ export default function RecordPage() {
         text: "任务状态已在别处变更。已保留你的输入，请核对最新状态后重试。",
         requery: true,
       });
-      void load(date);
+      void load(dateRef.current);
       return;
     }
     setSectionAlert({
@@ -236,6 +248,7 @@ export default function RecordPage() {
             value={date ?? ""}
             {...(todayStr !== null ? { max: todayStr } : {})}
             onChange={(event) => changeDate(event.target.value)}
+            disabled={busy}
             aria-invalid={dateError ? true : undefined}
           />
           {dateError ? <span className="field-error">{dateError}</span> : null}
@@ -260,7 +273,12 @@ export default function RecordPage() {
               <div className="empty-state">这一天没有记录。</div>
             ) : null}
             {state.view.items.map((row) => (
-              <RecordRow key={row.plan.id} row={row} feedback={feedback} />
+              <RecordRow
+                key={row.plan.id}
+                row={row}
+                feedback={feedback}
+                busy={busy}
+              />
             ))}
             <OrphanCompleteForm feedback={feedback} rows={state.view.items} />
           </section>
@@ -277,7 +295,7 @@ export default function RecordPage() {
                 <input
                   type="checkbox"
                   checked={confirmed}
-                  disabled={submitting}
+                  disabled={busy}
                   onChange={(event) => setConfirmed(event.target.checked)}
                 />
                 <span>
@@ -289,7 +307,7 @@ export default function RecordPage() {
                 <BackfillForm
                   fields={fields}
                   fieldErrors={fieldErrors}
-                  submitting={submitting}
+                  busy={busy}
                   onField={setField}
                   onSubmit={() => void submitBackfill()}
                 />
@@ -315,7 +333,15 @@ export default function RecordPage() {
   );
 }
 
-function RecordRow({ row, feedback }: { row: PlanRow; feedback: RowFeedback }) {
+function RecordRow({
+  row,
+  feedback,
+  busy,
+}: {
+  row: PlanRow;
+  feedback: RowFeedback;
+  busy: boolean;
+}) {
   const form = feedback.openForm;
   const formOpenHere = form?.planId === row.plan.id;
   return (
@@ -347,7 +373,7 @@ function RecordRow({ row, feedback }: { row: PlanRow; feedback: RowFeedback }) {
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
-                disabled={feedback.submitting}
+                disabled={busy}
                 onClick={() =>
                   formOpenHere ? feedback.close() : feedback.open(row)
                 }
@@ -378,13 +404,13 @@ function RecordRow({ row, feedback }: { row: PlanRow; feedback: RowFeedback }) {
 function BackfillForm({
   fields,
   fieldErrors,
-  submitting,
+  busy,
   onField,
   onSubmit,
 }: {
   fields: BackfillFields;
   fieldErrors: Partial<Record<BackfillFieldName, string>>;
-  submitting: boolean;
+  busy: boolean;
   onField: (name: BackfillFieldName, value: string) => void;
   onSubmit: () => void;
 }) {
@@ -402,7 +428,7 @@ function BackfillForm({
             id="bf-subject"
             className={`input${fieldErrors.subject ? " is-invalid" : ""}`}
             value={fields.subject}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) => onField("subject", event.target.value)}
           />
           {fieldErrors.subject ? (
@@ -421,7 +447,7 @@ function BackfillForm({
             step={1}
             inputMode="numeric"
             value={fields.plannedMinutes}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) => onField("plannedMinutes", event.target.value)}
           />
           {fieldErrors.plannedMinutes ? (
@@ -436,7 +462,7 @@ function BackfillForm({
             id="bf-title"
             className={`input${fieldErrors.title ? " is-invalid" : ""}`}
             value={fields.title}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) => onField("title", event.target.value)}
           />
           {fieldErrors.title ? (
@@ -451,7 +477,7 @@ function BackfillForm({
             id="bf-criteria"
             className={`input${fieldErrors.completionCriteria ? " is-invalid" : ""}`}
             value={fields.completionCriteria}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) =>
               onField("completionCriteria", event.target.value)
             }
@@ -474,7 +500,7 @@ function BackfillForm({
             step={1}
             inputMode="numeric"
             value={fields.actualMinutes}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) => onField("actualMinutes", event.target.value)}
           />
           {fieldErrors.actualMinutes ? (
@@ -490,7 +516,7 @@ function BackfillForm({
             className={`input${fieldErrors.scoreText ? " is-invalid" : ""}`}
             placeholder="如 52/75"
             value={fields.scoreText}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) => onField("scoreText", event.target.value)}
           />
           {fieldErrors.scoreText ? (
@@ -505,7 +531,7 @@ function BackfillForm({
             id="bf-summary"
             className={`textarea${fieldErrors.summary ? " is-invalid" : ""}`}
             value={fields.summary}
-            disabled={submitting}
+            disabled={busy}
             onChange={(event) => onField("summary", event.target.value)}
           />
           {fieldErrors.summary ? (
@@ -516,13 +542,13 @@ function BackfillForm({
       <div className="form-actions">
         <button
           type="button"
-          className={`btn btn-primary${submitting ? " is-loading" : ""}`}
-          disabled={submitting}
+          className={`btn btn-primary${busy ? " is-loading" : ""}`}
+          disabled={busy}
           onClick={onSubmit}
         >
           <span className="btn-spinner" />
           <span className="btn-text">
-            {submitting ? "提交中…" : "新建补录并记录"}
+            {busy ? "提交中…" : "新建补录并记录"}
           </span>
         </button>
       </div>
