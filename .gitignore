@@ -9,3 +9,7 @@
 *~
 2026红宝书/
 .agents/
+
+# App
+node_modules/
+dist/
