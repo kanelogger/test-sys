@@ -13,3 +13,4 @@
 # App
 node_modules/
 dist/
+.vitest/
