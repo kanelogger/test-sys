@@ -5,11 +5,11 @@
 ## 基线与当前阶段
 
 - 产品需求：`需求方案.md` v2.6；流程约定：`draft.md`。
-- 当前阶段：Step 0 / H-00 的真实种子、校验与四场景模型推演已完成；Step 1 领域词汇及首个闭环 interface 草案已完成；2026-09-07 完成 Step 3 / H-03 分支 B（web-design）PC 设计，见文末 DESIGN-01。2026-09-07 COV-01 经用户确认、需求 v2.6 冻结放行（H-00），FLOW-01 契约经用户确认（H-01）；T-00/T-01 已实施完成，T-02 解锁。
+- 当前阶段：Step 0 / H-00 的真实种子、校验与四场景模型推演已完成；Step 1 领域词汇及首个闭环 interface 已完成并确认；2026-09-07 完成 Step 3 / H-03 分支 B（web-design）PC 设计（DESIGN-01）。2026-09-07 COV-01 经用户确认、需求 v2.6 冻结放行（H-00），FLOW-01 契约经用户确认（H-01）。T-00/T-01/T-02 已实施完成（2026-09-07/08），应用首个闭环已真实运行；后续 T-03–T-07 待逐票显式 `$implement`。
 - 需求冻结：**已冻结**；`frozenAt = "2026-09-07"`。冻结决定：2026-09-07 用户确认 COV-01（`coverage.startDate/endDate` 字段命名、种子顶层位置、含首尾 48 天口径维持现产物约定不变，种子与证据资产无需改动），据此冻结 v2.6 功能范围；决定依据为真实种子 18 类校验通过（`docs/seed-validation.json`）与四场景模型推演通过（`docs/seed-model-evidence.json`）。生产运行验收仍单列为未完成；FMT-01 不受本次冻结影响。
 - 项目 baseline SHA：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`。
-- 本阶段 start SHA：同 baseline。tracker：本地 Markdown tracker 已配置（`docs/agents/issue-tracker.md`）；已发布 T-00–T-07（`tickets/`，一票一文件）。当前票：无；T-00、T-01 已 done（见各票完成记录）；T-02 冻结硬前置已于 2026-09-07 满足（COV-01 决定与冻结时间见上，FLOW-01 契约同次确认），转为 ready，待显式 `$implement`。
-- 评审覆盖 HEAD：T-00 → `4f5e118986380f1c0d75a728f291c7043a6bf2e0`（start `d2eff2d…`，双轴 zero findings）；T-01 → `0ff8847cd9029b596c892d4fbeca3bf5032a9b13`（start `9d4a131…`；范围含 `1fe4b70`、`4458e88`、`0ff8847`，第二轮 Spec 轴通过、Standards 轴 1 项覆盖记录 P2 以本登记修复并经第三轮复核）；本阶段不宣称运行验收通过。
+- 本阶段 start SHA：同 baseline。tracker：本地 Markdown tracker 已配置（`docs/agents/issue-tracker.md`）；已发布 T-00–T-07（`tickets/`，一票一文件）。当前票：无；T-00、T-01、T-02 已 done（见各票完成记录）；T-03、T-04 转为 ready（Blocked by 均为 T-02），待显式 `$implement`。
+- 评审覆盖 HEAD：T-00 → `4f5e118986380f1c0d75a728f291c7043a6bf2e0`（start `d2eff2d…`，双轴 zero findings）；T-01 → `0ff8847cd9029b596c892d4fbeca3bf5032a9b13`（start `9d4a131…`，第三轮双轴通过）；T-02 → `b2fca4bc7d056b3a0859af9de6e689f0a876367a`（start `1a1d143…`，八轮两轴收敛：R7 Spec 通过、R8 Standards 通过）；本阶段不宣称全量运行验收通过（T-07 负责）。
 
 ## 覆盖表示约定（生成前记录）
 

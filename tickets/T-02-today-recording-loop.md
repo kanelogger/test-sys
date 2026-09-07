@@ -1,6 +1,6 @@
 # T-02 今日与记录闭环
 
-- 状态：ready（2026-09-07 解冻：COV-01 定案、需求 v2.6 冻结 frozenAt=2026-09-07、FLOW-01 契约确认；blockers T-00/T-01 均 done）
+- 状态：done（2026-09-08）
 - Blocked by：T-00, T-01
 - 契约与设计引用：`需求方案.md` §一/二/三/六/七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-I/C/R/T/L；`designs/study-assistant-design-spec/DESIGN.md` §10.1–10.3、§11；真实 seed `public/data/study-plan.seed.json`（seedVersion `sysanalyst-2026-09-06.v1`，SHA-256 `7f8e155dfa14c10742cefed848dee33c6c95c0ad4b9b6403f17aa352779055c1`）；`docs/seed-validation.json`、`docs/seed-walkthrough.md`、`docs/seed-model-evidence.json`。
 
@@ -40,3 +40,13 @@
 - 补录日期边界与核对范围按 FLOW-01-C/R 澄清执行：新建补录仅限早于本地今日的历史日期；「无对应任务」核对覆盖全系统（含其他日期 pending 与终态记录）。
 
 实施前置确认记录（2026-09-07）：冻结硬门槛已满足——COV-01 决定与冻结时间已写入 workflow-state「基线与当前阶段」（`frozenAt = "2026-09-07"`，coverage 约定不变）；FLOW-01-I/C/R/T/L 契约经用户同次确认（H-01）；补录日期边界与核对范围按 FLOW-01-C/R 与上方验收 4 执行。
+
+## 完成记录
+
+- start SHA：`1a1d143cf84838f8fe0771f1cbf981d68fb6b9e0`；最终 HEAD（第八轮双轴通过）：`b2fca4bc7d056b3a0859af9de6e689f0a876367a`。
+- 实现：`src/study/`（types/dates/guard/db/seed/refs/studyWorkflow/index/react）公开 FLOW-01-I 五 seam；UI 不读写存储、不拼装事务、不提交 status/source/lineage/日志日期。
+- TDD 证据（vitest 浏览器模式 + 真实 IndexedDB + 可控本地时钟 + 隔离库名；58 例全绿）：初始化与标记同成同败、删空不重灌、升级不覆盖、并发首开恰一个 initialized、SEED_UNAVAILABLE/INVALID_SEED×11（含 coverage 冻结窗口/纯文件名/判别联合互斥）、NOT_INITIALIZED、today 预算口径/逾期排序/空态/超预算标记、完成与唯一日志、补记不增任务且日志留计划日、补建预计 20/实际 25 且同次提交只一对、非法输入零修改（字段级快照断言）、双 lineage 并行完成、同日不相关 pending 可补建、另一连接抢先完成/新补录后旧提交零修改、双连接竞争完成/补建（赢家 Recorded 逐字段核对）、写事务中途 abort 回滚后重查原状态、同 lineage 多 pending 与 pending+日志存量违例 INVALID_STATE、绑定今天补建 INVALID_INPUT、本地日历跨日、America/New_York 时区夏令时（daysUntilExam 日历序数）。
+- 真实 PC 浏览器点验（Chromium，dev server，证据 `docs/evidence/t02/01–09`）：首开自动初始化落地今日；闭环完成（提交中禁用→成功脉冲+「已记录 · 学习日」+主动重查）；INVALID_INPUT 字段级红框保留输入；双标签页 STATE_CHANGED（错误条+重新查询+输入保留+主动重查）；记录页历史日期补记（任务数不增）与补建（补建徽章、预计/实际分钟各自如实）；日期非法字段级错误保留视图；快速切日期序号守卫落定正确视图；复制文件名成功/失败两分支；刷新持久性；1280/1440 无横向溢出、800px PC 提示条与 900px 最小宽度。
+- 证据边界（诚实记录）：§11-4 DUPLICATE_SUBMISSION 的 warning 条在正常 UI 流程不可稳定复现（成功即重查换草稿、提交中禁用），其 seam 判重与竞争证据充分、UI 组件与 §11-5 同路径已点验；§11-6 页级错误与 §11-7 STORAGE_FAILURE 在浏览器未触发（需断网/坏种子环境），seam 测试与代码路径覆盖；§11-8 超预算提示的真实时钟演示未覆盖（种子当前日 90/90 不超参考线），seam 测试覆盖 240>90 场景；逾期区「移到今天/移到明天/跳过」按钮按票内非目标未实现（T-04）。
+- 评审：八轮两轴（R1 起 2+5 项，逐轮收敛至 R7/R8 双轴 zero findings）；修复含 inTransaction 事务创建错误映射、coverage 冻结窗口与文件名/互斥校验、INVALID_STATE 分类、孤儿表单与状态提升、日期字段级错误、记录页竞态（loadSeq/dateRef/共享 busy 锁）、失败断言全字段快照化、竞争赢家逐字段核对。
+- 剩余事项：逾期三操作与移动链随 T-04（孤儿表单与共享锁已为其预留）；日志编辑 T-03；历史/资源 T-05；导出导入与部署 T-06。FMT-01 仍待 T-06 前确认。
