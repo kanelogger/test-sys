@@ -9,7 +9,7 @@
 - 需求冻结：**未冻结**；`frozenAt = null`。覆盖字段尚待确认，不声称 JSON schema 已冻结。
 - 项目 baseline SHA：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`。
 - 本阶段 start SHA：同 baseline。tracker：本地 Markdown tracker 已配置（`docs/agents/issue-tracker.md`）；已发布 T-00–T-07（`tickets/`，一票一文件）。当前票：无；T-00、T-01 已 done（见各票完成记录）；T-02 仍受 COV-01 冻结硬前置阻塞，解冻前无 ready 票。
-- 评审覆盖 HEAD：T-00 → `4f5e118986380f1c0d75a728f291c7043a6bf2e0`（start `d2eff2d…`，双轴 zero findings）；T-01 → `4458e8899d3c5febe6755f042e12e21cf8799b58`（start `9d4a131…`，首轮 Spec 1 项证据记录 P2 已修复并纳入复核）；本阶段不宣称运行验收通过。
+- 评审覆盖 HEAD：T-00 → `4f5e118986380f1c0d75a728f291c7043a6bf2e0`（start `d2eff2d…`，双轴 zero findings）；T-01 → `0ff8847cd9029b596c892d4fbeca3bf5032a9b13`（start `9d4a131…`；范围含 `1fe4b70`、`4458e88`、`0ff8847`，第二轮 Spec 轴通过、Standards 轴 1 项覆盖记录 P2 以本登记修复并经第三轮复核）；本阶段不宣称运行验收通过。
 
 ## 覆盖表示约定（生成前记录）
 
