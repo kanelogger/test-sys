@@ -1,6 +1,6 @@
 # T-06 导出导入与部署
 
-- 状态：pending（综合实现与验收完成；等待 T-05 随 baseline 总复核转 done）
+- 状态：done（2026-09-08；T-05 已通过 baseline 总复核）
 - Blocked by：T-05
 - 契约与实现引用：`需求方案.md` §四/§五/§七；`docs/agents/workflow-state.md` FLOW-01-L 与 FMT-01；`src/study/backup.ts`、`src/pages/ResourcesPage.tsx`、`.github/workflows/deploy.yml`；生产证据 `docs/evidence/final-acceptance/09-concurrent-export.json`、`10-import-validation.json`、`11-full-restore.json`、`12-live-pages.json`。
 
@@ -36,3 +36,4 @@
 
 - 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；Pages 首次成功部署 run：`34190892755`。
 - 真实 IndexedDB 回归：`tests/study/backup.test.ts`；生产运行证据见契约与实现引用。
+- 项目 baseline 双轴复核：`97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2`，Standards 0、Spec 0。

@@ -16,5 +16,28 @@
     },
     "targetLogs": 0,
     "horizontalOverflow": false
+  },
+  "live": {
+    "headSha": "97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2",
+    "deployRun": "https://github.com/kanelogger/test-sys/actions/runs/34194334265",
+    "before": {
+      "h1": "今天 · 2026-09-08 星期二",
+      "firstTitle": "导学与教材定位",
+      "firstActions": ["移到明天", "跳过", "完成"],
+      "budget": "今日已计划 90 / 90 分钟"
+    },
+    "after": {
+      "status": "skipped",
+      "nodeStillExists": true,
+      "hasLog": false,
+      "budget": "今日已计划 75 / 90 分钟",
+      "visibleTasks": 4,
+      "horizontalOverflow": false
+    },
+    "network": {
+      "methods": ["GET"],
+      "nonGet": [],
+      "containsSensitive": false
+    }
   }
 }

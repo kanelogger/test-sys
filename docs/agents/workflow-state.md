@@ -5,11 +5,11 @@
 ## 基线与当前阶段
 
 - 产品需求：`需求方案.md` v2.6；流程约定：`draft.md`。
-- 当前阶段：Step 6 / T-07 总评审与真实运行验收。用户于 2026-09-08 直接调用 Step 6，要求总评审中修复全部 Spec 缺口；因此 T-03–T-06 的缺失能力作为同一综合修复在 `c989350f70b8bd4995d8110f16f008b899cdb16f` 实施并完成生产运行验收，不再等待各票独立 `$implement`。当前正在收敛同一 baseline 的最终双轴复核。
+- 当前阶段：Step 6 / T-07 已完成。用户直接调用总评审后，T-03–T-06 缺失能力由 T-07 综合修复接管；实现提交链 `c989350…`、`44c9251…`、`97b84a1…` 已完成生产运行验收与 baseline 双轴复核。
 - 需求冻结：**已冻结**；`frozenAt = "2026-09-07"`。COV-01 确认的 `coverage.startDate/endDate` 字段、种子顶层位置与含首尾语义保持不变。2026-09-08 内容窗口按最新总计划更新为 9/8–10/23，不新增功能或实体；生产实现继续服从 v2.6。
 - 项目 baseline SHA：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`。
-- 本阶段 start SHA：项目 baseline。tracker：T-00–T-02 done；T-03/T-04 ready；T-05/T-06 pending；仅 T-07 in-progress。综合实现与运行证据已完成，须等待包含这些状态记录的 baseline 双轴复核通过后按依赖顺序转 done。
-- 评审覆盖：T-00 → `4f5e118…`；T-01 → `0ff8847…`；T-02 → `b2fca4b…`。T-07 在 `c989350…` 与 `44c9251…` 的 baseline 复核 finding 均已进入后续修复；当前不预写最终通过。
+- 本阶段 start SHA：项目 baseline。tracker：T-00–T-07 全部 done；T-03→T-06 按依赖顺序在 `97b84a1…` baseline 双轴 0 finding 后收口。
+- 评审覆盖：T-00 → `4f5e118…`；T-01 → `0ff8847…`；T-02 → `b2fca4b…`；T-07 实现 HEAD `97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2` → Standards 0、Spec 0。包含本状态记录的后续提交仅记录已发生结果，仍需同一 fixed point 复核后方可交付。
 
 ## 覆盖表示约定（已确认）
 

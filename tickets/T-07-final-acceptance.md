@@ -1,6 +1,6 @@
 # T-07 全量评审与最终运行验收
 
-- 状态：in-progress（2026-09-08；实现与运行验收完成，baseline 双轴复核收敛中）
+- 状态：done（2026-09-08；实现 HEAD `97b84a1…` baseline 双轴 0 finding）
 - Blocked by：T-06
 - 契约与设计引用：`需求方案.md` v2.6 全文（Spec 基线）；`draft.md` Step 6；项目 baseline SHA `f600aaa3bb5328cf016a3b34296d9b977fc2031b`；各票最终 SHA 与已记录证据。
 
@@ -36,3 +36,9 @@
 ## 实施前置确认
 
 - 全部前置票为 done 且各自最终 HEAD 已评审；需求冻结状态与 COV-01/FMT-01 决定已记录于 `docs/agents/workflow-state.md`。
+
+## 完成记录
+
+- Fixed point：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`；综合实现提交链：`c989350…`、`44c9251…`、`97b84a1…`。
+- `97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2` 的 Standards 与 Spec 均为 0 finding；完整运行报告：`docs/evidence/final-acceptance/REPORT.md`。
+- Pages：`https://kanelogger.github.io/test-sys/`；实现 HEAD 部署 run `34194334265`，五路由首次/刷新均 200。

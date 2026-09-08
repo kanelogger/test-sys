@@ -2,7 +2,7 @@
 
 - Fixed point：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`
 - 需求：`需求方案.md` v2.6 全文
-- 实现提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`
+- 实现提交链：`c989350…` → `44c9251…` → `97b84a1…`；`97b84a1…` 以同一 fixed point 完成 Standards/Spec 双轴复核，均 0 finding。
 - 生产地址：<https://kanelogger.github.io/test-sys/>
 - 完整验证：`npm test`（12 文件、82 项）、`npm run typecheck`、`npm run build`；均通过。源 seed 与 `dist` seed SHA-256 均为 `b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb`。
 
@@ -25,6 +25,6 @@
 
 ## 评审与工具边界
 
-- 初始两轴：Standards 4 项、Spec 6 项；实现提交后的复核：Standards 3 项硬文档不一致 + 1 项重复校验 smell、Spec 3 项严格校验缺口。上述 finding 已修复，最终 HEAD 双轴结果在最终提交后记录。
+- 初始两轴：Standards 4 项、Spec 6 项；后续复核分别发现并修复票据/设计引用/重复校验、严格 seed/draft 边界及今日 skip。实现 HEAD `97b84a1…` 最终复核：Standards 0、Spec 0。
 - 可观察失败均按 diagnosing-bugs 反馈环处理并重跑原场景。ego/内置 CDP 截图在该环境超时，视觉证据改由项目 Playwright Chromium 获取；ego 日期 `fillInput` 与部分 XPath 点击不派发事件时，先证明控件/数据库状态，再用原生 setter 或可信 CSS/DOM 点击重跑。Clipboard headless 权限路径失败后，ego 真实鼠标路径成功。
 - 临时备份只存 `/tmp`，不进入仓库；旧 fixture/reference 原型已清理。`draft.md` 的用户修改未纳入任何提交。

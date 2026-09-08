@@ -1,6 +1,6 @@
 # T-04 计划增删排序与移动链
 
-- 状态：ready（综合实现与验收完成；等待 T-07 baseline 总复核通过后转 done）
+- 状态：done（2026-09-08；baseline 复核 `97b84a1…` Standards/Spec 均 0 finding）
 - Blocked by：T-02
 - 契约与实现引用：`需求方案.md` §二、§三「移动/删除规则/跳过/并发与重复操作」、§六；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-R/L 与 PROTO-01 历史结论；`src/study/studyWorkflow.ts`、`src/pages/PlanPage.tsx`、`src/pages/TodayPage.tsx`。
 
@@ -39,3 +39,4 @@
 
 - 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；本次选择：末端删除为 `INVALID_INPUT`，同日移动成功零修改，重复/过期操作为 `STATE_CHANGED`，历史链摘要采用 PROTO-01 格式。
 - 真实 IndexedDB 回归：`tests/study/plan.test.ts`、`tests/study/clock-dst.test.ts`；生产运行证据见验证要求所列路径。
+- 项目 baseline 双轴复核：`97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2`，Standards 0、Spec 0。

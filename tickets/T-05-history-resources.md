@@ -1,6 +1,6 @@
 # T-05 历史与资源
 
-- 状态：pending（综合实现与验收完成；等待 T-03/T-04 随 baseline 总复核转 done）
+- 状态：done（2026-09-08；T-03/T-04 已通过 baseline 总复核）
 - Blocked by：T-03, T-04
 - 契约与实现引用：`需求方案.md` §二（历史/资源页）、§七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-L 与 PROTO-01 历史结论；`src/pages/HistoryPage.tsx`、`src/pages/ResourcesPage.tsx`。
 
@@ -35,3 +35,4 @@
 
 - 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；查询回归：`tests/study/history-resources.test.ts`。
 - 生产证据：`docs/evidence/final-acceptance/04-backfill-redo-history-log-edit.json`、`05-06-plan-overdue-history.json`、`08-resources-trusted-click.json`、`08-pdf-copy-ego.json`。
+- 项目 baseline 双轴复核：`97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2`，Standards 0、Spec 0。

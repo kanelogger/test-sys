@@ -1,6 +1,6 @@
 # T-03 日志编辑
 
-- 状态：ready（综合实现与验收完成；等待 T-07 baseline 总复核通过后转 done）
+- 状态：done（2026-09-08；baseline 复核 `97b84a1…` Standards/Spec 均 0 finding）
 - Blocked by：T-02
 - 契约与实现引用：`需求方案.md` §二（记录页）、§三「记录修正」；`CONTEXT.md` StudyLog；`docs/agents/workflow-state.md` FLOW-01-L；`src/study/studyWorkflow.ts` 与 `src/pages/RecordPage.tsx`。
 
@@ -32,3 +32,4 @@
 
 - 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；用户直接启动 T-07 总修复后，本票不再等待独立 `$implement`。
 - 公开 seam 与真实 IndexedDB 回归：`tests/study/log-edit.test.ts`；生产 UI 证据：`docs/evidence/final-acceptance/04-backfill-redo-history-log-edit.json`。
+- 项目 baseline 双轴复核：`97b84a19c0a4dc21a85a5770b0d0ac04f6892aa2`，Standards 0、Spec 0。
