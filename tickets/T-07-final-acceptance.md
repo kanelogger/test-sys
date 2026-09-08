@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-08；实现 HEAD `97b84a1…` baseline 双轴 0 finding）
 - Blocked by：T-06
-- 契约与设计引用：`需求方案.md` v2.6 全文（Spec 基线）；`draft.md` Step 6；项目 baseline SHA `f600aaa3bb5328cf016a3b34296d9b977fc2031b`；各票最终 SHA 与已记录证据。
+- 契约与设计引用：`需求方案.md` v2.6 全文（Spec 基线）；`docs/agents/development-workflow.md` Step 6；项目 baseline SHA `f600aaa3bb5328cf016a3b34296d9b977fc2031b`；各票最终 SHA 与已记录证据。
 
 ## 范围
 
@@ -13,7 +13,7 @@
 
 - 不新增首版范围外功能；不以构建成功、测试数量或冻结前模型推演代替运行验收。
 
-## 行为验收（`draft.md` Step 6 十二项，逐项记录执行方式、观察结果与证据路径）
+## 行为验收（`docs/agents/development-workflow.md` Step 6 十二项，逐项记录执行方式、观察结果与证据路径）
 
 1. 真实 seed 随包分发，范围/逐日预算/完成标准/资源合法；首开按当天显示任务或空态，过去 pending 进入逾期；初始化失败回滚；删空刷新不重灌；新 seed 版本不覆盖已有数据。
 2. 默认今日、PC 侧栏；考试日期可改并影响剩余天数；预算 X/Y 及排除项口径正确，Y 不自动按星期切换，设置不自动修改任务；完成必须填正整数分钟与非空总结。

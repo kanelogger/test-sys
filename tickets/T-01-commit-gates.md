@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-07）
 - Blocked by：T-00
-- 契约与设计引用：`draft.md` H-05b 与 Step 5「提交门禁只安装一次」。
+- 契约与设计引用：`docs/agents/development-workflow.md` H-05b 与 Step 5「提交门禁只安装一次」。
 
 ## 范围
 

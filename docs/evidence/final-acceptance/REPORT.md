@@ -27,4 +27,4 @@
 
 - 初始两轴：Standards 4 项、Spec 6 项；后续复核分别发现并修复票据/设计引用/重复校验、严格 seed/draft 边界及今日 skip。实现 HEAD `97b84a1…` 最终复核：Standards 0、Spec 0。
 - 可观察失败均按 diagnosing-bugs 反馈环处理并重跑原场景。ego/内置 CDP 截图在该环境超时，视觉证据改由项目 Playwright Chromium 获取；ego 日期 `fillInput` 与部分 XPath 点击不派发事件时，先证明控件/数据库状态，再用原生 setter 或可信 CSS/DOM 点击重跑。Clipboard headless 权限路径失败后，ego 真实鼠标路径成功。
-- 临时备份只存 `/tmp`，不进入仓库；旧 fixture/reference 原型已清理。`draft.md` 的用户修改未纳入任何提交。
+- 临时备份只存 `/tmp`，不进入仓库；旧 fixture/reference 原型已清理。`docs/agents/development-workflow.md` 的用户修改未纳入任何提交。

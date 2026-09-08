@@ -4,7 +4,7 @@
 
 ## 基线与当前阶段
 
-- 产品需求：`需求方案.md` v2.6；流程约定：`draft.md`。
+- 产品需求：`需求方案.md` v2.6；流程约定：`docs/agents/development-workflow.md`。
 - 当前阶段：Step 6 / T-07 已完成。用户直接调用总评审后，T-03–T-06 缺失能力由 T-07 综合修复接管；实现提交链 `c989350…`、`44c9251…`、`97b84a1…` 已完成生产运行验收与 baseline 双轴复核。
 - 需求冻结：**已冻结**；`frozenAt = "2026-09-07"`。COV-01 确认的 `coverage.startDate/endDate` 字段、种子顶层位置与含首尾语义保持不变。2026-09-08 内容窗口按最新总计划更新为 9/8–10/23，不新增功能或实体；生产实现继续服从 v2.6。
 - 项目 baseline SHA：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`。
@@ -170,7 +170,7 @@ interface StudyWorkflow {
 - 移动链/跳过/删除、计划增删排序/设置、日志编辑、历史/资源及备份 interface 已在 `StudyWorkflow` 实施；移动保持同日零修改、原项与后继同事务、无分叉链和末端不可硬删，日志编辑仅改日志三字段。
 - 导出硬约束现在锁定：AppMeta、Settings、Resource、PlanItem、StudyLog 必须来自覆盖全部相关表的**同一个只读事务快照**，再组成 schemaVersion、exportedAt、appMeta、settings、resources、planItems、studyLogs；不得多次独立读取或使用 UI 缓存拼接。并发完成/移动/补录时的导出仍须能通过完整导入校验。
 - 导入先完整校验 JSON、版本、字段、ID、引用、唯一日志与日期及完整 lineage 不变量；initializedSeedVersion 非空且属于 supportedSeedVersions，兼容历史版本可恢复、不要求等于随包版本。校验成功后确认同一候选，再在一个写事务原子完整替换五部分含 AppMeta；非法输入、取消或事务失败均零修改。FMT-01 已在本文件前文定案。
-- T-00–T-07 票据和本地 tracker 已创建并持续同步；票据引用 FLOW-01、`CONTEXT.md`、生产实现与运行证据，后续放行遵守 `draft.md`。
+- T-00–T-07 票据和本地 tracker 已创建并持续同步；票据引用 FLOW-01、`CONTEXT.md`、生产实现与运行证据，后续放行遵守 `docs/agents/development-workflow.md`。
 
 ## 本轮收口记录（历史 Step 1；当前状态以前文为准）
 
@@ -209,7 +209,7 @@ interface StudyWorkflow {
 
 ## TRACK-01 拆票发布（2026-09-07，Step 4 / H-04）
 
-- tracker：`to-tickets`/`setup-matt-pocock-skills` 技能在当前宿主未安装、不可调用，按 `draft.md` Step 4 回退路径手工配置本地 Markdown tracker；约定见 `docs/agents/issue-tracker.md`（一票一文件、状态机、blocking 规则）。
+- tracker：`to-tickets`/`setup-matt-pocock-skills` 技能在当前宿主未安装、不可调用，按 `docs/agents/development-workflow.md` Step 4 回退路径手工配置本地 Markdown tracker；约定见 `docs/agents/issue-tracker.md`（一票一文件、状态机、blocking 规则）。
 - 票据与依赖：T-00 脚手架 → T-01 提交门禁 → T-02 今日与记录闭环；T-03 日志编辑（←T-02）、T-04 计划增删排序与移动链（←T-02）；T-05 历史与资源（←T-03, T-04）；T-06 导出导入与部署（←T-05）；T-07 全量评审与最终运行验收（←T-06）。票据、17 项验收映射与 blocking edges 已经用户确认后发布；2026-09-07 复核修订见 TRACK-02。
 - 当时待决项归属：COV-01、FMT-01 与 PROTO-01 选择分别作为后续票前置；当前均已定案或实施，见前文与 T-04/T-06 完成记录。
 - 当时需求尚未冻结；当前冻结与生产验收状态以前文为准。

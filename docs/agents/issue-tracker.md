@@ -1,6 +1,6 @@
 # 本地 Issue Tracker 约定
 
-> 2026-09-07 配置。依据 `draft.md` Step 4：`to-tickets` 与 `setup-matt-pocock-skills` 技能在当前宿主均未安装、不可调用（已核实宿主技能清单与本地磁盘均无），按其回退路径手工配置本地 Markdown tracker。本文件是唯一 tracker 约定；不假装技能可执行。
+> 2026-09-07 配置。依据 `docs/agents/development-workflow.md` Step 4：`to-tickets` 与 `setup-matt-pocock-skills` 技能在当前宿主均未安装、不可调用（已核实宿主技能清单与本地磁盘均无），按其回退路径手工配置本地 Markdown tracker。本文件是唯一 tracker 约定；不假装技能可执行。
 
 ## 目录与命名
 
@@ -45,13 +45,13 @@
 
 ### 显式总修复例外
 
-用户显式调用 `draft.md` Step 6 / T-07 并要求修复总评审发现的全部 Spec 缺口时，缺失的前置票能力由 T-07 综合修复接管；这不是隐式 `$implement`。受影响票须在同一变更中补齐契约决定、实现、真实证据和完成记录，并共同接受项目 baseline 双轴复核后才能记为 `done`。
+用户显式调用 `docs/agents/development-workflow.md` Step 6 / T-07 并要求修复总评审发现的全部 Spec 缺口时，缺失的前置票能力由 T-07 综合修复接管；这不是隐式 `$implement`。受影响票须在同一变更中补齐契约决定、实现、真实证据和完成记录，并共同接受项目 baseline 双轴复核后才能记为 `done`。
 
 ## 依赖规则
 
 - `Blocked by` 只列直接 blocker，不列传递依赖；依赖图无环。
 - 加边标准：被依赖票不完成，本票的核心行为验收无法真实演示或验证。流程顺序（如门禁先于业务票）也是合法 blocker。
-- 每张 ready 票只有一个 `implement` 实施入口；票级 Spec 只检查本票验收与全局不变量，未解锁后续票不算缺漏（`draft.md` 规则 6）。
+- 每张 ready 票只有一个 `implement` 实施入口；票级 Spec 只检查本票验收与全局不变量，未解锁后续票不算缺漏（`docs/agents/development-workflow.md` 规则 6）。
 
 ## 票据写作规则
 

@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-07）
 - Blocked by：无
-- 契约与设计引用：`需求方案.md` §四（技术方案）；`draft.md` Step 5「最小脚手架准备票」；`docs/agents/issue-tracker.md`。
+- 契约与设计引用：`需求方案.md` §四（技术方案）；`docs/agents/development-workflow.md` Step 5「最小脚手架准备票」；`docs/agents/issue-tracker.md`。
 
 ## 范围
 
@@ -26,7 +26,7 @@
 
 ## 验证要求
 
-- 任何编辑前保存 start SHA；完成验证后提交，再以 start SHA 做票级 code-review（`draft.md` Step 5 流程）。
+- 任何编辑前保存 start SHA；完成验证后提交，再以 start SHA 做票级 code-review（`docs/agents/development-workflow.md` Step 5 流程）。
 - 真实浏览器分别打开 dev server 与构建产物预览验证路由。
 
 ## 实施前置确认
