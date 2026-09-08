@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-08；baseline 复核 `97b84a1…` Standards/Spec 均 0 finding）
 - Blocked by：T-02
-- 契约与实现引用：`需求方案.md` §二（记录页）、§三「记录修正」；`CONTEXT.md` StudyLog；`docs/agents/workflow-state.md` FLOW-01-L；`src/study/studyWorkflow.ts` 与 `src/pages/RecordPage.tsx`。
+- 契约与实现引用：`docs/product-contract.md` §二（记录页）、§三「记录修正」；`CONTEXT.md` StudyLog；`docs/agents/workflow-state.md` FLOW-01-L；`src/study/studyWorkflow.ts` 与 `src/pages/RecordPage.tsx`。
 
 ## 范围
 

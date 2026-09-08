@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-07）
 - Blocked by：无
-- 契约与设计引用：`需求方案.md` §四（技术方案）；`docs/agents/development-workflow.md` Step 5「最小脚手架准备票」；`docs/agents/issue-tracker.md`。
+- 契约与设计引用：`docs/product-contract.md` §四（技术方案）；`docs/agents/development-workflow.md` Step 5「最小脚手架准备票」；`docs/agents/issue-tracker.md`。
 
 ## 范围
 

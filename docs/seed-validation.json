@@ -1,7 +1,7 @@
 {
   "evidenceLevel": "static-data-validation",
   "requirementsVersion": "v2.6",
-  "sourcePlan": "系统分析师备考总计划.md",
+  "sourcePlan": "docs/study-guide.md",
   "sourcePlanUpdatedAt": "2026-09-08",
   "seedPath": "public/data/study-plan.seed.json",
   "seedVersion": "sysanalyst-2026-09-08.v1",

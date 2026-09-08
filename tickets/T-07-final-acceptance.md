@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-08；实现 HEAD `97b84a1…` baseline 双轴 0 finding）
 - Blocked by：T-06
-- 契约与设计引用：`需求方案.md` v2.6 全文（Spec 基线）；`docs/agents/development-workflow.md` Step 6；项目 baseline SHA `f600aaa3bb5328cf016a3b34296d9b977fc2031b`；各票最终 SHA 与已记录证据。
+- 契约与设计引用：`docs/product-contract.md` v2.6 全文（Spec 基线）；`docs/agents/development-workflow.md` Step 6；项目 baseline SHA `f600aaa3bb5328cf016a3b34296d9b977fc2031b`；各票最终 SHA 与已记录证据。
 
 ## 范围
 

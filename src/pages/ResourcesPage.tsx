@@ -5,6 +5,7 @@ import { Icon } from "../ui/Icon";
 import { InlineAlert } from "../ui/InlineAlert";
 import { PageError } from "../ui/PageError";
 import { ResourceAccess } from "../ui/ResourceAccess";
+import { STUDY_GUIDE_SECTIONS } from "../study/studyGuide";
 
 type LoadState =
   | { phase: "loading" }
@@ -197,6 +198,32 @@ export default function ResourcesPage() {
           </section>
         </>
       ) : null}
+
+      <section className="section study-guide-section">
+        <div className="section-heading">
+          <div>
+            <h2>备考执行指南</h2>
+            <p className="note-line">
+              长期执行规则集中在这里；逐日任务以计划页为准，实际结果写入记录页。
+            </p>
+          </div>
+        </div>
+        {STUDY_GUIDE_SECTIONS.map((section) => (
+          <article className="study-guide-block" key={section.title}>
+            <h3>{section.title}</h3>
+            {section.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+            {section.bullets ? (
+              <ul>
+                {section.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+            ) : null}
+          </article>
+        ))}
+      </section>
 
       <section className="section backup-section">
         <div className="section-heading">

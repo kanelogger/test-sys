@@ -1,7 +1,7 @@
 # v2.6 最终运行验收报告
 
 - Fixed point：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`
-- 需求：`需求方案.md` v2.6 全文
+- 需求：`docs/product-contract.md` v2.6 全文
 - 实现提交链：`c989350…` → `44c9251…` → `97b84a1…`；`97b84a1…` 以同一 fixed point 完成 Standards/Spec 双轴复核，均 0 finding。
 - 生产地址：<https://kanelogger.github.io/test-sys/>
 - 完整验证：`npm test`（12 文件、82 项）、`npm run typecheck`、`npm run build`；均通过。源 seed 与 `dist` seed SHA-256 均为 `b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb`。

@@ -1,6 +1,6 @@
 # 技能调用 Hooks 与提示词
 
-> 适用基线：`需求方案.md` v2.6（2026-09-07），仅适配 PC。本文是执行约定；hook 表示按项目状态调用技能，只有 `setup-pre-commit` 会创建 Git hook。修订本文不代表已执行下列步骤。
+> 适用基线：`docs/product-contract.md` v2.6（2026-09-07），仅适配 PC。本文是执行约定；hook 表示按项目状态调用技能，只有 `setup-pre-commit` 会创建 Git hook。修订本文不代表已执行下列步骤。
 
 ## 一、编排与执行规则
 
@@ -20,7 +20,7 @@ Step 0 真实 seed JSON + 四场景推演 → 冻结需求
   → Step 6 全量 code-review + 真实运行验收
 ```
 
-1. `需求方案.md` 是产品行为唯一基线；`CONTEXT.md` 记录领域语言，接口契约与设计均服从需求。未决项先记录，不擅自修改需求。
+1. `docs/product-contract.md` 是产品行为唯一基线；`CONTEXT.md` 记录领域语言，接口契约与设计均服从需求。未决项先记录，不擅自修改需求。
 2. Codex 使用 `$to-tickets`、`$implement` 显式引用。本地两技能的 `agents/openai.yaml` 均设置 `allow_implicit_invocation: false`；`SKILL.md` 的 `disable-model-invocation` 属于宿主相关元数据，不能据此假定所有宿主都支持 `/技能名`。见 [Codex 技能文档](https://learn.chatgpt.com/docs/build-skills)。执行时仍须核实技能已安装并可调用。
 3. 每张 ready ticket 只有一个 `implement` 实施入口；TDD 在它内部执行，不能先单独实现一遍再调用 implement。
 4. 先确认首个闭环需要的领域、接口和 PC 设计；其他页面与接口随票补齐，不等待五页全部高保真后才开工。
@@ -61,7 +61,7 @@ Step 0 真实 seed JSON + 四场景推演 → 冻结需求
 **调用：** 主 agent 直接完成。先核实是否已有符合 v2.6 的产物，避免重复生成。
 
 ```text
-读取 ./需求方案.md v2.6、./系统分析师备考总计划.md、./备考资料.md。
+读取 ./docs/product-contract.md v2.6、./docs/study-guide.md、./docs/study-guide.md。
 产出随应用分发的真实初始计划 JSON，并记录路径与 seedVersion；不要只做样例。
 
 顶层按需求包含 seedVersion、settings、resources、planItems，不含 StudyLog。
@@ -86,7 +86,7 @@ Step 0 真实 seed JSON + 四场景推演 → 冻结需求
 **调用：** 先 `domain-modeling`，随后在同一任务中使用 `codebase-design`；保持两类产物职责清晰。
 
 ```text
-使用 domain-modeling 读取 ./需求方案.md、Step 0 的 seed 与推演，建立或更新简短 CONTEXT.md。
+使用 domain-modeling 读取 ./docs/product-contract.md、Step 0 的 seed 与推演，建立或更新简短 CONTEXT.md。
 定义 Resource、PlanItem、StudyLog、AppMeta、Settings、lineage、根/前驱/后继、
 pending/completed/moved/skipped、seed/manual/backfill、补录、初始化与完整替换恢复。
 只记录领域语言和关系，不写 React、IndexedDB 表结构或函数名。
@@ -130,7 +130,7 @@ PlanItem 与 StudyLog，收集预计分钟和完成标准，并防止同一次�
 **分支 A：推荐 `baoyu-design`。** 先确认信息结构和首个闭环，其余页面按票细化。
 
 ```text
-调用 baoyu-design。以 ./需求方案.md、./CONTEXT.md 和真实 seed 为依据，为单人学习工具
+调用 baoyu-design。以 ./docs/product-contract.md、./CONTEXT.md 和真实 seed 为依据，为单人学习工具
 制作自包含交互原型，保存到 ./designs/study-assistant/。采用紧凑工作型界面、真实中文
 内容密度和 lucide 图标，不引入营销 hero、装饰性大卡片或夸张滚动叙事。
 
@@ -164,7 +164,7 @@ PlanItem 与 StudyLog，收集预计分钟和完成标准，并防止同一次�
 先读取已有 tracker 约定。未配置时，先核实 `setup-matt-pocock-skills` 是否已安装且可调用；有则显式调用并选择本地 Markdown tracker。缺失时明确说明，按 `to-tickets` 的本地文件契约手工配置目录、模板、状态和依赖规则，写入 `docs/agents/issue-tracker.md`；不得假装 `/setup-matt-pocock-skills` 必然可执行。完成配置后再拆票。
 
 ```text
-$to-tickets ./需求方案.md
+$to-tickets ./docs/product-contract.md
 读取 CONTEXT、工作流状态中的 seed/契约/设计引用与 tracker 约定。
 按“今日与记录闭环→计划增删排序→历史与资源→导出导入与部署”拆为可独立演示的纵向票。
 每票包含完成该行为必要的数据、UI 和验证，只依赖真正 blockers，适合一个新上下文。
@@ -234,7 +234,7 @@ Spec=本票验收+需求的全局不变量；未解锁的后续功能不记作�
 ### Step 6. 全量评审与真实运行验收
 
 ```text
-以 <project-baseline-sha> 调用 code-review，Spec 使用完整 ./需求方案.md v2.6。
+以 <project-baseline-sha> 调用 code-review，Spec 使用完整 ./docs/product-contract.md v2.6。
 执行 Standards 与 Spec 两轴总评审，修复全部 Spec 缺口、错误实现、范围膨胀和硬性违规。
 修复后验证、提交，再以同一 fixed point 复核，确保最终 HEAD 已审过。
 

@@ -15,7 +15,7 @@
 
 - 状态：pending | ready | in-progress | done
 - Blocked by：T-YY, T-ZZ（仅直接且真正的 blockers；无则写"无"）
-- 契约与设计引用：<workflow-state FLOW-01 锚点 / CONTEXT.md / DESIGN.md 章节 / PROTO-01 / seed 与证据路径 / 需求方案.md 章节>
+- 契约与设计引用：<workflow-state FLOW-01 锚点 / CONTEXT.md / DESIGN.md 章节 / PROTO-01 / seed 与证据路径 / docs/product-contract.md 章节>
 
 ## 范围
 

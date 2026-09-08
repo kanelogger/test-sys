@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-08；T-03/T-04 已通过 baseline 总复核）
 - Blocked by：T-03, T-04
-- 契约与实现引用：`需求方案.md` §二（历史/资源页）、§七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-L 与 PROTO-01 历史结论；`src/pages/HistoryPage.tsx`、`src/pages/ResourcesPage.tsx`。
+- 契约与实现引用：`docs/product-contract.md` §二（历史/资源页）、§七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-L 与 PROTO-01 历史结论；`src/pages/HistoryPage.tsx`、`src/pages/ResourcesPage.tsx`。
 
 ## 范围
 

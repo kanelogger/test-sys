@@ -1,5 +1,5 @@
 /**
- * 领域类型：需求方案.md §三实体 + FLOW-01-I 公开契约（2026-09-07 用户确认）。
+ * 领域类型：docs/product-contract.md §三实体 + FLOW-01-I 公开契约（2026-09-07 用户确认）。
  * 不另建实体基线；LocalDate 为经 module 校验的本地日历日；
  * PendingRef/BackfillDraft 为 query 产生的 opaque 引用，调用者只保留并传回。
  */

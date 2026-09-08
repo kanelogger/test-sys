@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-08；baseline 复核 `97b84a1…` Standards/Spec 均 0 finding）
 - Blocked by：T-02
-- 契约与实现引用：`需求方案.md` §二、§三「移动/删除规则/跳过/并发与重复操作」、§六；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-R/L 与 PROTO-01 历史结论；`src/study/studyWorkflow.ts`、`src/pages/PlanPage.tsx`、`src/pages/TodayPage.tsx`。
+- 契约与实现引用：`docs/product-contract.md` §二、§三「移动/删除规则/跳过/并发与重复操作」、§六；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-R/L 与 PROTO-01 历史结论；`src/study/studyWorkflow.ts`、`src/pages/PlanPage.tsx`、`src/pages/TodayPage.tsx`。
 
 ## 范围
 

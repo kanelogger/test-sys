@@ -2,7 +2,7 @@
 
 - 状态：done（2026-09-08）
 - Blocked by：T-00, T-01
-- 契约与实现引用：`需求方案.md` §一/二/三/六/七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-I/C/R/T/L；真实 seed `public/data/study-plan.seed.json`（seedVersion `sysanalyst-2026-09-08.v1`，SHA-256 `b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb`）；`docs/seed-validation.json`、`docs/seed-walkthrough.md`、`docs/seed-model-evidence.json`。
+- 契约与实现引用：`docs/product-contract.md` §一/二/三/六/七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-I/C/R/T/L；真实 seed `public/data/study-plan.seed.json`（seedVersion `sysanalyst-2026-09-08.v1`，SHA-256 `b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb`）；`docs/seed-validation.json`、`docs/seed-walkthrough.md`、`docs/seed-model-evidence.json`。
 
 ## 范围
 
