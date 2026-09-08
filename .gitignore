@@ -1,16 +1,50 @@
-# macOS
+# macOS metadata
 .DS_Store
 .AppleDouble
 .LSOverride
+._*
 
-# Editor temporary files
+# Editor-local state
+.vscode/
+.idea/
+*.iml
 *.swp
 *.swo
 *~
-2026红宝书/
-.agents/
 
-# App
+# Dependencies, caches, and build output
 node_modules/
 dist/
+.vite/
+*.tsbuildinfo
+
+# Test and browser artifacts
 .vitest/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Secrets and machine-specific overrides
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+
+# Local agent tooling
+.agents/
+
+# Licensed study materials kept only on this machine
+2026红宝书/
+
+# Exported backups contain personal progress and notes
+study-backup-*.json
+backup-illegal-sample.json
