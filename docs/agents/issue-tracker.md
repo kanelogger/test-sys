@@ -43,6 +43,10 @@
 
 状态流转同步登记到 `docs/agents/workflow-state.md`（当前票、start SHA、评审覆盖 HEAD）。
 
+### 显式总修复例外
+
+用户显式调用 `draft.md` Step 6 / T-07 并要求修复总评审发现的全部 Spec 缺口时，缺失的前置票能力由 T-07 综合修复接管；这不是隐式 `$implement`。受影响票须在同一变更中补齐契约决定、实现、真实证据和完成记录，并共同接受项目 baseline 双轴复核后才能记为 `done`。
+
 ## 依赖规则
 
 - `Blocked by` 只列直接 blocker，不列传递依赖；依赖图无环。

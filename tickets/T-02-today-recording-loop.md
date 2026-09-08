@@ -2,13 +2,13 @@
 
 - 状态：done（2026-09-08）
 - Blocked by：T-00, T-01
-- 契约与设计引用：`需求方案.md` §一/二/三/六/七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-I/C/R/T/L；`designs/study-assistant-design-spec/DESIGN.md` §10.1–10.3、§11；真实 seed `public/data/study-plan.seed.json`（seedVersion `sysanalyst-2026-09-06.v1`，SHA-256 `7f8e155dfa14c10742cefed848dee33c6c95c0ad4b9b6403f17aa352779055c1`）；`docs/seed-validation.json`、`docs/seed-walkthrough.md`、`docs/seed-model-evidence.json`。
+- 契约与实现引用：`需求方案.md` §一/二/三/六/七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-I/C/R/T/L；真实 seed `public/data/study-plan.seed.json`（seedVersion `sysanalyst-2026-09-08.v1`，SHA-256 `b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb`）；`docs/seed-validation.json`、`docs/seed-walkthrough.md`、`docs/seed-model-evidence.json`。
 
 ## 范围
 
 - 学习数据 module：按 FLOW-01-I 公开 initialize / today / recording / complete / createBackfill 五个 command/query seam；实现隐藏 IndexedDB、随包 seed 加载、字段/引用/lineage 校验、ID 与日内次序分配及事务。UI 不读写存储、不拼装事务、不提交 status/source/lineage 或日志日期。
 - 集成唯一真实 seed：随包分发、首开初始化；不另造内容基线。
-- 今日页与记录页真实 UI（DESIGN.md §10.2/§10.3），PC 侧栏默认落地今日；§11 反馈矩阵 1–10 全部落地。
+- 今日页与记录页真实 UI，PC 侧栏默认落地今日；字段校验、提交锁、成功/失败与过期状态反馈均在生产实现中落地。
 - 覆盖字段按 workflow-state「覆盖表示约定」现状处理：`coverage` 为种子顶层元数据，不进入 Settings/PlanItem/备份实体。
 
 ## 非目标
@@ -49,4 +49,4 @@
 - 真实 PC 浏览器点验（Chromium，dev server，证据 `docs/evidence/t02/01–09`）：首开自动初始化落地今日；闭环完成（提交中禁用→成功脉冲+「已记录 · 学习日」+主动重查）；INVALID_INPUT 字段级红框保留输入；双标签页 STATE_CHANGED（错误条+重新查询+输入保留+主动重查）；记录页历史日期补记（任务数不增）与补建（补建徽章、预计/实际分钟各自如实）；日期非法字段级错误保留视图；快速切日期序号守卫落定正确视图；复制文件名成功/失败两分支；刷新持久性；1280/1440 无横向溢出、800px PC 提示条与 900px 最小宽度。
 - 证据边界（诚实记录）：§11-4 DUPLICATE_SUBMISSION 的 warning 条在正常 UI 流程不可稳定复现（成功即重查换草稿、提交中禁用），其 seam 判重与竞争证据充分、UI 组件与 §11-5 同路径已点验；§11-6 页级错误与 §11-7 STORAGE_FAILURE 在浏览器未触发（需断网/坏种子环境），seam 测试与代码路径覆盖；§11-8 超预算提示的真实时钟演示未覆盖（种子当前日 90/90 不超参考线），seam 测试覆盖 240>90 场景；逾期区「移到今天/移到明天/跳过」按钮按票内非目标未实现（T-04）。
 - 评审：八轮两轴（R1 起 2+5 项，逐轮收敛至 R7/R8 双轴 zero findings）；修复含 inTransaction 事务创建错误映射、coverage 冻结窗口与文件名/互斥校验、INVALID_STATE 分类、孤儿表单与状态提升、日期字段级错误、记录页竞态（loadSeq/dateRef/共享 busy 锁）、失败断言全字段快照化、竞争赢家逐字段核对。
-- 剩余事项：逾期三操作与移动链随 T-04（孤儿表单与共享锁已为其预留）；日志编辑 T-03；历史/资源 T-05；导出导入与部署 T-06。FMT-01 仍待 T-06 前确认。
+- 后续状态：T-03–T-06 已在用户直接启动的 T-07 总修复中完成；生产备份格式与最终运行证据见工作流状态及 `docs/evidence/final-acceptance/`。

@@ -15,7 +15,7 @@
 ## 非目标
 
 - 不实现业务数据层、IndexedDB 读写、初始化或任何页面业务功能。
-- 不安装提交门禁（T-01）；不落地设计 token 与业务组件样式（随各 UI 票按 DESIGN.md 实施）。
+- 不安装提交门禁（T-01）；不落地业务组件样式（随各 UI 票在生产 `src/app.css` 中实施）。
 
 ## 行为验收
 
@@ -39,9 +39,9 @@
 - 实际验证：
   1. `typecheck`（tsc --noEmit，strict + exactOptionalPropertyTypes）、`test`（vitest 浏览器模式，playwright/chromium，2/2 通过）、`build` 全部通过。
   2. 真实 Chromium 分别验证 dev server 与 `vite preview` 构建产物：默认落地今日占位页；`/#/plan`、`/#/record`、`/#/history`、`/#/resources` 直达与刷新均正常，侧栏激活态正确；点击导航为客户端路由。
-  3. `dist/` 为纯静态产物，资源引用带 `/test-sys/` 前缀；`dist/data/study-plan.seed.json` SHA-256 `7f8e155d…055c1` 与源种子一致；dev server 同样可取的种子（seedVersion `sysanalyst-2026-09-06.v1`，135 项）。
+  3. 当时 `dist/` 为纯静态产物且资源带 `/test-sys/` 前缀；该记录对应历史 seed `sysanalyst-2026-09-06.v1`，当前唯一 seed 见工作流状态。
   4. 无服务端代码；运行时依赖仅 react、react-dom、react-router，其余为 Vite 工具链与测试工具。
   5. 冒烟测试验证真实 IndexedDB 提交可读回、abort 零修改，及 `vi.setSystemTime` 可控本地时钟（FLOW-01-T seam 工具能力，非业务测试）。
 - 评审：以 start SHA 调用 code-review（Standards + Spec 双轴并行），两轴均 zero findings，最终 HEAD 即被审 HEAD，一次通过无需返修。
 - base 依据：git remote `https://github.com/kanelogger/test-sys.git` 已核实（`git ls-remote` 连通，远端 main 与本地一致）。
-- 剩余事项：无本票遗留。提交未推送远端（部署属 T-06）；`designs/`、`AGENTS.md`、其余票据与 tracker 文档仍为既有未跟踪/未提交状态，留待用户决定入库时机。
+- 后续状态：脚手架后续业务票、项目入口与 tracker 已入库；旧设计原型/fixture 在生产验收后由 `c989350…` 清理，GitHub Pages 部署由 T-06/T-07 完成。

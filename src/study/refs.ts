@@ -1,3 +1,4 @@
+import { isNonEmptyString } from "./entityValidation";
 import { isRecord } from "./guard";
 import type {
   BackfillDraft,
@@ -14,6 +15,28 @@ import type {
  * 载荷只是"查询时观察到的事实"，command 在写事务内重读当前状态再比较；
  * 编码本身不防伪——伪造载荷只会撞上事务内的事实校验。
  */
+
+const PLAN_STATUS: Record<PlanItem["status"], true> = {
+  pending: true,
+  completed: true,
+  skipped: true,
+  moved: true,
+};
+
+function isObservedPlanFact(
+  value: unknown
+): value is { id: string; status: PlanItem["status"] } {
+  return (
+    isRecord(value) &&
+    isNonEmptyString(value.id) &&
+    typeof value.status === "string" &&
+    value.status in PLAN_STATUS
+  );
+}
+
+function observedIdsAreUnique(items: readonly { id: string }[]): boolean {
+  return new Set(items.map((item) => item.id)).size === items.length;
+}
 
 export type PendingRefPayload = {
   v: 1;
@@ -68,9 +91,9 @@ export function decodeLogRef(raw: string): LogRefPayload | null {
     if (
       value.v === 1 &&
       value.kind === "log-ref" &&
-      typeof value.planItemId === "string" &&
-      typeof value.logId === "string" &&
-      typeof value.observedDate === "string"
+      isNonEmptyString(value.planItemId) &&
+      isNonEmptyString(value.logId) &&
+      isNonEmptyString(value.observedDate)
     ) {
       return {
         v: 1,
@@ -108,10 +131,14 @@ export function decodeDayPlanRef(raw: string): DayPlanRefPayload | null {
       Array.isArray(value.observed) &&
       value.observed.every(
         (item: unknown) =>
-          isRecord(item) &&
-          typeof item.id === "string" &&
+          isObservedPlanFact(item) &&
+          "order" in item &&
+          typeof item.order === "number" &&
           Number.isInteger(item.order) &&
-          typeof item.status === "string"
+          item.order >= 0
+      ) &&
+      observedIdsAreUnique(
+        value.observed as Array<{ id: string; status: PlanItem["status"] }>
       )
     ) {
       return {
@@ -137,8 +164,8 @@ export function decodePendingRef(raw: string): PendingRefPayload | null {
     if (
       value.v === 1 &&
       value.kind === "pending-ref" &&
-      typeof value.planItemId === "string" &&
-      typeof value.observedLineageId === "string"
+      isNonEmptyString(value.planItemId) &&
+      isNonEmptyString(value.observedLineageId)
     ) {
       return {
         v: 1,
@@ -167,14 +194,12 @@ export function decodeBackfillDraft(raw: string): BackfillDraftPayload | null {
       value.kind === "backfill-draft" &&
       typeof value.date === "string" &&
       Array.isArray(value.observed) &&
-      value.observed.every(
-        (item: unknown) =>
-          isRecord(item) &&
-          typeof item.id === "string" &&
-          typeof item.status === "string"
+      value.observed.every(isObservedPlanFact) &&
+      observedIdsAreUnique(
+        value.observed as Array<{ id: string; status: PlanItem["status"] }>
       ) &&
-      typeof value.reservedPlanItemId === "string" &&
-      typeof value.reservedStudyLogId === "string"
+      isNonEmptyString(value.reservedPlanItemId) &&
+      isNonEmptyString(value.reservedStudyLogId)
     ) {
       return {
         v: 1,

@@ -1,0 +1,42 @@
+[
+  {
+    "mutation": "unknown-field",
+    "rejected": {
+      "error": "seed.extra 是不支持的字段（错误码 INVALID_SEED）",
+      "counts": {
+        "appMeta": 0,
+        "settings": 0,
+        "resources": 0,
+        "planItems": 0,
+        "studyLogs": 0
+      }
+    },
+    "recovered": {
+      "meta": {
+        "initializedSeedVersion": "sysanalyst-2026-09-08.v1"
+      },
+      "plans": 139,
+      "h1": "今天 · 2026-09-08 星期二"
+    }
+  },
+  {
+    "mutation": "unsupported-version",
+    "rejected": {
+      "error": "随包 seedVersion 必须为当前版本 sysanalyst-2026-09-08.v1（错误码 INVALID_SEED）",
+      "counts": {
+        "appMeta": 0,
+        "settings": 0,
+        "resources": 0,
+        "planItems": 0,
+        "studyLogs": 0
+      }
+    },
+    "recovered": {
+      "meta": {
+        "initializedSeedVersion": "sysanalyst-2026-09-08.v1"
+      },
+      "plans": 139,
+      "h1": "今天 · 2026-09-08 星期二"
+    }
+  }
+]

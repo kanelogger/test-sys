@@ -1,8 +1,8 @@
 # T-06 导出导入与部署
 
-- 状态：pending
+- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
 - Blocked by：T-05
-- 契约与设计引用：`需求方案.md` §四/§五/§七；`docs/agents/workflow-state.md` FLOW-01-L（导出快照硬约束、导入校验与原子替换）与 FMT-01；`designs/study-assistant-design-spec/DESIGN.md` §12-7、§11；`docs/seed-model-evidence.json`（34 类非法备份拒绝、取消零修改、发布前故障零修改的既有模型记录）；`designs/study-assistant/previews/`（14 导入失败、15 导入确认）。
+- 契约与实现引用：`需求方案.md` §四/§五/§七；`docs/agents/workflow-state.md` FLOW-01-L 与 FMT-01；`src/study/backup.ts`、`src/pages/ResourcesPage.tsx`、`.github/workflows/deploy.yml`；生产证据 `docs/evidence/final-acceptance/09-concurrent-export.json`、`10-import-validation.json`、`11-full-restore.json`、`12-live-pages.json`。
 
 ## 范围
 
@@ -26,9 +26,13 @@
 ## 验证要求
 
 - TDD：导出一致快照、导入校验逐项违例（34 类非法备份模型记录可作输入来源）、失败零修改、原子完整替换；真实 IndexedDB 事务，不以纯内存模型代替。
-- 真实部署到 GitHub Pages，点验子路径刷新与 seed 加载；记录部署地址与证据路径。
+- GitHub Pages 生产部署与五路由直接刷新均已点验：`https://kanelogger.github.io/test-sys/`；部署证据见 T-07 报告。
 
 ## 实施前置确认
 
-- FMT-01：确认生产 schemaVersion 的具体值/类型与 supportedSeedVersions 兼容表，记录决定依据；不把推演 envelope（数值 1）冒充已发布备份格式。
-- 细化并确认备份公开契约（FLOW-01-L）。
+- FMT-01 已定案：生产 `schemaVersion` 为数值 `1`；`supportedSeedVersions` 为当前 `sysanalyst-2026-09-08.v1` 与仍兼容的历史 `sysanalyst-2026-09-06.v1`。备份不要求等于当前随包版本。
+
+## 完成记录
+
+- 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；Pages 首次成功部署 run：`34190892755`。
+- 真实 IndexedDB 回归：`tests/study/backup.test.ts`；生产运行证据见契约与实现引用。

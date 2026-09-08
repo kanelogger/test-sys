@@ -1,14 +1,14 @@
 # T-05 历史与资源
 
-- 状态：pending
+- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
 - Blocked by：T-03, T-04
-- 契约与设计引用：`需求方案.md` §二（历史/资源页）、§七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-L 与 PROTO-01（链摘要格式）；`designs/study-assistant-design-spec/DESIGN.md` §12-5/6、§4（徽章/链接/文件名 chip）。
+- 契约与实现引用：`需求方案.md` §二（历史/资源页）、§七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-L 与 PROTO-01 历史结论；`src/pages/HistoryPage.tsx`、`src/pages/ResourcesPage.tsx`。
 
 ## 范围
 
 - 历史页：按日期查看计划与实际对比；各状态与日志只读如实展示。
 - 资源页：全部资源列表；网页资源外链跳转；本地 PDF 文件名+复制。
-- 本票实施前补充这两页的设计规范与参考实现（DESIGN.md 目前仅锁定导航位）。
+- 历史与资源生产界面沿用既定紧凑 PC 视觉；原 fixture/reference 设计资产在生产验收后清理，不再作为事实来源。
 
 ## 非目标
 
@@ -30,3 +30,8 @@
 ## 实施前置确认
 
 - 细化并确认历史/资源查询公开契约（FLOW-01-L）；链摘要格式取 T-04 确认结果。
+
+## 完成记录
+
+- 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；查询回归：`tests/study/history-resources.test.ts`。
+- 生产证据：`docs/evidence/final-acceptance/04-backfill-redo-history-log-edit.json`、`05-06-plan-overdue-history.json`、`08-resources-trusted-click.json`、`08-pdf-copy-ego.json`。

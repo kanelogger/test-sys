@@ -1,0 +1,79 @@
+{
+  "url": "https://kanelogger.github.io/test-sys/",
+  "deployRun": "https://github.com/kanelogger/test-sys/actions/runs/34190892755",
+  "routes": [
+    {
+      "route": "#/",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "今天 · 2026-09-08 星期二",
+      "reloadH1": "今天 · 2026-09-08 星期二",
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "sidebarRight": 232,
+        "mainLeft": 232
+      }
+    },
+    {
+      "route": "#/plan",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "计划",
+      "reloadH1": "计划",
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "sidebarRight": 232,
+        "mainLeft": 232
+      }
+    },
+    {
+      "route": "#/record",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "记录",
+      "reloadH1": "记录",
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "sidebarRight": 232,
+        "mainLeft": 232
+      }
+    },
+    {
+      "route": "#/history",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "历史",
+      "reloadH1": "历史",
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "sidebarRight": 232,
+        "mainLeft": 232
+      }
+    },
+    {
+      "route": "#/resources",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "资源",
+      "reloadH1": "资源",
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "sidebarRight": 232,
+        "mainLeft": 232
+      }
+    }
+  ],
+  "allRoutesPassed": true,
+  "network": {
+    "methods": ["GET"],
+    "nonGet": [],
+    "outsideBase": [],
+    "containsSummaryOrPdf": false,
+    "requestCount": 171
+  }
+}

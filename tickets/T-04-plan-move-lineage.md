@@ -1,8 +1,8 @@
 # T-04 计划增删排序与移动链
 
-- 状态：ready（2026-09-08 T-02 完成解锁；实施前先细化本票公开契约并确认 PROTO-01 四项修订候选）
+- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
 - Blocked by：T-02
-- 契约与设计引用：`需求方案.md` §二（计划页）、§三「移动/删除规则/跳过/并发与重复操作」、§六；`CONTEXT.md`（lineage、根/前驱/后继、各状态与来源）；`docs/agents/workflow-state.md` FLOW-01-R/L 与 PROTO-01（结论与四项契约修订候选）；`designs/study-assistant-design-spec/DESIGN.md` §12-1/2/3；`designs/study-assistant/previews/`（10 计划、11 移动模态、06 跳过确认）。
+- 契约与实现引用：`需求方案.md` §二、§三「移动/删除规则/跳过/并发与重复操作」、§六；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-R/L 与 PROTO-01 历史结论；`src/study/studyWorkflow.ts`、`src/pages/PlanPage.tsx`、`src/pages/TodayPage.tsx`。
 
 ## 范围
 
@@ -28,9 +28,14 @@
 
 - TDD：移动链/跳过/删除限制、写事务重读、重复点击与旧标签页、本地日历日与夏令时；真实 IndexedDB；两连接竞争移动/跳过/删除，及移动/删除导致旧完成/补录草稿失效的场景。
 - PROTO-01 已验证情形迁移为生产回归：连续移动后跳过（链 pending 归零）、连续移动后完成（日志=执行日）、末端与终态删除拒绝零修改、完成后重放旧引用与旧标签页重放为 STATE_CHANGED、同日移动零修改、多 lineage 各有 pending 互不冲突。
-- 真实 PC 浏览器点验计划页全部操作与逾期处理；视觉沿用 DESIGN.md 规范。
+- 真实 PC 浏览器点验计划页全部操作与逾期处理；生产证据保存于 `docs/evidence/final-acceptance/05-06-plan-overdue-history.json` 与 `07-stale-plan-actions.json`。
 
 ## 实施前置确认
 
 - 确认 PROTO-01 四项契约修订候选：①末端/终态删除拒绝的 FailureCode 归属；②同日移动返回 ok+零修改还是 INVALID_INPUT；③重复移动/完成的 STATE_CHANGED 文案区分「自己上一击已成功」与「他处已变更」，或引入幂等标识；④历史页链摘要格式（供 T-05 采用）。
 - 细化并确认移动/跳过/删除/计划增删排序/设置的公开契约与 seam（FLOW-01-L）。
+
+## 完成记录
+
+- 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；本次选择：末端删除为 `INVALID_INPUT`，同日移动成功零修改，重复/过期操作为 `STATE_CHANGED`，历史链摘要采用 PROTO-01 格式。
+- 真实 IndexedDB 回归：`tests/study/plan.test.ts`、`tests/study/clock-dst.test.ts`；生产运行证据见验证要求所列路径。

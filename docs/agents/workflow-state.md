@@ -5,11 +5,11 @@
 ## 基线与当前阶段
 
 - 产品需求：`需求方案.md` v2.6；流程约定：`draft.md`。
-- 当前阶段：Step 0 / H-00 的真实种子、校验与四场景模型推演已完成；Step 1 领域词汇及首个闭环 interface 已完成并确认；2026-09-07 完成 Step 3 / H-03 分支 B（web-design）PC 设计（DESIGN-01）。2026-09-07 COV-01 经用户确认、需求 v2.6 冻结放行（H-00），FLOW-01 契约经用户确认（H-01）。T-00/T-01/T-02 已实施完成（2026-09-07/08），应用首个闭环已真实运行。2026-09-08 按最新总计划完成 SEED-REFRESH-01，唯一分发种子、校验与四场景证据已同步；后续 T-03–T-07 待逐票显式 `$implement`。
-- 需求冻结：**已冻结**；`frozenAt = "2026-09-07"`。COV-01 确认的 `coverage.startDate/endDate` 字段、种子顶层位置与含首尾语义保持不变。2026-09-08 用户要求以最新总计划替换旧内容窗口；该内容修订把 9/1—9/7 的零进度旧日程移出种子，并同步 `需求方案.md` 的明确日期，不新增功能或实体。生产运行验收仍单列为未完成；FMT-01 不受影响。
+- 当前阶段：Step 6 / T-07 总评审与真实运行验收。用户于 2026-09-08 直接调用 Step 6，要求总评审中修复全部 Spec 缺口；因此 T-03–T-06 的缺失能力作为同一综合修复在 `c989350f70b8bd4995d8110f16f008b899cdb16f` 实施并完成生产运行验收，不再等待各票独立 `$implement`。当前正在收敛同一 baseline 的最终双轴复核。
+- 需求冻结：**已冻结**；`frozenAt = "2026-09-07"`。COV-01 确认的 `coverage.startDate/endDate` 字段、种子顶层位置与含首尾语义保持不变。2026-09-08 内容窗口按最新总计划更新为 9/8–10/23，不新增功能或实体；生产实现继续服从 v2.6。
 - 项目 baseline SHA：`f600aaa3bb5328cf016a3b34296d9b977fc2031b`。
-- 本阶段 start SHA：同 baseline。tracker：本地 Markdown tracker 已配置（`docs/agents/issue-tracker.md`）；已发布 T-00–T-07（`tickets/`，一票一文件）。当前票：无；T-00、T-01、T-02 已 done（见各票完成记录）；T-03、T-04 转为 ready（Blocked by 均为 T-02），待显式 `$implement`。
-- 评审覆盖 HEAD：T-00 → `4f5e118986380f1c0d75a728f291c7043a6bf2e0`（start `d2eff2d…`，双轴 zero findings）；T-01 → `0ff8847cd9029b596c892d4fbeca3bf5032a9b13`（start `9d4a131…`，第三轮双轴通过）；T-02 → `b2fca4bc7d056b3a0859af9de6e689f0a876367a`（start `1a1d143…`，八轮两轴收敛：R7 Spec 通过、R8 Standards 通过）；本阶段不宣称全量运行验收通过（T-07 负责）。
+- 本阶段 start SHA：项目 baseline。tracker：T-00–T-06 均 done；T-07 in-progress，等待包含本记录的最终 HEAD 双轴复核通过后收口。
+- 评审覆盖：T-00 → `4f5e118…`；T-01 → `0ff8847…`；T-02 → `b2fca4b…`。T-07 首次 baseline 复核在实现提交 `c989350…` 上发现 Standards 3 项硬文档不一致 + 1 项重复校验 smell、Spec 3 项严格校验缺口，均已进入当前修复；最终复核尚未执行，不预写为通过。
 
 ## 覆盖表示约定（已确认）
 
@@ -55,10 +55,10 @@
 ## 证据边界与待决项
 
 - COV-01：**已定案（2026-09-07 用户确认）**。字段名、顶层位置与含首尾语义不变；2026-09-08 内容窗口按用户指定总计划更新为 9/8—10/23。
-- FMT-01：需求未给备份 `schemaVersion` 的具体值/类型。推演暂用数值 `1`，仅作模型 envelope；生产版本及兼容表在备份实施前确认，不冒充已发布备份格式。它不是新增功能范围问题；不得把功能冻结等同于备份格式已冻结。推演中的 `model-only-future-version` 仅验证受支持历史版本可恢复，不代表存在另一份真实种子。
-- 本轮已验证：新种子经真实 IndexedDB 首次初始化后，AppMeta 版本为 `sysanalyst-2026-09-08.v1`，17 资源、139 计划、0 日志，日期 9/8—10/23、5340 分钟且 9/8 今日页为 5 项 90/90；相关 58 项浏览器行为测试通过。移动/跳过/删除、日志编辑、同事务导出快照、全表恢复、部署和最终无上传网络验收仍随 T-03–T-07。
-- 分发边界：React/Vite 生产构建通过，`dist/data/study-plan.seed.json` 与唯一源种子 SHA-256 一致；生产预览在 `/test-sys/` 子路径完成全新 IndexedDB 初始化与 UI 点验。GitHub Pages 实际部署仍随 T-06/T-07 留证。
-- 冻结门槛：COV-01 表示契约继续有效；最新真实种子校验与四场景模型推演均具备证据。2026-09-08 的内容修订不扩大 v2.6 功能范围，生产全量运行验收仍未完成。
+- FMT-01：**已定案**。生产 `schemaVersion` 为数值 `1`；`supportedSeedVersions = ["sysanalyst-2026-09-08.v1", "sysanalyst-2026-09-06.v1"]`。随包 seed 只接受当前版本；恢复接受仍兼容的历史版本，不要求等于当前随包版本。
+- 生产验证：Vitest 完整 12 文件 82 项、TypeScript 与 Vite 生产构建均通过；review 修复后的未知 seed 字段/不受支持版本在真实生产应用中返回 `INVALID_SEED` 且五表为 0，恢复真实 seed 后初始化 139 项。逐项浏览器/IndexedDB 事实与截图保存在 `docs/evidence/final-acceptance/`。
+- 分发与部署：`dist/data/study-plan.seed.json` 与唯一源 seed SHA-256 均为 `b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb`。GitHub Pages 已启用 workflow 模式并部署于 `https://kanelogger.github.io/test-sys/`；首次成功 run `34190892755`，五路由首次打开/刷新均为 200。
+- 隐私与范围：生产浏览器网络记录仅 GET，无 WebSocket、总结 canary、PDF 文件名或 base 外本域请求；未加入后端/登录、自动排程、计时器、统计复盘、文件上传或提醒推送。
 
 ## FLOW-01 公开契约
 
@@ -189,23 +189,23 @@ interface StudyWorkflow {
 - 未覆盖（留给生产/后续票）：真实 IndexedDB 事务与两连接并发竞争、刷新持久性；移动到过去日期的合法性；导出快照与移动并发；跨日/夏令时时钟；任意合法序列的正确性不能由有限 walkthrough 证明。
 - 契约修订候选（移动链票实施前确认）：①末端/终态删除拒绝的 FailureCode 归属（原型按 INVALID_INPUT+reason）；②同日移动返回 ok+零修改 还是 INVALID_INPUT（原型按前者）；③重复移动/完成的 STATE_CHANGED 文案需区分「自己上一击已成功」与「他处已变更」，或引入幂等标识；④历史页链摘要格式入票。
 
-## DESN-01 PC 交互原型（2026-09-07，Step 3 / H-03 分支 A）
+## DESN-01 PC 交互原型（历史记录；产物已清理）
 
-- 产物：`designs/study-assistant/index.html`（单文件自包含，内嵌真实 seed 全量与 lucide 图标，无外部依赖）；资产记录于 `designs/study-assistant/_d_meta.json`。
+- 原自包含内存原型与 `_d_meta.json` 已在生产实现验收后由 `c989350…` 清理；以下只保留当时结论，不再把已删除路径作为恢复或实现事实来源。
 - 范围：PC 侧栏五页（今日/计划/记录/历史/资源）+ 备份导出导入。首个闭环「今日→填实际分钟与总结→完成」已实际点验；逾期待处理三入口、完成标准直展、预算 X/Y（X 仅计今天 pending+completed，排除 moved/skipped 与未移入逾期项）与超预算提示、距考试天数均已验证。
 - 已点验反馈：提交中禁用与防重复点击；写操作前重读状态，旧标签页过期操作返回 STATE_CHANGED 并保留输入；新建补录固定草稿判重（DUPLICATE_SUBMISSION）；补记只填日志（日志留计划日）vs 补做先移动（日志记执行日）；同日移动零修改；终态/链末端删除禁用并给原因；导出一致快照自校验通过；导入对解析失败/版本/字段/引用/日志/lineage 违例给失败清单且零修改，确认后原子完整替换。
 - 待拆票状态清单在原型内「状态清单」面板：票据归属为建议（脚手架前置 → 今日与记录闭环 → 计划增删排序/移动/跳过/删除 → 历史与资源 → 导出导入与部署），Step 4 确认；各票实施前细化契约（引用 FLOW-01-C/R/L）。
-- 视觉证据：`designs/study-assistant/previews/`（01 今日、02 完成对话框、05 STATE_CHANGED、07 记录、08 补录判重、10 计划、11 移动模态、12 历史、13 资源、14/15 导入失败与确认、16 状态清单）；1280/1440/1680 三档宽度无横向溢出、无行截断。
-- 边界：原型状态存 localStorage，仅演示；不代表 IndexedDB 事务、真实并发或部署已通过。COV-01 与 FMT-01 仍待决；本交付不替代 H-00 冻结放行。
+- 原型截图已随原型清理；对应生产截图现位于 `docs/evidence/final-acceptance/12-*.png`。
+- 历史边界：该原型当时只用 localStorage 演示，COV-01/FMT-01 当时尚待决；两项现已在本文件前文定案，生产事务证据由 T-07 替代。
 
-## DESIGN-01 PC 设计（Step 3 / H-03 分支 B，2026-09-07）
+## DESIGN-01 PC 设计（历史记录；fixture/reference 已清理）
 
 - 设计分支：按本次用户要求走分支 B（`web-design`，DESIGN.md-first），不与分支 A 串行；分支 A 的全部行为要求已并入规范与参考实现。
-- 产物：`designs/study-assistant-design-spec/DESIGN.md`（9 章节 + §10 信息结构、§11 关键反馈状态矩阵、§12 待拆票状态清单、§13 事实来源与边界）；`designs/study-assistant-design-spec/reference/` 可运行参考（静态 HTML + 内存 fixture，不接生产 IndexedDB）；视觉证据 `designs/study-assistant-design-spec/evidence/01–10*.webp`。
+- DESIGN.md、内存 fixture/reference 与旧视觉证据已在生产实现验收后由 `c989350…` 清理；当前事实来源为 v2.6、`CONTEXT.md`、生产代码及 `docs/evidence/final-acceptance/`。
 - 范围：PC 侧边导航（今日默认；计划/历史/资源为"随票"占位页，列出各自待拆票清单）；今日页（逾期待处理、预算 X/Y 与超参考线提示、考试剩余天数、完成标准与资源入口）；记录页（补记已有 pending 仅填日志、核对确认后新建补录）；首个闭环"今日 → 填写实际分钟与总结 → 完成"及 §11 全部关键反馈。其余页面规范与参考实现随票补充。
 - fixture 口径：任务与资源逐字段摘自真实种子 2026-09-08 至 2026-09-12；fixture 今日固定 2026-09-12；StudyLog 为演示数据（真实种子不含日志）并在 fixture 文件头标注；逾期移动/跳过仅作视觉演示，移动链事务语义随计划票实现。
 - 已验证（真实浏览器，1440/1280/800 宽度）：初始化渲染、预算口径与超参考线提示、行内完成表单、INVALID_INPUT 字段级错误且输入保留、提交中禁用与"提交中…"、成功后重查与一次性脉冲、STATE_CHANGED（完成被抢先/补录草稿过期）提示 + 重新查询、DUPLICATE_SUBMISSION 警告、补记日志留在学习日、补建 backfill 徽章、已移至绝对日期展示、逾期移今天/明天/跳过、PDF 文件名复制、随票占位页、800px 仅 PC 提示与 900px 最小宽度。合规审计：零硬编码 hex（含 RGB 辅助值）、无 Emoji 图标、L1 动效与 reduced-motion 降级已实现。
-- 证据边界：fixture 不是生产数据层；真实 IndexedDB 事务、并发、刷新持久性、TDD、生产 UI 均未验证；需求仍未冻结，COV-01/FMT-01 状态不变。H-04 拆票可引用 DESIGN.md §12 状态清单分配归属。
+- 历史边界：fixture 从未作为生产数据层；当前真实 IndexedDB、并发、刷新持久性与生产 UI 证据已由 T-07 覆盖。
 
 ## TRACK-01 拆票发布（2026-09-07，Step 4 / H-04）
 
@@ -219,18 +219,18 @@ interface StudyWorkflow {
 复核发现 4 项问题与 1 项契约歧义，已全部修订；本轮只改票据、契约、设计规范与 fixture 参考实现，未执行应用测试。
 
 1. **冻结落实为实施硬前置**：T-02 实施前置确认改为硬门槛——COV-01 决定与冻结时间已记录、需求 v2.6 功能范围冻结（H-00 放行）、FLOW-01 契约确认（H-01）后方可启动；「拆票豁免」不延伸至实施，后续业务票经 blockers 传递继承；T-07 终验仍复核冻结记录。
-2. **补建核对范围扩为全系统**：T-02 验收 4、DESIGN.md §10.3 勾选文案与说明、reference 参考实现（app.js 标签与空态）同步修正——「无对应任务」核对覆盖其他日期 pending 与终态记录；跨日对应 pending 引导先移动再完成（补做），终态对应项不得再建；跨日反例列入 T-02 必含验证场景。分支 A 原型（`designs/study-assistant/`）为被取代的设计产物，未同步，以 DESIGN.md 为准。
+2. **补建核对范围扩为全系统**：T-02 验收 4、当时设计规范与参考实现同步修正；这些历史设计资产现已清理，生产口径见 FLOW-01-R 与 `src/pages/RecordPage.tsx`。
 3. **T-05 增加 T-03 依赖**：历史页验收要求真实日志编辑行为，Blocked by 改为 T-03, T-04；T-07 的 T-03 边成为传递依赖，简化为 ←T-06。当前依赖图：T-00→T-01→T-02→{T-03, T-04}→T-05→T-06→T-07。
 4. **T-00 依赖口径冲突消除**：运行时依赖明确限 React 与 React Router（HashRouter 所需），其余限 Vite 工具链与测试工具。
-5. **补录日期边界澄清（契约）**：新建补录仅限早于本地今日的历史日期。FLOW-01-C recording/createBackfill 行、FLOW-01-R、FLOW-01-T 已同步：绑定今天的补建草稿提交返回 INVALID_INPUT 且零修改；记录页选择今天不展示补建入口，仅对今日 pending 记录完成。同步处：workflow-state FLOW-01、DESIGN.md §10.3、T-02 票据、reference 参考实现（含 fixture.js 边界守卫）。（本条原含“次日起可按历史日期补录”表述，违反需求 §三补录口径，已于 TRACK-03 更正。）
+5. **补录日期边界澄清（契约）**：新建补录仅限早于本地今日的历史日期。FLOW-01-C/R/T、T-02 与当时参考实现同步；参考资产现已清理，生产边界守卫保留在 workflow module。
 
-- 参考实现的既有视觉证据（`evidence/07-backfill-form.webp` 等）沿用旧文案，随 T-02 实施按新文案复核重取；本轮未重跑浏览器点验。
+- 当时参考视觉证据已随 fixture 清理；对应生产状态由 `docs/evidence/final-acceptance/` 覆盖。
 
 ## TRACK-03 复核修订（2026-09-07，第二轮）
 
 - 复审（只读）发现 TRACK-02 引入的「未计划学习次日起可补录」表述违反 `需求方案.md` §三：补录只支持「当时确有计划且记得预计时长」，临时未计划学习不记录，日期变为历史不改变该限制；原表述会引导事后虚填预计分钟。
-- 已统一替换为：「新建补录仅限历史日期，且当时确有计划、记得预计时长、系统中无对应任务。临时未计划学习不记录。」同步处：T-02 验收 4、FLOW-01-R、DESIGN.md §10.3、reference/app.js 说明行；TRACK-02 第 5 条相应更正。需求正文无需修改（§二/§三原本即正确）。
-- 本轮只改文档与参考实现文案，未执行应用或浏览器测试；`app.js` 改动经 `node --check` 通过。T-02 的冻结与契约确认硬前置不变，仍为 pending。
+- 已统一替换为：「新建补录仅限历史日期，且当时确有计划、记得预计时长、系统中无对应任务。临时未计划学习不记录。」需求正文与 FLOW-01 保留该口径；当时同步的设计参考资产现已清理。
+- 本轮当时只改文档与参考实现，未执行应用测试；当前生产实现与浏览器证据由 T-02/T-07 后续记录取代。
 
 ## SEED-REFRESH-01 真实计划同步（2026-09-08）
 
@@ -238,4 +238,4 @@ interface StudyWorkflow {
 - clean cutover：唯一 seedVersion 更新为 `sysanalyst-2026-09-08.v1`；删除 9/6—9/7 的 9 个旧任务，按逐日表重建 139 项任务与完成标准，资源清单扩为总计划列明的 10 个网页和 7 个 PDF 文件名。已同步需求日期、运行时覆盖校验和依赖真实内容的行为测试；不修改初始化“不自动覆盖已有数据”的契约。
 - 静态/模型证据：21 类种子检查全通过；四场景、34 类非法备份拒绝、取消和发布前故障均通过有限模型检查。实际 seed SHA-256 与 `docs/seed-validation.json`、`docs/seed-model-evidence.json` 一致。
 - 运行证据：TypeScript 无诊断；Vitest 全量 8 文件 58 项通过；Vite 生产构建通过，分发种子 SHA-256 与源一致。独立 ego-browser task space 打开的 `/test-sys/` 生产预览首次初始化显示 9/8 五项、90/90、无 9/6—9/7 旧任务，IndexedDB 读取为 AppMeta=`sysanalyst-2026-09-08.v1`、17 资源、139 计划、0 日志、5340 分钟。
-- 数据保护边界：旧 `initializedSeedVersion` 的浏览器不会自动迁移，这是既有产品契约。查看新计划须使用新数据库/新 profile，或由用户明确清除站点数据；不得静默覆盖真实日志。GitHub Pages 实际部署与 T-03–T-07 全量行为边界仍分别验收。
+- 数据保护边界：旧 `initializedSeedVersion` 的浏览器不会自动迁移；查看新计划须使用新数据库/新 profile，或由用户明确清除站点数据，不得静默覆盖真实日志。后续 T-03–T-07 已完成该阶段留下的生产行为与部署验收。

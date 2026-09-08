@@ -1,0 +1,31 @@
+{
+  "reviewFixedPoint": "f600aaa3bb5328cf016a3b34296d9b977fc2031b",
+  "reviewedImplementationCommit": "c989350f70b8bd4995d8110f16f008b899cdb16f",
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "tests": "npm test",
+    "build": "npm run build",
+    "seedHash": "shasum -a 256 public/data/study-plan.seed.json dist/data/study-plan.seed.json"
+  },
+  "results": {
+    "typecheck": "passed",
+    "tests": {
+      "files": 12,
+      "tests": 82,
+      "status": "passed"
+    },
+    "build": {
+      "status": "passed",
+      "modulesTransformed": 100,
+      "indexHtmlBytes": 430,
+      "cssBytes": 16050,
+      "javascriptBytes": 310280
+    },
+    "seedSha256": {
+      "source": "b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb",
+      "distribution": "b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb",
+      "equal": true
+    },
+    "productionPreview": "http://127.0.0.1:4173/test-sys/"
+  }
+}

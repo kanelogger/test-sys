@@ -1,8 +1,15 @@
+import {
+  isNonEmptyString,
+  validatePlanItemEntity,
+  validateResourceEntity,
+  validateSettingsEntity,
+  type EntityValidation,
+} from "./entityValidation";
 import { isValidLocalDate } from "./dates";
 import { isRecord } from "./guard";
+import { CURRENT_SEED_VERSION } from "./seedVersions";
 import type { PlanItem, Resource, Settings } from "./types";
 
-/** 随包种子解析与完整校验：与备份导入相同的字段与引用规则（需求 §三）。 */
 const FROZEN_COVERAGE_START = "2026-09-08";
 const FROZEN_COVERAGE_END = "2026-10-23";
 const DEFAULT_EXAM_DATE = "2026-10-24";
@@ -28,169 +35,33 @@ function invalid(reason: string, field?: string): SeedInvalid {
   };
 }
 
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" && value.trim().length > 0;
+function entityInvalid<T>(result: EntityValidation<T>): SeedInvalid | null {
+  if (result.ok) return null;
+  const first = result.errors[0];
+  return invalid(
+    result.errors.map((error) => error.reason).join("；"),
+    first?.field
+  );
 }
 
-function isPositiveInt(value: unknown): value is number {
-  return Number.isInteger(value) && (value as number) > 0;
+function validateExactKeys(
+  value: Record<string, unknown>,
+  required: readonly string[],
+  label: string
+): SeedInvalid | null {
+  for (const key of required) {
+    if (!(key in value)) return invalid(`${label}.${key} 缺失`, key);
+  }
+  const allowed = new Set(required);
+  for (const key of Object.keys(value)) {
+    if (!allowed.has(key)) {
+      return invalid(`${label}.${key} 是不支持的字段`, key);
+    }
+  }
+  return null;
 }
 
-function validateResource(value: unknown, index: number) {
-  if (!isRecord(value)) return invalid(`resources[${index}] 不是对象`);
-  if (!isNonEmptyString(value.id)) {
-    return invalid(`resources[${index}].id 缺失或为空`, "id");
-  }
-  if (!isNonEmptyString(value.title)) {
-    return invalid(`resources[${index}].title 缺失或为空`, "title");
-  }
-  if (value.type === "web") {
-    // 互斥以字段存在性判定（不看值的类型）：web 携带 filename 即拒绝
-    if ("filename" in value) {
-      return invalid(`resources[${index}] 网页资源不得携带 filename`, "type");
-    }
-    if (typeof value.url !== "string") {
-      return invalid(`resources[${index}].url 缺失`, "url");
-    }
-    try {
-      const url = new URL(value.url);
-      if (url.protocol !== "http:" && url.protocol !== "https:") {
-        return invalid(`resources[${index}].url 非 http(s)`, "url");
-      }
-    } catch {
-      return invalid(`resources[${index}].url 不是合法 URL`, "url");
-    }
-    return {
-      ok: true as const,
-      value: {
-        id: value.id,
-        title: value.title,
-        type: "web" as const,
-        url: value.url,
-      },
-    };
-  }
-  if (value.type === "local-file") {
-    if ("url" in value) {
-      return invalid(`resources[${index}] 本地文件资源不得携带 url`, "type");
-    }
-    if (!isNonEmptyString(value.filename)) {
-      return invalid(`resources[${index}].filename 缺失或为空`, "filename");
-    }
-    // 本地文件只记录文件名（需求 §二/§五）：拒绝任何路径形态
-    if (
-      value.filename.includes("/") ||
-      value.filename.includes("\\") ||
-      value.filename.includes(":")
-    ) {
-      return invalid(
-        `resources[${index}].filename 必须是纯文件名，不得包含路径`,
-        "filename"
-      );
-    }
-    return {
-      ok: true as const,
-      value: {
-        id: value.id,
-        title: value.title,
-        type: "local-file" as const,
-        filename: value.filename,
-      },
-    };
-  }
-  return invalid(`resources[${index}].type 非法`, "type");
-}
-
-function validatePlanItem(
-  value: unknown,
-  index: number,
-  resourceIds: ReadonlySet<string>
-) {
-  if (!isRecord(value)) return invalid(`planItems[${index}] 不是对象`);
-  if (!isNonEmptyString(value.id)) {
-    return invalid(`planItems[${index}].id 缺失或为空`, "id");
-  }
-  if (typeof value.date !== "string" || !isValidLocalDate(value.date)) {
-    return invalid(`planItems[${index}].date 非法`, "date");
-  }
-  if (!isNonEmptyString(value.subject)) {
-    return invalid(`planItems[${index}].subject 缺失或为空`, "subject");
-  }
-  if (!isNonEmptyString(value.title)) {
-    return invalid(`planItems[${index}].title 缺失或为空`, "title");
-  }
-  if (!isNonEmptyString(value.completionCriteria)) {
-    return invalid(
-      `planItems[${index}].completionCriteria 缺失或为空`,
-      "completionCriteria"
-    );
-  }
-  if (!isPositiveInt(value.plannedMinutes)) {
-    return invalid(
-      `planItems[${index}].plannedMinutes 不是正整数`,
-      "plannedMinutes"
-    );
-  }
-  if (
-    typeof value.order !== "number" ||
-    !Number.isInteger(value.order) ||
-    value.order < 0
-  ) {
-    return invalid(`planItems[${index}].order 不是非负整数`, "order");
-  }
-  if (value.status !== "pending") {
-    return invalid(
-      `planItems[${index}].status 必须为 pending（初始计划）`,
-      "status"
-    );
-  }
-  if (value.source !== "seed") {
-    return invalid(
-      `planItems[${index}].source 必须为 seed（初始计划）`,
-      "source"
-    );
-  }
-  if (value.lineageId !== value.id) {
-    return invalid(
-      `planItems[${index}].lineageId 必须等于自身 id（独立根）`,
-      "lineageId"
-    );
-  }
-  if (value.movedToPlanItemId !== undefined) {
-    return invalid(
-      `planItems[${index}] pending 根不得携带 movedToPlanItemId`,
-      "movedToPlanItemId"
-    );
-  }
-  if (value.resourceId !== undefined) {
-    if (
-      typeof value.resourceId !== "string" ||
-      !resourceIds.has(value.resourceId)
-    ) {
-      return invalid(
-        `planItems[${index}].resourceId 引用不存在的资源`,
-        "resourceId"
-      );
-    }
-  }
-  const item: PlanItem = {
-    id: value.id,
-    date: value.date,
-    subject: value.subject,
-    title: value.title,
-    completionCriteria: value.completionCriteria,
-    plannedMinutes: value.plannedMinutes,
-    order: value.order,
-    status: "pending",
-    lineageId: value.id,
-    source: "seed",
-    ...(value.resourceId !== undefined
-      ? { resourceId: value.resourceId as string }
-      : {}),
-  };
-  return { ok: true as const, value: item };
-}
-
+/** Validates the only packaged seed before any initialization transaction starts. */
 export function parseAndValidateSeed(text: string): SeedResult {
   let raw: unknown;
   try {
@@ -199,55 +70,49 @@ export function parseAndValidateSeed(text: string): SeedResult {
     return invalid("种子不是合法 JSON");
   }
   if (!isRecord(raw)) return invalid("种子顶层不是对象");
-
-  if ("studyLogs" in raw) {
-    return invalid(
-      "种子不得携带 studyLogs（初始计划不含学习日志）",
-      "studyLogs"
-    );
-  }
+  const rootKeys = validateExactKeys(
+    raw,
+    ["seedVersion", "coverage", "settings", "resources", "planItems"],
+    "seed"
+  );
+  if (rootKeys) return rootKeys;
   if (!isNonEmptyString(raw.seedVersion)) {
     return invalid("seedVersion 缺失或为空", "seedVersion");
   }
+  if (raw.seedVersion !== CURRENT_SEED_VERSION) {
+    return invalid(
+      `随包 seedVersion 必须为当前版本 ${CURRENT_SEED_VERSION}`,
+      "seedVersion"
+    );
+  }
 
-  if (!isRecord(raw.settings)) {
-    return invalid("settings 缺失或不是对象", "settings");
-  }
-  if (
-    typeof raw.settings.examDate !== "string" ||
-    !isValidLocalDate(raw.settings.examDate)
-  ) {
-    return invalid("settings.examDate 非法", "examDate");
-  }
-  if (raw.settings.examDate !== DEFAULT_EXAM_DATE) {
+  const settingsResult = validateSettingsEntity(raw.settings);
+  const settingsError = entityInvalid(settingsResult);
+  if (settingsError) return settingsError;
+  if (!settingsResult.ok) return invalid("settings 非法", "settings");
+  const settings = settingsResult.value;
+  if (settings.examDate !== DEFAULT_EXAM_DATE) {
     return invalid(
       `settings.examDate 必须为冻结默认值 ${DEFAULT_EXAM_DATE}`,
       "examDate"
     );
   }
-  if (!isPositiveInt(raw.settings.defaultDailyMinutes)) {
-    return invalid(
-      "settings.defaultDailyMinutes 不是正整数",
-      "defaultDailyMinutes"
-    );
-  }
-  if (raw.settings.defaultDailyMinutes !== DEFAULT_DAILY_MINUTES) {
+  if (settings.defaultDailyMinutes !== DEFAULT_DAILY_MINUTES) {
     return invalid(
       `settings.defaultDailyMinutes 必须为默认参考线 ${DEFAULT_DAILY_MINUTES}`,
       "defaultDailyMinutes"
     );
   }
-  const settings: Settings = {
-    examDate: raw.settings.examDate,
-    defaultDailyMinutes: raw.settings.defaultDailyMinutes,
-  };
 
-  // coverage 为种子顶层元数据约定（2026-09-07 COV-01 定案）：
-  // 种子须声明覆盖起止且逐日给出安排（需求 §三）；不进入实体。
-  // 星期预算仅用于离线内容校验，运行时不得因此拒绝合法种子（内容约定）。
   if (!isRecord(raw.coverage)) {
-    return invalid("coverage 缺失或不是对象（种子须声明覆盖起止）", "coverage");
+    return invalid("coverage 缺失或不是对象", "coverage");
   }
+  const coverageKeys = validateExactKeys(
+    raw.coverage,
+    ["startDate", "endDate"],
+    "coverage"
+  );
+  if (coverageKeys) return invalid(coverageKeys.error.reason, "coverage");
   const { startDate, endDate } = raw.coverage;
   if (
     typeof startDate !== "string" ||
@@ -258,12 +123,7 @@ export function parseAndValidateSeed(text: string): SeedResult {
   ) {
     return invalid("coverage.startDate/endDate 非法或起止颠倒", "coverage");
   }
-  const coverageStart = startDate;
-  const coverageEnd = endDate;
-  if (
-    coverageStart !== FROZEN_COVERAGE_START ||
-    coverageEnd !== FROZEN_COVERAGE_END
-  ) {
+  if (startDate !== FROZEN_COVERAGE_START || endDate !== FROZEN_COVERAGE_END) {
     return invalid(
       `coverage 必须与冻结窗口 ${FROZEN_COVERAGE_START} 至 ${FROZEN_COVERAGE_END} 一致`,
       "coverage"
@@ -275,11 +135,16 @@ export function parseAndValidateSeed(text: string): SeedResult {
   }
   const resources: Resource[] = [];
   const resourceIds = new Set<string>();
-  for (let i = 0; i < raw.resources.length; i += 1) {
-    const parsed = validateResource(raw.resources[i], i);
-    if (!parsed.ok) return parsed;
+  for (let index = 0; index < raw.resources.length; index += 1) {
+    const parsed = validateResourceEntity(
+      raw.resources[index],
+      `resources[${index}]`
+    );
+    const error = entityInvalid(parsed);
+    if (error) return error;
+    if (!parsed.ok) return invalid(`resources[${index}] 非法`, "resources");
     if (resourceIds.has(parsed.value.id)) {
-      return invalid(`resources[${i}].id 重复`, "id");
+      return invalid(`resources[${index}].id 重复`, "id");
     }
     resourceIds.add(parsed.value.id);
     resources.push(parsed.value);
@@ -290,24 +155,60 @@ export function parseAndValidateSeed(text: string): SeedResult {
   }
   const planItems: PlanItem[] = [];
   const planIds = new Set<string>();
-  for (let i = 0; i < raw.planItems.length; i += 1) {
-    const parsed = validatePlanItem(raw.planItems[i], i, resourceIds);
-    if (!parsed.ok) return parsed;
-    if (planIds.has(parsed.value.id)) {
-      return invalid(`planItems[${i}].id 重复`, "id");
+  for (let index = 0; index < raw.planItems.length; index += 1) {
+    const parsed = validatePlanItemEntity(
+      raw.planItems[index],
+      `planItems[${index}]`
+    );
+    const error = entityInvalid(parsed);
+    if (error) return error;
+    if (!parsed.ok) return invalid(`planItems[${index}] 非法`, "planItems");
+    const item = parsed.value;
+    if (item.status !== "pending") {
+      return invalid(
+        `planItems[${index}].status 必须为 pending（初始计划）`,
+        "status"
+      );
     }
-    planIds.add(parsed.value.id);
-    planItems.push(parsed.value);
+    if (item.source !== "seed") {
+      return invalid(
+        `planItems[${index}].source 必须为 seed（初始计划）`,
+        "source"
+      );
+    }
+    if (item.lineageId !== item.id) {
+      return invalid(
+        `planItems[${index}].lineageId 必须等于自身 id（独立根）`,
+        "lineageId"
+      );
+    }
+    if (item.resourceId !== undefined && !resourceIds.has(item.resourceId)) {
+      return invalid(
+        `planItems[${index}].resourceId 引用不存在的资源`,
+        "resourceId"
+      );
+    }
+    if (planIds.has(item.id)) {
+      return invalid(`planItems[${index}].id 重复`, "id");
+    }
+    planIds.add(item.id);
+    planItems.push(item);
   }
 
-  const minutesByDate = new Map<string, number>();
+  const plansByDate = new Map<string, PlanItem[]>();
   for (const plan of planItems) {
-    minutesByDate.set(
-      plan.date,
-      (minutesByDate.get(plan.date) ?? 0) + plan.plannedMinutes
-    );
+    const group = plansByDate.get(plan.date);
+    if (group) group.push(plan);
+    else plansByDate.set(plan.date, [plan]);
   }
-  for (const [date, minutes] of minutesByDate) {
+  for (const [date, plans] of plansByDate) {
+    if (date < startDate || date > endDate) {
+      return invalid(`planItems 存在覆盖区间外的日期 ${date}`, "coverage");
+    }
+    const minutes = plans.reduce(
+      (total, plan) => total + plan.plannedMinutes,
+      0
+    );
     const [year, month, day] = date.split("-").map(Number) as [
       number,
       number,
@@ -322,27 +223,24 @@ export function parseAndValidateSeed(text: string): SeedResult {
         "plannedMinutes"
       );
     }
-  }
-
-  // 逐日覆盖：所有种子任务均在覆盖区间内，且区间内每个日历日至少一项
-  const datesWithItems = new Set(planItems.map((p) => p.date));
-  for (const date of datesWithItems) {
-    if (date < coverageStart || date > coverageEnd) {
-      return invalid(`planItems 存在覆盖区间外的日期 ${date}`, "coverage");
+    const orders = plans.map((plan) => plan.order).sort((a, b) => a - b);
+    if (orders.some((order, index) => order !== index)) {
+      return invalid(`${date} 的 order 必须从 0 连续且不重复`, "order");
     }
   }
+
   const cursor = new Date(
-    Number(coverageStart.slice(0, 4)),
-    Number(coverageStart.slice(5, 7)) - 1,
-    Number(coverageStart.slice(8, 10))
+    Number(startDate.slice(0, 4)),
+    Number(startDate.slice(5, 7)) - 1,
+    Number(startDate.slice(8, 10))
   );
   for (;;) {
-    const y = cursor.getFullYear();
-    const m = String(cursor.getMonth() + 1).padStart(2, "0");
-    const d = String(cursor.getDate()).padStart(2, "0");
-    const current = `${y}-${m}-${d}`;
-    if (current > coverageEnd) break;
-    if (!datesWithItems.has(current)) {
+    const year = cursor.getFullYear();
+    const month = String(cursor.getMonth() + 1).padStart(2, "0");
+    const day = String(cursor.getDate()).padStart(2, "0");
+    const current = `${year}-${month}-${day}`;
+    if (current > endDate) break;
+    if (!plansByDate.has(current)) {
       return invalid(`覆盖区间内 ${current} 没有安排任务`, "coverage");
     }
     cursor.setDate(cursor.getDate() + 1);

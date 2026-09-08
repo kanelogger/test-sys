@@ -284,6 +284,35 @@ describe("createBackfill", () => {
     }
   );
 
+  it.each([
+    ["reservedPlanItemId", ""],
+    ["reservedStudyLogId", "   "],
+  ] as const)("伪造补录草稿的 %s 为空时拒绝且零修改", async (field, value) => {
+    const kit = makeKit();
+    kit.setLocal(2026, 9, 10, 8, 30);
+    await kit.workflow.initialize();
+    const view = await kit.workflow.recording("2026-09-08");
+    expect(view.ok).toBe(true);
+    if (!view.ok) return;
+    const before = snapshotRows(view.value);
+    const forged = JSON.parse(view.value.draft) as Record<string, unknown>;
+    forged[field] = value;
+
+    const result = await kit.workflow.createBackfill({
+      draft: JSON.stringify(forged) as never,
+      noCorrespondingTaskConfirmed: true,
+      plan: validPlan,
+      log: { actualMinutes: 20, summary: "伪造 ID 不得写入" },
+    });
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("INVALID_INPUT");
+
+    const after = await kit.workflow.recording("2026-09-08");
+    expect(after.ok).toBe(true);
+    if (!after.ok) return;
+    expect(snapshotRows(after.value)).toEqual(before);
+  });
   it("两个独立连接竞争同一草稿：恰一个成功，另一个 DUPLICATE_SUBMISSION", async () => {
     const kitA = makeKit();
     kitA.setLocal(2026, 9, 10, 8, 30);

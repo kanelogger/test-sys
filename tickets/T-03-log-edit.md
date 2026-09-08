@@ -1,8 +1,8 @@
 # T-03 日志编辑
 
-- 状态：ready（2026-09-08 T-02 完成解锁；实施前先细化本票公开契约）
+- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
 - Blocked by：T-02
-- 契约与设计引用：`需求方案.md` §二（记录页）、§三「记录修正」；`CONTEXT.md` StudyLog；`docs/agents/workflow-state.md` FLOW-01-L；`designs/study-assistant-design-spec/DESIGN.md` §12-4、§11。
+- 契约与实现引用：`需求方案.md` §二（记录页）、§三「记录修正」；`CONTEXT.md` StudyLog；`docs/agents/workflow-state.md` FLOW-01-L；`src/study/studyWorkflow.ts` 与 `src/pages/RecordPage.tsx`。
 
 ## 范围
 
@@ -27,3 +27,8 @@
 ## 实施前置确认
 
 - 细化并确认本票公开契约（日志编辑 query/command 与事务边界），引用 FLOW-01-L；不把未设计的方法伪装成已就绪。
+
+## 完成记录
+
+- 综合实施提交：`c989350f70b8bd4995d8110f16f008b899cdb16f`；用户直接启动 T-07 总修复后，本票不再等待独立 `$implement`。
+- 公开 seam 与真实 IndexedDB 回归：`tests/study/log-edit.test.ts`；生产 UI 证据：`docs/evidence/final-acceptance/04-backfill-redo-history-log-edit.json`。

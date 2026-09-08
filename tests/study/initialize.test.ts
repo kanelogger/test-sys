@@ -167,6 +167,48 @@ describe("initialize", () => {
       field: "settings" as string | undefined,
     },
     {
+      name: "不受支持的 seedVersion",
+      loader: mutatedSeedLoader((seed) => {
+        seed.seedVersion = "sysanalyst-2099-01-01.v9";
+      }),
+      field: "seedVersion" as string | undefined,
+    },
+    {
+      name: "种子顶层未知字段",
+      loader: mutatedSeedLoader((seed) => {
+        seed.extra = true;
+      }),
+      field: "extra" as string | undefined,
+    },
+    {
+      name: "settings 未知字段",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.settings as Record<string, unknown>).extra = true;
+      }),
+      field: "extra" as string | undefined,
+    },
+    {
+      name: "resource 未知字段",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.resources as Array<Record<string, unknown>>)[0]!.extra = true;
+      }),
+      field: "extra" as string | undefined,
+    },
+    {
+      name: "planItem 未知字段",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.planItems as Array<Record<string, unknown>>)[0]!.extra = true;
+      }),
+      field: "extra" as string | undefined,
+    },
+    {
+      name: "coverage 未知字段",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.coverage as Record<string, unknown>).extra = true;
+      }),
+      field: "coverage" as string | undefined,
+    },
+    {
       name: "planItem 状态非 pending",
       loader: mutatedSeedLoader((seed) => {
         (seed.planItems as Array<Record<string, unknown>>)[0]!.status =
