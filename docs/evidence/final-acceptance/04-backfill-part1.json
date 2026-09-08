@@ -1,0 +1,49 @@
+{
+  "afterAdds": {
+    "date": "2026-09-07",
+    "rows": ["已学待补记任务"]
+  },
+  "countBeforeExisting": {
+    "plans": 140,
+    "logs": 1
+  },
+  "existingCompletion": {
+    "planCount": 140,
+    "logCount": 2,
+    "plan": {
+      "date": "2026-09-07",
+      "status": "completed",
+      "source": "manual"
+    },
+    "log": {
+      "date": "2026-09-07",
+      "actualMinutes": 26,
+      "summary": "9月7日已学，今天补记"
+    }
+  },
+  "backfillRequired": {
+    "error": "科目不能为空",
+    "formVisible": true
+  },
+  "backfill": {
+    "planCount": 141,
+    "logCount": 3,
+    "matches": [
+      {
+        "date": "2026-09-06",
+        "status": "completed",
+        "source": "backfill",
+        "plannedMinutes": 15,
+        "lineageRoot": true
+      }
+    ],
+    "logs": [
+      {
+        "date": "2026-09-06",
+        "actualMinutes": 18,
+        "summary": "补建记录完成"
+      }
+    ],
+    "uiDuplicateWarning": false
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "directRefreshResults": [
+    {
+      "route": "#/",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "今天 · 2026-09-08 星期二",
+      "reloadH1": "今天 · 2026-09-08 星期二",
+      "expectedTitle": "今天"
+    },
+    {
+      "route": "#/plan",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "计划",
+      "reloadH1": "计划",
+      "expectedTitle": "计划"
+    },
+    {
+      "route": "#/record",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "记录",
+      "reloadH1": "记录",
+      "expectedTitle": "记录"
+    },
+    {
+      "route": "#/history",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "历史",
+      "reloadH1": "历史",
+      "expectedTitle": "历史"
+    },
+    {
+      "route": "#/resources",
+      "firstStatus": 200,
+      "reloadStatus": 200,
+      "firstH1": "资源",
+      "reloadH1": "资源",
+      "expectedTitle": "资源"
+    }
+  ],
+  "routeRefreshPassed": true,
+  "geometryRuns": 15,
+  "geometricFailures": [],
+  "geometryPassed": true,
+  "privacy": {
+    "requests": [
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:4173/test-sys/",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:4173/test-sys/assets/index-BblFWy2B.js",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:4173/test-sys/assets/index-qM6vY_QR.css",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:4173/test-sys/data/study-plan.seed.json",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.118.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.117.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALRLoKI2w328g.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.119.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.116.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.115.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.114.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.112.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.113.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.103.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.102.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.108.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.111.woff2",
+        "postData": null
+      },
+      {
+        "method": "GET",
+        "url": "https://fonts.gstatic.com/s/notosanssc/v40/k3kXo84MPvpLmixcA63oeALhLIiP-Q-87KaAaH7rzeAODp22mF0qmF4CSjmPC6A0Rg5g1igg1w.106.woff2",
+        "postData": null
+      }
+    ],
+    "methods": ["GET"],
+    "websockets": [],
+    "containsSummaryCanary": false,
+    "containsPdfFilename": false,
+    "nonGetRequests": [],
+    "localRequestsOutsideBase": [],
+    "dom": {
+      "completedPersisted": true,
+      "pdfNames": [
+        "案例冲刺宝典.pdf复制文件名",
+        "案例真题分类解析.pdf复制文件名",
+        "红宝书一本全.pdf复制文件名",
+        "考前指南.pdf复制文件名",
+        "论文写作宝典.pdf复制文件名",
+        "论文押题.pdf复制文件名",
+        "选择真题分类解析.pdf复制文件名"
+      ],
+      "excludedUiText": []
+    }
+  }
+}

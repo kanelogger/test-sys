@@ -1,5 +1,13 @@
 import { isRecord } from "./guard";
-import type { BackfillDraft, LocalDate, PendingRef, PlanItem } from "./types";
+import type {
+  BackfillDraft,
+  LocalDate,
+  DayPlanRef,
+  LogRef,
+  PendingRef,
+  PlanItem,
+  StudyLog,
+} from "./types";
 
 /**
  * opaque 引用编码：query 产生、调用者只保留并传回。
@@ -26,6 +34,98 @@ export type BackfillDraftPayload = {
   reservedPlanItemId: string;
   reservedStudyLogId: string;
 };
+
+export type DayPlanRefPayload = {
+  v: 1;
+  kind: "day-plan-ref";
+  date: LocalDate;
+  observed: Array<Pick<PlanItem, "id" | "order" | "status">>;
+};
+export type LogRefPayload = {
+  v: 1;
+  kind: "log-ref";
+  planItemId: string;
+  logId: string;
+  observedDate: LocalDate;
+};
+
+export function encodeLogRef(
+  plan: Pick<PlanItem, "id" | "date">,
+  log: Pick<StudyLog, "id">
+): LogRef {
+  return JSON.stringify({
+    v: 1,
+    kind: "log-ref",
+    planItemId: plan.id,
+    logId: log.id,
+    observedDate: plan.date,
+  } satisfies LogRefPayload) as LogRef;
+}
+
+export function decodeLogRef(raw: string): LogRefPayload | null {
+  try {
+    const value = JSON.parse(raw) as Record<string, unknown>;
+    if (
+      value.v === 1 &&
+      value.kind === "log-ref" &&
+      typeof value.planItemId === "string" &&
+      typeof value.logId === "string" &&
+      typeof value.observedDate === "string"
+    ) {
+      return {
+        v: 1,
+        kind: "log-ref",
+        planItemId: value.planItemId,
+        logId: value.logId,
+        observedDate: value.observedDate,
+      };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function encodeDayPlanRef(
+  date: LocalDate,
+  items: readonly PlanItem[]
+): DayPlanRef {
+  return JSON.stringify({
+    v: 1,
+    kind: "day-plan-ref",
+    date,
+    observed: items.map(({ id, order, status }) => ({ id, order, status })),
+  } satisfies DayPlanRefPayload) as DayPlanRef;
+}
+
+export function decodeDayPlanRef(raw: string): DayPlanRefPayload | null {
+  try {
+    const value = JSON.parse(raw) as Record<string, unknown>;
+    if (
+      value.v === 1 &&
+      value.kind === "day-plan-ref" &&
+      typeof value.date === "string" &&
+      Array.isArray(value.observed) &&
+      value.observed.every(
+        (item: unknown) =>
+          isRecord(item) &&
+          typeof item.id === "string" &&
+          Number.isInteger(item.order) &&
+          typeof item.status === "string"
+      )
+    ) {
+      return {
+        v: 1,
+        kind: "day-plan-ref",
+        date: value.date,
+        observed: value.observed as DayPlanRefPayload["observed"],
+      };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export function encodePendingRef(payload: PendingRefPayload): PendingRef {
   return JSON.stringify(payload) as PendingRef;

@@ -1,0 +1,73 @@
+{
+  "overdueBefore": {
+    "count": 1,
+    "titles": [
+      "2026-09-07案例分析延后补做任务20 分钟完成标准：完成另一道案例并整理步骤。移到今天移到明天跳过"
+    ]
+  },
+  "movedState": {
+    "chain": [
+      {
+        "id": "ef08bc81-d663-44fa-b85b-5e8f6a836b0f",
+        "date": "2026-09-07",
+        "status": "moved",
+        "lineageId": "ef08bc81-d663-44fa-b85b-5e8f6a836b0f",
+        "movedToPlanItemId": "30d9d852-5828-4cca-b079-cf62c6bb9f7f"
+      },
+      {
+        "id": "30d9d852-5828-4cca-b079-cf62c6bb9f7f",
+        "date": "2026-09-08",
+        "status": "pending",
+        "lineageId": "ef08bc81-d663-44fa-b85b-5e8f6a836b0f",
+        "movedToPlanItemId": null
+      }
+    ],
+    "pendingCount": 1,
+    "todayVisible": true
+  },
+  "opened": true,
+  "history": {
+    "movedAbsolute": ["已移至 2026-09-08"],
+    "statuses": ["案例分析", "已完成", "案例分析", "已移动"],
+    "summaries": [
+      "原计划日 2026-09-07最终：已完成改期 0 次本链待处理 0 项",
+      "原计划日 2026-09-07最终：已完成改期 1 次本链待处理 0 项"
+    ]
+  },
+  "editorOpened": true,
+  "finalState": {
+    "editedPlan": {
+      "date": "2026-09-07",
+      "status": "completed",
+      "lineageId": "5ccc73f3-a7dd-47a0-bc65-7268f1517a1d",
+      "source": "manual"
+    },
+    "editedLog": {
+      "date": "2026-09-07",
+      "actualMinutes": 33,
+      "summary": "修正后的补记总结"
+    },
+    "redoChain": [
+      {
+        "date": "2026-09-07",
+        "status": "moved",
+        "id": "ef08bc81-d663-44fa-b85b-5e8f6a836b0f",
+        "lineageId": "ef08bc81-d663-44fa-b85b-5e8f6a836b0f",
+        "movedToPlanItemId": "30d9d852-5828-4cca-b079-cf62c6bb9f7f"
+      },
+      {
+        "date": "2026-09-08",
+        "status": "completed",
+        "id": "30d9d852-5828-4cca-b079-cf62c6bb9f7f",
+        "lineageId": "ef08bc81-d663-44fa-b85b-5e8f6a836b0f",
+        "movedToPlanItemId": null
+      }
+    ],
+    "redoLog": {
+      "date": "2026-09-08",
+      "actualMinutes": 24,
+      "summary": "9月8日补做完成"
+    },
+    "redoPendingCount": 0
+  }
+}

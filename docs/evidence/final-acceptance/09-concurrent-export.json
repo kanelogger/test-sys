@@ -1,0 +1,191 @@
+{
+  "complete": {
+    "dispatch": true,
+    "snapshotCounts": {
+      "plans": 139,
+      "logs": 1
+    },
+    "snapshotValid": {
+      "preview": true,
+      "alert": "候选备份校验通过。确认后会完整替换当前全部数据，不会合并。"
+    },
+    "writerEvents": [
+      {
+        "mode": "readwrite",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843479642.7,
+        "completedAt": 1788843479649.5,
+        "outcome": "complete"
+      },
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843479649.6,
+        "completedAt": 1788843479651.5,
+        "outcome": "complete"
+      }
+    ],
+    "exportEvents": [
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843479640.3,
+        "completedAt": 1788843479646.8,
+        "outcome": "complete"
+      }
+    ],
+    "writeResult": {
+      "completed": true,
+      "formOpen": false
+    }
+  },
+  "move": {
+    "title": "需求工程入门",
+    "snapshotCounts": {
+      "plans": 139,
+      "logs": 2
+    },
+    "validation": {
+      "preview": true,
+      "alert": "候选备份校验通过。确认后会完整替换当前全部数据，不会合并。"
+    },
+    "writerEvents": [
+      {
+        "mode": "readwrite",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843525782.2,
+        "completedAt": 1788843525786.2,
+        "outcome": "complete"
+      },
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843525786.4,
+        "completedAt": 1788843525789.6,
+        "outcome": "complete"
+      }
+    ],
+    "exportEvents": [
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843525780.3,
+        "completedAt": 1788843525782.5999,
+        "outcome": "complete"
+      }
+    ],
+    "resultingAlert": "任务已移至 2026-09-13，原计划节点保留。"
+  },
+  "backfill": {
+    "preparedDate": "2026-09-06",
+    "fields": [
+      "论文",
+      "20",
+      "并发导出补录",
+      "完成一段并发快照提纲。",
+      "23",
+      "并发补录完成"
+    ],
+    "snapshotCounts": {
+      "plans": 141,
+      "logs": 3
+    },
+    "validation": {
+      "preview": true,
+      "alert": "候选备份校验通过。确认后会完整替换当前全部数据，不会合并。"
+    },
+    "writerEvents": [
+      {
+        "mode": "readwrite",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843572164.1,
+        "completedAt": 1788843572165.7,
+        "outcome": "complete"
+      },
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843572165.8,
+        "completedAt": 1788843572168.1,
+        "outcome": "complete"
+      },
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843572168.2,
+        "completedAt": 1788843572168.7,
+        "outcome": "complete"
+      }
+    ],
+    "exportEvents": [
+      {
+        "mode": "readonly",
+        "stores": [
+          "appMeta",
+          "settings",
+          "resources",
+          "planItems",
+          "studyLogs"
+        ],
+        "startedAt": 1788843572162.4,
+        "completedAt": 1788843572168.3,
+        "outcome": "complete"
+      }
+    ],
+    "resultingBackfillCount": 1
+  }
+}

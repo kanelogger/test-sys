@@ -1,0 +1,29 @@
+{
+  "sha256": "22ee9ca39f53b0fd2ddafddffbee5bc9949983d9c706fb6d311e6ad4fe698c3b",
+  "keys": [
+    "schemaVersion",
+    "exportedAt",
+    "appMeta",
+    "settings",
+    "resources",
+    "planItems",
+    "studyLogs"
+  ],
+  "schemaVersion": 1,
+  "exportedAt": "2026-09-08T04:55:27.988Z",
+  "appMeta": {
+    "initializedSeedVersion": "sysanalyst-2026-09-08.v1"
+  },
+  "settings": {
+    "examDate": "2026-10-24",
+    "defaultDailyMinutes": 90
+  },
+  "counts": {
+    "resources": 17,
+    "planItems": 139,
+    "studyLogs": 1
+  },
+  "completedWithOneLog": true,
+  "nonCompletedWithoutLogs": true,
+  "uiSuccess": true
+}

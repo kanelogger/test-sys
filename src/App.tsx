@@ -6,48 +6,42 @@ import RecordPage from "./pages/RecordPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import TodayPage from "./pages/TodayPage";
 
-/** §10.1 PC 侧边导航：五项顺序固定，未随票交付页带「随票」徽章 */
+/** §10.1 PC 侧边导航：五项顺序固定。 */
 const NAV_ITEMS: ReadonlyArray<{
   to: string;
   label: string;
   icon: IconName;
   end: boolean;
-  laterTicket: boolean;
 }> = [
   {
     to: "/",
     label: "今日",
     icon: "calendar-check",
     end: true,
-    laterTicket: false,
   },
   {
     to: "/plan",
     label: "计划",
     icon: "calendar-days",
     end: false,
-    laterTicket: true,
   },
   {
     to: "/record",
     label: "记录",
     icon: "pen-line",
     end: false,
-    laterTicket: false,
   },
   {
     to: "/history",
     label: "历史",
     icon: "history",
     end: false,
-    laterTicket: true,
   },
   {
     to: "/resources",
     label: "资源",
     icon: "library",
     end: false,
-    laterTicket: true,
   },
 ];
 
@@ -72,9 +66,6 @@ export default function App() {
             >
               <Icon name={item.icon} />
               {item.label}
-              {item.laterTicket ? (
-                <span className="nav-badge">随票</span>
-              ) : null}
             </NavLink>
           ))}
         </nav>

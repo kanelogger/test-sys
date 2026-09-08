@@ -1,0 +1,168 @@
+{
+  "titles": [
+    "数据库模式、关系代数、规范化入门",
+    "候选键与范式例题",
+    "专题题订正",
+    "记录"
+  ],
+  "move": {
+    "title": "数据库模式、关系代数、规范化入门",
+    "moveBeforeA": {
+      "nodes": [
+        {
+          "id": "856b9e59-9b0c-4fc4-9301-543633e141de",
+          "date": "2026-09-11",
+          "status": "pending",
+          "lineageId": "seed-20260910-01",
+          "movedToPlanItemId": null
+        },
+        {
+          "id": "seed-20260910-01",
+          "date": "2026-09-10",
+          "status": "moved",
+          "lineageId": "seed-20260910-01",
+          "movedToPlanItemId": "856b9e59-9b0c-4fc4-9301-543633e141de"
+        }
+      ],
+      "pending": 1
+    },
+    "moveNoSync": true,
+    "staleMove": {
+      "alert": "任务状态已在别处变更，未写入；已刷新当前计划。",
+      "database": {
+        "nodes": [
+          {
+            "id": "856b9e59-9b0c-4fc4-9301-543633e141de",
+            "date": "2026-09-11",
+            "status": "pending",
+            "lineageId": "seed-20260910-01",
+            "movedToPlanItemId": null
+          },
+          {
+            "id": "seed-20260910-01",
+            "date": "2026-09-10",
+            "status": "moved",
+            "lineageId": "seed-20260910-01",
+            "movedToPlanItemId": "856b9e59-9b0c-4fc4-9301-543633e141de"
+          }
+        ],
+        "pending": 1
+      }
+    }
+  },
+  "skip": {
+    "title": "候选键与范式例题",
+    "skipBeforeA": {
+      "nodes": [
+        {
+          "id": "seed-20260910-02",
+          "date": "2026-09-10",
+          "status": "skipped",
+          "lineageId": "seed-20260910-02",
+          "movedToPlanItemId": null
+        }
+      ],
+      "pending": 0
+    },
+    "skipNoSync": true,
+    "staleSkip": {
+      "alert": "任务状态已在别处变更，未写入；已刷新当前计划。",
+      "database": {
+        "nodes": [
+          {
+            "id": "seed-20260910-02",
+            "date": "2026-09-10",
+            "status": "skipped",
+            "lineageId": "seed-20260910-02",
+            "movedToPlanItemId": null
+          }
+        ],
+        "pending": 0
+      }
+    }
+  },
+  "remove": {
+    "title": "专题题订正",
+    "deleteBeforeA": {
+      "nodes": [],
+      "pending": 0
+    },
+    "deleteNoSync": true,
+    "staleDelete": {
+      "alert": "任务状态已在别处变更，未写入；已刷新当前计划。",
+      "database": {
+        "nodes": [],
+        "pending": 0
+      }
+    }
+  },
+  "doubleMove": {
+    "title": "记录",
+    "alert": "任务状态已在别处变更，未写入；已刷新当前计划。",
+    "database": {
+      "nodes": [
+        {
+          "id": "2976f5b9-619c-4fd9-8214-45f76b518771",
+          "date": "2026-09-12",
+          "status": "pending",
+          "lineageId": "seed-20260910-04",
+          "movedToPlanItemId": null
+        },
+        {
+          "id": "seed-20260908-05",
+          "date": "2026-09-08",
+          "status": "pending",
+          "lineageId": "seed-20260908-05",
+          "movedToPlanItemId": null
+        },
+        {
+          "id": "seed-20260909-04",
+          "date": "2026-09-09",
+          "status": "pending",
+          "lineageId": "seed-20260909-04",
+          "movedToPlanItemId": null
+        },
+        {
+          "id": "seed-20260910-04",
+          "date": "2026-09-10",
+          "status": "moved",
+          "lineageId": "seed-20260910-04",
+          "movedToPlanItemId": "2976f5b9-619c-4fd9-8214-45f76b518771"
+        },
+        {
+          "id": "seed-20260928-03",
+          "date": "2026-09-28",
+          "status": "pending",
+          "lineageId": "seed-20260928-03",
+          "movedToPlanItemId": null
+        },
+        {
+          "id": "seed-20261012-03",
+          "date": "2026-10-12",
+          "status": "pending",
+          "lineageId": "seed-20261012-03",
+          "movedToPlanItemId": null
+        }
+      ],
+      "pending": 5
+    },
+    "correctedByLineage": {
+      "lineageId": "seed-20260910-04",
+      "nodes": [
+        {
+          "id": "2976f5b9-619c-4fd9-8214-45f76b518771",
+          "date": "2026-09-12",
+          "status": "pending",
+          "movedToPlanItemId": null
+        },
+        {
+          "id": "seed-20260910-04",
+          "date": "2026-09-10",
+          "status": "moved",
+          "movedToPlanItemId": "2976f5b9-619c-4fd9-8214-45f76b518771"
+        }
+      ],
+      "pending": 1
+    }
+  }
+}

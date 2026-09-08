@@ -41,9 +41,22 @@ export type Settings = {
   defaultDailyMinutes: number;
 };
 
+export type BackupDocument = {
+  schemaVersion: 1;
+  exportedAt: string;
+  appMeta: AppMeta;
+  settings: Settings;
+  resources: Resource[];
+  planItems: PlanItem[];
+  studyLogs: StudyLog[];
+};
+
 export type LocalDate = string;
 export type PendingRef = string & { readonly pendingRef: unique symbol };
 export type BackfillDraft = string & { readonly backfillDraft: unique symbol };
+export type LogRef = string & { readonly logRef: unique symbol };
+export type DayPlanRef = string & { readonly dayPlanRef: unique symbol };
+export type BackupDraft = string & { readonly backupDraft: unique symbol };
 export type LogInput = Pick<
   StudyLog,
   "actualMinutes" | "summary" | "scoreText"
@@ -52,6 +65,16 @@ export type BackfillPlanInput = Pick<
   PlanItem,
   "subject" | "title" | "completionCriteria" | "plannedMinutes" | "resourceId"
 >;
+export type ManualPlanInput = BackfillPlanInput & { date: LocalDate };
+export type MoveDestination =
+  { kind: "today" } | { kind: "tomorrow" } | { kind: "date"; date: LocalDate };
+export type MovePlanOutcome =
+  | { outcome: "unchanged"; plan: Readonly<PlanItem> }
+  | {
+      outcome: "moved";
+      original: Readonly<PlanItem & { status: "moved" }>;
+      successor: Readonly<PlanItem & { status: "pending" }>;
+    };
 export type FailureCode =
   | "NOT_INITIALIZED"
   | "SEED_UNAVAILABLE"
@@ -69,6 +92,7 @@ export interface PlanRow {
   plan: Readonly<PlanItem>;
   resource?: Readonly<Resource>;
   log?: Readonly<StudyLog>;
+  logRef?: LogRef;
   pending?: PendingRef;
 }
 
@@ -91,6 +115,33 @@ export interface RecordingView {
   draft: BackfillDraft;
 }
 
+export interface PlanView {
+  date: LocalDate;
+  today: LocalDate;
+  items: readonly PlanRow[];
+  settings: Readonly<Settings>;
+  resources: readonly Readonly<Resource>[];
+  orderRef: DayPlanRef;
+}
+
+export interface LineageSummary {
+  lineageId: string;
+  originalDate: LocalDate;
+  finalStatus: PlanItem["status"];
+  movedCount: number;
+  pendingCount: number;
+}
+
+export interface HistoryRow extends PlanRow {
+  movedToDate?: LocalDate;
+}
+
+export interface HistoryView {
+  date: LocalDate;
+  items: readonly HistoryRow[];
+  lineages: readonly LineageSummary[];
+}
+
 export interface Recorded {
   plan: Readonly<PlanItem & { status: "completed" }>;
   log: Readonly<StudyLog>;
@@ -105,7 +156,41 @@ export interface StudyWorkflow {
   initialize(): Promise<Result<InitializeOutcome>>;
   today(): Promise<Result<TodayView>>;
   recording(date: LocalDate): Promise<Result<RecordingView>>;
+  plan(date: LocalDate): Promise<Result<PlanView>>;
+  history(date: LocalDate): Promise<Result<HistoryView>>;
+  resources(): Promise<Result<readonly Readonly<Resource>[]>>;
+  updateSettings(settings: Settings): Promise<Result<Readonly<Settings>>>;
+  addPlan(plan: ManualPlanInput): Promise<Result<Readonly<PlanItem>>>;
+  reorderPlan(
+    target: DayPlanRef,
+    orderedPlanItemIds: readonly string[]
+  ): Promise<Result<readonly Readonly<PlanItem>[]>>;
+  movePlan(
+    target: PendingRef,
+    destination: MoveDestination
+  ): Promise<Result<MovePlanOutcome>>;
+  skipPlan(
+    target: PendingRef
+  ): Promise<Result<Readonly<PlanItem & { status: "skipped" }>>>;
+  deletePlan(
+    target: PendingRef
+  ): Promise<Result<{ deletedPlanItemId: string }>>;
+  exportBackup(): Promise<Result<Readonly<BackupDocument>>>;
+  prepareImport(text: string): Promise<
+    Result<{
+      draft: BackupDraft;
+      initializedSeedVersion: string;
+      counts: { resources: number; planItems: number; studyLogs: number };
+    }>
+  >;
+  restoreBackup(input: {
+    draft: BackupDraft;
+    confirmed: true;
+  }): Promise<
+    Result<{ resources: number; planItems: number; studyLogs: number }>
+  >;
   complete(target: PendingRef, log: LogInput): Promise<Result<Recorded>>;
+  editLog(target: LogRef, log: LogInput): Promise<Result<Readonly<StudyLog>>>;
   createBackfill(input: {
     draft: BackfillDraft;
     noCorrespondingTaskConfirmed: true;

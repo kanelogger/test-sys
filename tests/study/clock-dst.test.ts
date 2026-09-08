@@ -38,6 +38,29 @@ describe("夏令时下的本地日历日", () => {
     expect(after.value.date).toBe("2026-03-09");
     expect(after.value.daysUntilExam).toBe(229);
   });
+
+  it("拨快日执行移到明天，目标仍是下一个本地日历日", async () => {
+    const kit = makeKit();
+    kit.setLocal(2026, 3, 8, 23, 30);
+    await kit.workflow.initialize();
+    const created = await kit.workflow.addPlan({
+      date: "2026-03-08",
+      subject: "时钟",
+      title: "DST 日任务",
+      completionCriteria: "验证日历日推进。",
+      plannedMinutes: 5,
+    });
+    expect(created.ok).toBe(true);
+    const view = await kit.workflow.plan("2026-03-08");
+    expect(view.ok).toBe(true);
+    if (!view.ok) return;
+    const ref = view.value.items[0]?.pending;
+    if (!ref) return;
+    const moved = await kit.workflow.movePlan(ref, { kind: "tomorrow" });
+    expect(moved.ok).toBe(true);
+    if (!moved.ok || moved.value.outcome !== "moved") return;
+    expect(moved.value.successor.date).toBe("2026-03-09");
+  });
 });
 
 describe("DST 项目环境", () => {

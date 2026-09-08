@@ -42,3 +42,11 @@ function dayOrdinal(date: LocalDate): number {
 export function daysBetween(earlier: LocalDate, later: LocalDate): number {
   return dayOrdinal(later) - dayOrdinal(earlier);
 }
+
+/** Add whole local-calendar days without converting through UTC durations. */
+export function addLocalDays(date: LocalDate, amount: number): LocalDate {
+  const [y, m, d] = date.split("-").map(Number) as [number, number, number];
+  const shifted = new Date(y, m - 1, d);
+  shifted.setDate(shifted.getDate() + amount);
+  return toLocalDate(shifted);
+}

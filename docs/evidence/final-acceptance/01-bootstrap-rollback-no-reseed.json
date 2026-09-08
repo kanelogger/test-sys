@@ -1,0 +1,27 @@
+{
+  "failedSeedRequests": 1,
+  "failure": {
+    "pageText": "系统分析师学习助手 今日 计划 记录 历史 资源 数据仅保存在本机浏览器 种子拉取失败：HTTP 500（错误码 SEED_UNAVAILABLE） 请刷新页面重试；若持续失败，请检查浏览器是否禁用了 IndexedDB 或站点数据存储。",
+    "counts": {
+      "appMeta": 0,
+      "settings": 0,
+      "resources": 0,
+      "planItems": 0,
+      "studyLogs": 0
+    }
+  },
+  "initialized": {
+    "meta": {
+      "initializedSeedVersion": "sysanalyst-2026-09-08.v1"
+    },
+    "countBeforeDelete": 139
+  },
+  "futureSeedRequests": 0,
+  "afterRefresh": {
+    "meta": {
+      "initializedSeedVersion": "sysanalyst-2026-09-08.v1"
+    },
+    "planCount": 0,
+    "emptyState": "今天没有安排任务。"
+  }
+}

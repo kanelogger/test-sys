@@ -3,9 +3,15 @@ import { initializeOnce, studyWorkflow } from "../study/react";
 import type { FailureCode, PlanRow, RecordingView } from "../study";
 import { CompleteFormSlot, OrphanCompleteForm } from "../ui/CompleteFormSlot";
 import { InlineAlert } from "../ui/InlineAlert";
+import { Icon } from "../ui/Icon";
 import { PageError } from "../ui/PageError";
 import { TaskRowShell } from "../ui/TaskRowShell";
-import { useRowFeedback, type RowFeedback } from "../ui/useRowFeedback";
+import {
+  useRowFeedback,
+  type LogFieldName,
+  type LogFields,
+  type RowFeedback,
+} from "../ui/useRowFeedback";
 
 type LoadState =
   | { phase: "loading" }
@@ -278,6 +284,7 @@ export default function RecordPage() {
                 row={row}
                 feedback={feedback}
                 busy={busy}
+                onReload={() => load(dateRef.current)}
               />
             ))}
             <OrphanCompleteForm
@@ -342,13 +349,80 @@ function RecordRow({
   row,
   feedback,
   busy,
+  onReload,
 }: {
   row: PlanRow;
   feedback: RowFeedback;
   busy: boolean;
+  onReload: () => Promise<void>;
 }) {
   const form = feedback.openForm;
   const formOpenHere = form?.planId === row.plan.id;
+  const [editing, setEditing] = useState(false);
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [editFields, setEditFields] = useState<LogFields>({
+    actualMinutes: "",
+    summary: "",
+    scoreText: "",
+  });
+  const [editErrors, setEditErrors] = useState<
+    Partial<Record<LogFieldName, string>>
+  >({});
+  const [editAlert, setEditAlert] = useState<string | null>(null);
+  const locked = busy || editSubmitting;
+
+  const openEdit = () => {
+    if (!row.log || !row.logRef || locked) return;
+    setEditing(true);
+    setEditErrors({});
+    setEditAlert(null);
+    setEditFields({
+      actualMinutes: String(row.log.actualMinutes),
+      summary: row.log.summary,
+      scoreText: row.log.scoreText ?? "",
+    });
+  };
+
+  const submitEdit = async () => {
+    if (!row.logRef || locked) return;
+    setEditSubmitting(true);
+    setEditErrors({});
+    setEditAlert(null);
+    const result = await studyWorkflow.editLog(row.logRef, {
+      actualMinutes: Number(editFields.actualMinutes),
+      summary: editFields.summary,
+      ...(editFields.scoreText.trim()
+        ? { scoreText: editFields.scoreText }
+        : {}),
+    });
+    setEditSubmitting(false);
+    if (result.ok) {
+      setEditing(false);
+      await onReload();
+      return;
+    }
+    if (
+      result.error.code === "INVALID_INPUT" &&
+      (result.error.field === "actualMinutes" ||
+        result.error.field === "summary" ||
+        result.error.field === "scoreText")
+    ) {
+      setEditErrors({ [result.error.field]: result.error.reason });
+      return;
+    }
+    setEditAlert(
+      result.error.code === "STATE_CHANGED"
+        ? "日志或任务已在别处变更。输入已保留，请核对刷新后的事实。"
+        : `${result.error.reason}（未写入）`
+    );
+    if (
+      result.error.code === "STATE_CHANGED" ||
+      result.error.code === "INVALID_STATE"
+    ) {
+      await onReload();
+    }
+  };
+
   return (
     <TaskRowShell
       row={row}
@@ -378,7 +452,7 @@ function RecordRow({
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
-                disabled={busy}
+                disabled={locked}
                 onClick={() =>
                   formOpenHere ? feedback.close() : feedback.open(row)
                 }
@@ -387,21 +461,134 @@ function RecordRow({
               </button>
             </span>
           ) : null}
+          {row.plan.status === "completed" && row.logRef ? (
+            <span className="task-actions">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                disabled={locked}
+                onClick={editing ? () => setEditing(false) : openEdit}
+              >
+                <Icon name="pencil" />
+                {editing ? "收起编辑" : "编辑日志"}
+              </button>
+            </span>
+          ) : null}
         </>
       }
       formSlot={
-        formOpenHere ? (
-          <CompleteFormSlot
-            feedback={feedback}
-            externalBusy={busy}
-            note={
-              <p className="note-line" style={{ marginTop: 10 }}>
-                补记：当天已学、现在登记；学习日保持{" "}
-                <span className="mono">{form.planDate}</span>，任务数不增加。
-              </p>
-            }
-          />
-        ) : null
+        <>
+          {formOpenHere ? (
+            <CompleteFormSlot
+              feedback={feedback}
+              externalBusy={locked}
+              note={
+                <p className="note-line" style={{ marginTop: 10 }}>
+                  补记：当天已学、现在登记；学习日保持{" "}
+                  <span className="mono">{form.planDate}</span>，任务数不增加。
+                </p>
+              }
+            />
+          ) : null}
+          {editing ? (
+            <div className="inline-form is-open">
+              <div className="inline-form-inner">
+                <p className="form-static">
+                  学习日：<span className="mono">{row.log?.date}</span>
+                  （编辑不会改变任务终态或日期）
+                </p>
+                <div className="form-grid">
+                  <label className="field">
+                    <span className="field-label">实际分钟 *</span>
+                    <input
+                      type="number"
+                      min={1}
+                      step={1}
+                      className={`input${
+                        editErrors.actualMinutes ? " is-invalid" : ""
+                      }`}
+                      value={editFields.actualMinutes}
+                      disabled={locked}
+                      onChange={(event) =>
+                        setEditFields((current) => ({
+                          ...current,
+                          actualMinutes: event.target.value,
+                        }))
+                      }
+                    />
+                    {editErrors.actualMinutes ? (
+                      <span className="field-error">
+                        {editErrors.actualMinutes}
+                      </span>
+                    ) : null}
+                  </label>
+                  <label className="field">
+                    <span className="field-label">成绩（可选）</span>
+                    <input
+                      className={`input${
+                        editErrors.scoreText ? " is-invalid" : ""
+                      }`}
+                      value={editFields.scoreText}
+                      disabled={locked}
+                      onChange={(event) =>
+                        setEditFields((current) => ({
+                          ...current,
+                          scoreText: event.target.value,
+                        }))
+                      }
+                    />
+                    {editErrors.scoreText ? (
+                      <span className="field-error">
+                        {editErrors.scoreText}
+                      </span>
+                    ) : null}
+                  </label>
+                  <label className="field span-2">
+                    <span className="field-label">学习总结 *</span>
+                    <textarea
+                      className={`textarea${
+                        editErrors.summary ? " is-invalid" : ""
+                      }`}
+                      value={editFields.summary}
+                      disabled={locked}
+                      onChange={(event) =>
+                        setEditFields((current) => ({
+                          ...current,
+                          summary: event.target.value,
+                        }))
+                      }
+                    />
+                    {editErrors.summary ? (
+                      <span className="field-error">{editErrors.summary}</span>
+                    ) : null}
+                  </label>
+                </div>
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={locked}
+                    onClick={() => void submitEdit()}
+                  >
+                    <Icon name="save" />
+                    {editSubmitting ? "保存中…" : "保存日志"}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    disabled={locked}
+                    onClick={() => setEditing(false)}
+                  >
+                    取消
+                  </button>
+                </div>
+                {editAlert ? (
+                  <InlineAlert kind="error" text={editAlert} />
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+        </>
       }
     />
   );

@@ -3,7 +3,9 @@ import { initializeOnce, studyWorkflow } from "../study/react";
 import type { FailureCode, PlanRow, TodayView } from "../study";
 import { CompleteFormSlot, OrphanCompleteForm } from "../ui/CompleteFormSlot";
 import { Icon } from "../ui/Icon";
+import { InlineAlert } from "../ui/InlineAlert";
 import { PageError } from "../ui/PageError";
+import { ResourceAccess } from "../ui/ResourceAccess";
 import { useRowFeedback, type RowFeedback } from "../ui/useRowFeedback";
 import { TaskRowShell } from "../ui/TaskRowShell";
 
@@ -12,6 +14,8 @@ type LoadState =
   | { phase: "page-error"; code: FailureCode; reason: string }
   | { phase: "ready"; view: TodayView };
 
+type PendingAction = "today" | "tomorrow" | "skip";
+
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
 function weekdayOf(date: string): string {
@@ -19,43 +23,13 @@ function weekdayOf(date: string): string {
   return WEEKDAYS[new Date(y, m - 1, d).getDay()] ?? "";
 }
 
-/** §11-10 复制文件名：成功短暂变为「已复制 ✓」，失败 error 条提示手动复制 */
-function CopyFilename({ filename }: { filename: string }) {
-  const [copied, setCopied] = useState(false);
-  const [failed, setFailed] = useState(false);
-
-  const copy = async () => {
-    setFailed(false);
-    try {
-      await navigator.clipboard.writeText(filename);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
-    } catch {
-      setFailed(true);
-    }
-  };
-
-  return (
-    <span className="file-chip">
-      <Icon name="file" />
-      {filename}
-      <button
-        type="button"
-        className="btn btn-secondary btn-sm"
-        onClick={() => void copy()}
-      >
-        <Icon name={copied ? "check" : "copy"} />
-        {copied ? "已复制 ✓" : "复制"}
-      </button>
-      {failed ? (
-        <span className="field-error">复制失败，请手动选择文件名复制</span>
-      ) : null}
-    </span>
-  );
-}
-
 export default function TodayPage() {
   const [state, setState] = useState<LoadState>({ phase: "loading" });
+  const [actionPlanId, setActionPlanId] = useState<string | null>(null);
+  const [actionAlert, setActionAlert] = useState<{
+    kind: "error" | "success";
+    text: string;
+  } | null>(null);
 
   const load = useCallback(async () => {
     const init = await initializeOnce();
@@ -84,6 +58,42 @@ export default function TodayPage() {
   }, [load]);
 
   const feedback = useRowFeedback(load);
+  const busy = feedback.submitting || actionPlanId !== null;
+
+  const runPendingAction = async (row: PlanRow, action: PendingAction) => {
+    if (!row.pending || busy) return;
+    setActionPlanId(row.plan.id);
+    setActionAlert(null);
+    const result =
+      action === "skip"
+        ? await studyWorkflow.skipPlan(row.pending)
+        : await studyWorkflow.movePlan(row.pending, { kind: action });
+    setActionPlanId(null);
+    if (result.ok) {
+      setActionAlert({
+        kind: "success",
+        text:
+          action === "skip"
+            ? `已跳过「${row.plan.title}」`
+            : `已将「${row.plan.title}」移到${action === "today" ? "今天" : "明天"}`,
+      });
+      await load();
+      return;
+    }
+    setActionAlert({
+      kind: "error",
+      text:
+        result.error.code === "STATE_CHANGED"
+          ? "任务状态已在别处变更，未重复写入；已刷新当前视图。"
+          : `${result.error.reason}（未写入）`,
+    });
+    if (
+      result.error.code === "STATE_CHANGED" ||
+      result.error.code === "INVALID_STATE"
+    ) {
+      await load();
+    }
+  };
 
   if (state.phase === "loading") {
     return <p className="note-line">正在打开今日计划…</p>;
@@ -93,7 +103,6 @@ export default function TodayPage() {
   }
 
   const { view } = state;
-
   return (
     <>
       <header className="page-head">
@@ -117,12 +126,16 @@ export default function TodayPage() {
         </div>
       </header>
 
+      {actionAlert ? (
+        <InlineAlert kind={actionAlert.kind} text={actionAlert.text} />
+      ) : null}
+
       {view.overdue.length > 0 ? (
         <section className="section">
           <span className="section-label">逾期待处理</span>
           <div className="overdue-block">
             <div className="overdue-head">
-              逾期待处理
+              逐项按实际情况处理
               <span className="badge badge-overdue">
                 {view.overdue.length} 项
               </span>
@@ -130,20 +143,56 @@ export default function TodayPage() {
             <div className="overdue-list">
               {view.overdue.map((row) => (
                 <div className="overdue-row" key={row.plan.id}>
-                  <span className="date">{row.plan.date}</span>
-                  <span className="badge badge-subject">
-                    {row.plan.subject}
-                  </span>
-                  <span>{row.plan.title}</span>
-                  <span className="minutes">
-                    {row.plan.plannedMinutes} 分钟
-                  </span>
+                  <div className="overdue-main">
+                    <span className="date">{row.plan.date}</span>
+                    <span className="badge badge-subject">
+                      {row.plan.subject}
+                    </span>
+                    <span>{row.plan.title}</span>
+                    <span className="minutes">
+                      {row.plan.plannedMinutes} 分钟
+                    </span>
+                  </div>
+                  <p className="overdue-criteria">
+                    完成标准：{row.plan.completionCriteria}
+                  </p>
+                  <div className="overdue-actions">
+                    {row.resource ? (
+                      <ResourceAccess resource={row.resource} />
+                    ) : null}
+                    <span className="task-actions">
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        disabled={busy}
+                        onClick={() => void runPendingAction(row, "today")}
+                      >
+                        <Icon name="move-right" />
+                        移到今天
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        disabled={busy}
+                        onClick={() => void runPendingAction(row, "tomorrow")}
+                      >
+                        <Icon name="move-right" />
+                        移到明天
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={busy}
+                        onClick={() => void runPendingAction(row, "skip")}
+                      >
+                        <Icon name="skip" />
+                        跳过
+                      </button>
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
-            <p className="note-line" style={{ marginBottom: 0 }}>
-              移到今天 / 移到明天 / 跳过随计划票（T-04）提供。
-            </p>
           </div>
         </section>
       ) : null}
@@ -158,9 +207,15 @@ export default function TodayPage() {
             row={row}
             orderLabel={index + 1}
             feedback={feedback}
+            busy={busy}
+            onMoveTomorrow={() => void runPendingAction(row, "tomorrow")}
           />
         ))}
-        <OrphanCompleteForm feedback={feedback} rows={view.items} />
+        <OrphanCompleteForm
+          feedback={feedback}
+          rows={view.items}
+          externalBusy={busy}
+        />
       </section>
     </>
   );
@@ -170,10 +225,14 @@ function TodayTaskRow({
   row,
   orderLabel,
   feedback,
+  busy,
+  onMoveTomorrow,
 }: {
   row: PlanRow;
   orderLabel: number;
   feedback: RowFeedback;
+  busy: boolean;
+  onMoveTomorrow: () => void;
 }) {
   const form = feedback.openForm;
   const formOpenHere = form?.planId === row.plan.id;
@@ -192,27 +251,22 @@ function TodayTaskRow({
           {row.plan.status === "completed" ? (
             <span className="badge badge-completed">已完成</span>
           ) : null}
-          {row.resource ? (
-            row.resource.type === "web" ? (
-              <a
-                className="link"
-                href={row.resource.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon name="external" />
-                {row.resource.title}
-              </a>
-            ) : (
-              <CopyFilename filename={row.resource.filename} />
-            )
-          ) : null}
+          {row.resource ? <ResourceAccess resource={row.resource} /> : null}
           {row.plan.status === "pending" && row.pending ? (
             <span className="task-actions">
               <button
                 type="button"
+                className="btn btn-secondary btn-sm"
+                disabled={busy}
+                onClick={onMoveTomorrow}
+              >
+                <Icon name="move-right" />
+                移到明天
+              </button>
+              <button
+                type="button"
                 className="btn btn-primary btn-sm"
-                disabled={feedback.submitting}
+                disabled={busy}
                 onClick={() =>
                   formOpenHere ? feedback.close() : feedback.open(row)
                 }
@@ -223,7 +277,11 @@ function TodayTaskRow({
           ) : null}
         </>
       }
-      formSlot={formOpenHere ? <CompleteFormSlot feedback={feedback} /> : null}
+      formSlot={
+        formOpenHere ? (
+          <CompleteFormSlot feedback={feedback} externalBusy={busy} />
+        ) : null
+      }
     />
   );
 }

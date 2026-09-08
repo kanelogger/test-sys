@@ -3,6 +3,10 @@ import { isRecord } from "./guard";
 import type { PlanItem, Resource, Settings } from "./types";
 
 /** 随包种子解析与完整校验：与备份导入相同的字段与引用规则（需求 §三）。 */
+const FROZEN_COVERAGE_START = "2026-09-08";
+const FROZEN_COVERAGE_END = "2026-10-23";
+const DEFAULT_EXAM_DATE = "2026-10-24";
+const DEFAULT_DAILY_MINUTES = 90;
 
 export type ParsedSeed = {
   seedVersion: string;
@@ -215,9 +219,21 @@ export function parseAndValidateSeed(text: string): SeedResult {
   ) {
     return invalid("settings.examDate 非法", "examDate");
   }
+  if (raw.settings.examDate !== DEFAULT_EXAM_DATE) {
+    return invalid(
+      `settings.examDate 必须为冻结默认值 ${DEFAULT_EXAM_DATE}`,
+      "examDate"
+    );
+  }
   if (!isPositiveInt(raw.settings.defaultDailyMinutes)) {
     return invalid(
       "settings.defaultDailyMinutes 不是正整数",
+      "defaultDailyMinutes"
+    );
+  }
+  if (raw.settings.defaultDailyMinutes !== DEFAULT_DAILY_MINUTES) {
+    return invalid(
+      `settings.defaultDailyMinutes 必须为默认参考线 ${DEFAULT_DAILY_MINUTES}`,
       "defaultDailyMinutes"
     );
   }
@@ -244,29 +260,14 @@ export function parseAndValidateSeed(text: string): SeedResult {
   }
   const coverageStart = startDate;
   const coverageEnd = endDate;
-  // 覆盖窗口须与当前备考执行窗口一致（需求 §三）：起于 2026-09-08、止于考试前一日
-  if (coverageStart !== "2026-09-08") {
+  if (
+    coverageStart !== FROZEN_COVERAGE_START ||
+    coverageEnd !== FROZEN_COVERAGE_END
+  ) {
     return invalid(
-      "coverage.startDate 与备考执行窗口起点 2026-09-08 不一致",
+      `coverage 必须与冻结窗口 ${FROZEN_COVERAGE_START} 至 ${FROZEN_COVERAGE_END} 一致`,
       "coverage"
     );
-  }
-  {
-    const exam = new Date(
-      Number(settings.examDate.slice(0, 4)),
-      Number(settings.examDate.slice(5, 7)) - 1,
-      Number(settings.examDate.slice(8, 10))
-    );
-    exam.setDate(exam.getDate() - 1);
-    const y = exam.getFullYear();
-    const m = String(exam.getMonth() + 1).padStart(2, "0");
-    const d = String(exam.getDate()).padStart(2, "0");
-    if (coverageEnd !== `${y}-${m}-${d}`) {
-      return invalid(
-        "coverage.endDate 不是考试前一日（与备考执行窗口不一致）",
-        "coverage"
-      );
-    }
   }
 
   if (!Array.isArray(raw.resources)) {
@@ -297,6 +298,30 @@ export function parseAndValidateSeed(text: string): SeedResult {
     }
     planIds.add(parsed.value.id);
     planItems.push(parsed.value);
+  }
+
+  const minutesByDate = new Map<string, number>();
+  for (const plan of planItems) {
+    minutesByDate.set(
+      plan.date,
+      (minutesByDate.get(plan.date) ?? 0) + plan.plannedMinutes
+    );
+  }
+  for (const [date, minutes] of minutesByDate) {
+    const [year, month, day] = date.split("-").map(Number) as [
+      number,
+      number,
+      number,
+    ];
+    const weekday = new Date(year, month - 1, day).getDay();
+    const limit =
+      weekday === 0 || weekday === 6 ? 240 : weekday === 5 ? 60 : 90;
+    if (minutes > limit) {
+      return invalid(
+        `${date} 初始任务共 ${minutes} 分钟，超过当日预算 ${limit} 分钟`,
+        "plannedMinutes"
+      );
+    }
   }
 
   // 逐日覆盖：所有种子任务均在覆盖区间内，且区间内每个日历日至少一项

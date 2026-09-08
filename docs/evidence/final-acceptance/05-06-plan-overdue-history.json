@@ -1,0 +1,115 @@
+{
+  "added": ["逾期移明天验收", "逾期跳过验收", "连续移动验收"],
+  "overdueStart": ["逾期移明天验收", "逾期跳过验收", "连续移动验收"],
+  "deleteOpened": true,
+  "deniedDelete": {
+    "alert": "移动链末端不可硬删除；请跳过或继续移动（未写入）",
+    "stillVisible": true
+  },
+  "sameDate": {
+    "alert": "目标日期与原日期相同，计划未修改。",
+    "stillOnDate": true
+  },
+  "orderBefore": [
+    "需求工程入门",
+    "结构化/面向对象分析框架",
+    "对应题及订正",
+    "记录",
+    "逾期移明天验收",
+    "连续移动验收"
+  ],
+  "orderAfter": [
+    "需求工程入门",
+    "结构化/面向对象分析框架",
+    "对应题及订正",
+    "记录",
+    "连续移动验收",
+    "逾期移明天验收"
+  ],
+  "rootDeleteOpened": true,
+  "rootDeleted": true,
+  "history": {
+    "facts": ["已移至 2026-09-09", "已移至 2026-09-08"],
+    "badges": [
+      "综合知识",
+      "已移动",
+      "综合知识",
+      "已跳过",
+      "综合知识",
+      "已移动"
+    ],
+    "summaries": [
+      "原计划日 2026-09-05最终：待处理改期 2 次本链待处理 1 项",
+      "原计划日 2026-09-05最终：待处理改期 1 次本链待处理 1 项",
+      "原计划日 2026-09-05最终：已跳过改期 0 次本链待处理 0 项"
+    ]
+  },
+  "backfillHistory": {
+    "hasBackfillBadge": true,
+    "actual": "实际 18 分钟 · 补建记录完成"
+  },
+  "database": {
+    "groups": {
+      "逾期移明天验收": {
+        "nodes": [
+          {
+            "id": "c4531114-3c6b-4fa6-af0d-7ddf886406ff",
+            "date": "2026-09-05",
+            "status": "moved",
+            "lineageId": "c4531114-3c6b-4fa6-af0d-7ddf886406ff",
+            "movedToPlanItemId": "ef464a1c-b034-40d3-bd5a-d22fd236e39b"
+          },
+          {
+            "id": "ef464a1c-b034-40d3-bd5a-d22fd236e39b",
+            "date": "2026-09-09",
+            "status": "pending",
+            "lineageId": "c4531114-3c6b-4fa6-af0d-7ddf886406ff",
+            "movedToPlanItemId": null
+          }
+        ],
+        "pending": 1
+      },
+      "逾期跳过验收": {
+        "nodes": [
+          {
+            "id": "f3083e5e-c43d-4e33-8305-f7484e836c9d",
+            "date": "2026-09-05",
+            "status": "skipped",
+            "lineageId": "f3083e5e-c43d-4e33-8305-f7484e836c9d",
+            "movedToPlanItemId": null
+          }
+        ],
+        "pending": 0
+      },
+      "连续移动验收": {
+        "nodes": [
+          {
+            "id": "00dc2587-9713-455c-876b-50d1236c195d",
+            "date": "2026-09-05",
+            "status": "moved",
+            "lineageId": "00dc2587-9713-455c-876b-50d1236c195d",
+            "movedToPlanItemId": "7a157bb1-4661-4410-a93c-0139f1e69a32"
+          },
+          {
+            "id": "7a157bb1-4661-4410-a93c-0139f1e69a32",
+            "date": "2026-09-08",
+            "status": "moved",
+            "lineageId": "00dc2587-9713-455c-876b-50d1236c195d",
+            "movedToPlanItemId": "d07b8745-7666-48ca-abda-0b5e513c4fdf"
+          },
+          {
+            "id": "d07b8745-7666-48ca-abda-0b5e513c4fdf",
+            "date": "2026-09-09",
+            "status": "pending",
+            "lineageId": "00dc2587-9713-455c-876b-50d1236c195d",
+            "movedToPlanItemId": null
+          }
+        ],
+        "pending": 1
+      }
+    },
+    "maxPendingPerLineage": 1,
+    "distinctPendingLineages": 140,
+    "rootDeleted": true
+  }
+}

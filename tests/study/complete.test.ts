@@ -332,4 +332,52 @@ describe("complete", () => {
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeFail);
   });
+
+  it("完成命令第二步写入故障时，日志与 completed 状态一并回滚", async () => {
+    const kit = makeKit();
+    kit.setLocal(2026, 9, 10, 8, 30);
+    await kit.workflow.initialize();
+    const before = await kit.workflow.recording("2026-09-10");
+    expect(before.ok).toBe(true);
+    if (!before.ok) return;
+    const ref = before.value.items[0]?.pending;
+    if (!ref) return;
+
+    const originalPut = IDBObjectStore.prototype.put;
+    let injected = false;
+    IDBObjectStore.prototype.put = function (
+      value: unknown,
+      key?: IDBValidKey
+    ): IDBRequest<IDBValidKey> {
+      const writesCompletedPlan =
+        value !== null &&
+        typeof value === "object" &&
+        "status" in value &&
+        value.status === "completed";
+      if (!injected && this.name === "planItems" && writesCompletedPlan) {
+        injected = true;
+        throw new DOMException("forced complete failure", "AbortError");
+      }
+      return key === undefined
+        ? originalPut.call(this, value)
+        : originalPut.call(this, value, key);
+    };
+    try {
+      const failed = await kit.workflow.complete(ref, {
+        actualMinutes: 30,
+        summary: "事务失败不应保留",
+      });
+      expect(failed.ok).toBe(false);
+      if (failed.ok) return;
+      expect(failed.error.code).toBe("STORAGE_FAILURE");
+    } finally {
+      IDBObjectStore.prototype.put = originalPut;
+    }
+
+    const after = await kit.workflow.recording("2026-09-10");
+    expect(after.ok).toBe(true);
+    if (!after.ok) return;
+    expect(after.value.items[0]?.plan.status).toBe("pending");
+    expect(after.value.items[0]?.log).toBeUndefined();
+  });
 });

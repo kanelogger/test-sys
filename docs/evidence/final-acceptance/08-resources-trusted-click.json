@@ -1,0 +1,15 @@
+{
+  "beforePages": 6,
+  "popupInfo": {
+    "url": "https://rsj.beijing.gov.cn/ywsite/bjpta/fwzn/cjwt/zyzgks/202603/t20260319_4561593.html",
+    "title": "人事考试服务频道"
+  },
+  "afterPopupClosedPages": 6,
+  "beforeCopyPages": 6,
+  "afterCopyPages": 6,
+  "copy": {
+    "button": "复制文件名",
+    "error": null,
+    "anchors": 0
+  }
+}

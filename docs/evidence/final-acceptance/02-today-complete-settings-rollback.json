@@ -1,0 +1,41 @@
+{
+  "invalid": {
+    "errors": ["实际分钟必须为正整数"],
+    "minutes": "0",
+    "summary": "   "
+  },
+  "afterComplete": {
+    "completed": 1,
+    "logs": 1,
+    "summaries": ["完成第一项并记录真实总结"],
+    "budget": "今日已计划 90 / 90 分钟"
+  },
+  "planCountBeforeSettings": 5,
+  "settingsView": {
+    "header": "距考试 46 天今日已计划 90 / 75 分钟 超出参考线 15 分钟",
+    "taskCount": 5,
+    "completedVisible": true
+  },
+  "failureTarget": "软件工程入门",
+  "rollback": {
+    "alert": "forced UI complete failure（未写入）重新查询",
+    "title": "软件工程入门",
+    "status": "pending",
+    "targetLogCount": 0,
+    "totalLogs": 1
+  },
+  "afterRefresh": {
+    "completedVisible": true,
+    "completedBadges": ["已完成"],
+    "taskCount": 5
+  },
+  "correctedExamDate": {
+    "inputResult": "2026-11-01",
+    "settings": {
+      "examDate": "2026-11-01",
+      "defaultDailyMinutes": 75
+    },
+    "header": "距考试 54 天今日已计划 90 / 75 分钟 超出参考线 15 分钟",
+    "taskCount": 5
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "historicalRestore": {
+    "preview": true,
+    "confirmClicked": true,
+    "changedFromMutatedState": true,
+    "exactFivePartReplacement": true,
+    "refreshExact": true,
+    "ui": {
+      "alert": "恢复完成：17 个资源、139 项计划、1 条日志。",
+      "preview": false
+    },
+    "restoredAppMeta": {
+      "initializedSeedVersion": "sysanalyst-2026-09-06.v1"
+    }
+  },
+  "roundtrip": {
+    "preview": true,
+    "confirm": true,
+    "exactFiveParts": true,
+    "refreshExact": true,
+    "ui": "恢复完成：17 个资源、139 项计划、1 条日志。",
+    "restoredAppMeta": {
+      "initializedSeedVersion": "sysanalyst-2026-09-06.v1"
+    }
+  },
+  "transactionFailure": {
+    "previewAccepted": true,
+    "confirmClicked": true,
+    "errorVisible": "forced restore transaction failure；恢复失败，原数据保持不变。",
+    "candidateRetained": true,
+    "unchanged": true,
+    "beforeSha256": "0737dc7ee3a9f22b8257a2b0cae028e0314a4cf6c909196cab39950353292e42",
+    "afterSha256": "0737dc7ee3a9f22b8257a2b0cae028e0314a4cf6c909196cab39950353292e42"
+  }
+}

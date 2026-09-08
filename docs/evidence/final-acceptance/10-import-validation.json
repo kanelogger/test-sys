@@ -1,0 +1,169 @@
+{
+  "cases": [
+    {
+      "name": "非法 JSON",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： 备份不是合法 JSON"
+    },
+    {
+      "name": "schemaVersion 不兼容",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： schemaVersion 不兼容，仅支持 1"
+    },
+    {
+      "name": "顶层未知字段",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： backup.extra 是不支持的字段"
+    },
+    {
+      "name": "缺失 settings",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： backup.settings 缺失 settings 必须是对象"
+    },
+    {
+      "name": "initializedSeedVersion 为空",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： appMeta.initializedSeedVersion 不在受支持版本列表中"
+    },
+    {
+      "name": "initializedSeedVersion 不支持",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： appMeta.initializedSeedVersion 不在受支持版本列表中"
+    },
+    {
+      "name": "Resource ID 重复",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： Resource id 重复：resource-pdf-case-guide"
+    },
+    {
+      "name": "本地 filename 含路径",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： resources[0].filename 必须是无路径的非空文件名 PlanItem seed-20260923-03 引用不存在的 Resource PlanItem seed-20260924-03 引用不存在的 Resource PlanItem seed-20260929-03 引用不存在的 Resource PlanItem seed-20260930-03 引用不存在的 Resource PlanItem seed-20261001-03 引用不存在的 Resource PlanItem seed-20261005-02 引用不存在的 Resource PlanItem seed-20261020-03 引用不存在的 Resource PlanItem seed-20261022-02 引用不存在的 Resource"
+    },
+    {
+      "name": "PlanItem ID 重复",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： PlanItem id 重复：seed-20260908-01 PlanItem id 重复：seed-20260908-01"
+    },
+    {
+      "name": "resourceId 悬空",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： PlanItem seed-20260908-01 引用不存在的 Resource"
+    },
+    {
+      "name": "计划日期非法",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： planItems[0].date 必须是合法 YYYY-MM-DD 日历日 StudyLog 9220b9ff-1c7e-4187-a071-0a8b4767866e 引用不存在的 PlanItem"
+    },
+    {
+      "name": "completed 无日志",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： completed PlanItem seed-20260908-01 必须恰有一条 StudyLog"
+    },
+    {
+      "name": "一项两条日志",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： completed PlanItem seed-20260908-01 必须恰有一条 StudyLog"
+    },
+    {
+      "name": "日志 ID 重复",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： StudyLog id 重复：9220b9ff-1c7e-4187-a071-0a8b4767866e completed PlanItem seed-20260908-01 必须恰有一条 StudyLog"
+    },
+    {
+      "name": "日志日期不等于计划日期",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： StudyLog 9220b9ff-1c7e-4187-a071-0a8b4767866e.date 必须等于关联 PlanItem.date"
+    },
+    {
+      "name": "pending 携带日志",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： pending PlanItem seed-20260908-01 不得有 StudyLog"
+    },
+    {
+      "name": "同 lineage 多个 pending",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： lineage seed-20260908-02 必须恰有一个 id 等于 lineageId 的根"
+    },
+    {
+      "name": "移动引用悬空",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： lineage seed-20260908-02 存在悬空或跨链后继"
+    },
+    {
+      "name": "lineage 成环",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： lineage seed-20260908-02 必须恰有一个 id 等于 lineageId 的根"
+    },
+    {
+      "name": "lineage 分叉前驱",
+      "rejected": true,
+      "unchanged": true,
+      "beforeSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "afterSha256": "cc69049d78b5fc7ab2a9f389cb4d130e2427ef43231dad0f08b53c686fff2688",
+      "message": "导入校验失败，现有数据未修改： lineage seed-20260908-02 必须恰有一个 id 等于 lineageId 的根"
+    }
+  ],
+  "allRejected": true,
+  "allUnchanged": true,
+  "historicalSupported": true,
+  "historicalMessage": "候选备份校验通过。确认后会完整替换当前全部数据，不会合并。",
+  "historicalCancelUnchanged": true
+}

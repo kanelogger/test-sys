@@ -236,6 +236,23 @@ describe("initialize", () => {
       field: "coverage" as string | undefined,
     },
     {
+      name: "默认考试日偏离冻结值且覆盖终点随之篡改",
+      loader: mutatedSeedLoader((seed) => {
+        (seed.settings as Record<string, unknown>).examDate = "2026-10-25";
+        (seed.coverage as Record<string, unknown>).endDate = "2026-10-24";
+      }),
+      field: "examDate" as string | undefined,
+    },
+    {
+      name: "工作日单日预计分钟超过 90",
+      loader: mutatedSeedLoader((seed) => {
+        const plans = seed.planItems as Array<Record<string, unknown>>;
+        const first = plans.find((plan) => plan.date === "2026-09-08")!;
+        first.plannedMinutes = Number(first.plannedMinutes) + 1;
+      }),
+      field: "plannedMinutes" as string | undefined,
+    },
+    {
       name: "本地资源 filename 携带路径",
       loader: mutatedSeedLoader((seed) => {
         const res = seed.resources as Array<Record<string, unknown>>;

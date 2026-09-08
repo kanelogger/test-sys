@@ -1,0 +1,20 @@
+{
+  "tabA": "651488D107A05749FE956E5FBAF7E39A",
+  "tabB": "7371D1B2B175835B7F0822F81D710952",
+  "targetTitle": "开发模型对比",
+  "beforeA": {
+    "status": "completed",
+    "summary": "标签页 B 先完成并持久化",
+    "logCount": 1
+  },
+  "noAutoSync": {
+    "formStillOpen": true,
+    "summaryValue": "标签页 A 旧输入不得写入"
+  },
+  "stale": {
+    "alert": "任务状态已在别处变更。已保留你的输入，请核对最新状态后重试。重新查询",
+    "status": "completed",
+    "logCount": 1,
+    "summary": "标签页 B 先完成并持久化"
+  }
+}
