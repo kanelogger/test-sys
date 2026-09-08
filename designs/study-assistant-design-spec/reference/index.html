@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>系统分析师学习助手 · 设计参考（fixture）</title>
+    <meta
+      name="description"
+      content="DESIGN.md-first 参考实现：今日与记录完成闭环；内存 fixture，不连接 IndexedDB。"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="pc-only-notice" role="note">
+      本应用仅适配 PC 端，请加宽窗口使用。
+    </div>
+
+    <div class="app">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          系统分析师学习助手
+          <span class="brand-sub">设计参考 · DESIGN.md-first</span>
+        </div>
+        <nav aria-label="主导航">
+          <a class="nav-item" data-route="today" href="#/today">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect width="18" height="18" x="3" y="4" rx="2" />
+              <path d="M16 2v4" />
+              <path d="M8 2v4" />
+              <path d="M3 10h18" />
+              <path d="m9 16 2 2 4-4" />
+            </svg>
+            今日
+          </a>
+          <a class="nav-item" data-route="plan" href="#/plan">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect width="18" height="18" x="3" y="4" rx="2" />
+              <path d="M16 2v4" />
+              <path d="M8 2v4" />
+              <path d="M3 10h18" />
+              <path d="M8 14h.01" />
+              <path d="M12 14h.01" />
+              <path d="M16 14h.01" />
+              <path d="M8 18h.01" />
+              <path d="M12 18h.01" />
+              <path d="M16 18h.01" />
+            </svg>
+            计划
+            <span class="nav-badge">随票</span>
+          </a>
+          <a class="nav-item" data-route="record" href="#/record">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 20h9" />
+              <path
+                d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"
+              />
+            </svg>
+            记录
+          </a>
+          <a class="nav-item" data-route="history" href="#/history">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            历史
+            <span class="nav-badge">随票</span>
+          </a>
+          <a class="nav-item" data-route="resources" href="#/resources">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m16 6 4 14" />
+              <path d="M12 6v14" />
+              <path d="M8 8v12" />
+              <path d="M4 4v16" />
+            </svg>
+            资源
+            <span class="nav-badge">随票</span>
+          </a>
+        </nav>
+        <div class="sidebar-foot">
+          fixture 演示数据（源自真实种子 sysanalyst-2026-09-06.v1），不连接
+          IndexedDB。正式版数据仅保存在本机浏览器。
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content-inner" id="view"></div>
+      </main>
+    </div>
+
+    <script src="fixture.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
