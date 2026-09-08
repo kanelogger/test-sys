@@ -106,7 +106,7 @@ export default function RecordPage() {
     if (seq !== loadSeq.current) return;
     if (!view.ok) {
       if (view.error.code === "INVALID_INPUT") {
-        // §11-1：日期非法贴字段处理，不替换整页；保留既有视图
+        // 日期错误贴字段展示，不替换整页；保留既有视图。
         setDateError(view.error.reason);
         return;
       }
@@ -151,7 +151,7 @@ export default function RecordPage() {
     setFields((current) => ({ ...current, [name]: value }));
   };
 
-  // 跨命令共享提交锁：补建与记录完成互斥（§11-2 提交中禁用扩展至页级）
+  // 跨命令共享提交锁：补建与记录完成互斥。
   const busy = submitting || feedback.submitting;
 
   const submitBackfill = async () => {
@@ -200,7 +200,7 @@ export default function RecordPage() {
       return;
     }
     if (failure.code === "DUPLICATE_SUBMISSION") {
-      // §11-4：该次提交已落库——收起表单避免二次内容重复，刷新视图
+      // 该次提交已落库：收起表单并刷新，避免二次内容重复。
       setConfirmed(false);
       setFields(EMPTY_BACKFILL);
       setSectionAlert({
@@ -222,7 +222,7 @@ export default function RecordPage() {
       return;
     }
     if (failure.code === "STATE_CHANGED") {
-      // §11-5：保留输入 + 重新查询入口；同时主动重查当前视图与草稿
+      // 保留输入与重新查询入口，同时主动刷新当前视图与草稿。
       setSectionAlert({
         kind: "error",
         text: "任务状态已在别处变更。已保留你的输入，请核对最新状态后重试。",

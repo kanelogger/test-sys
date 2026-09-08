@@ -1,6 +1,6 @@
 # T-06 导出导入与部署
 
-- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
+- 状态：pending（综合实现与验收完成；等待 T-05 随 baseline 总复核转 done）
 - Blocked by：T-05
 - 契约与实现引用：`需求方案.md` §四/§五/§七；`docs/agents/workflow-state.md` FLOW-01-L 与 FMT-01；`src/study/backup.ts`、`src/pages/ResourcesPage.tsx`、`.github/workflows/deploy.yml`；生产证据 `docs/evidence/final-acceptance/09-concurrent-export.json`、`10-import-validation.json`、`11-full-restore.json`、`12-live-pages.json`。
 

@@ -1,6 +1,7 @@
 {
   "url": "https://kanelogger.github.io/test-sys/",
-  "deployRun": "https://github.com/kanelogger/test-sys/actions/runs/34190892755",
+  "headSha": "44c9251daef106aecbe1a1e1d738f78022f461e2",
+  "deployRun": "https://github.com/kanelogger/test-sys/actions/runs/34192596391",
   "routes": [
     {
       "route": "#/",

@@ -1,6 +1,6 @@
 # T-03 日志编辑
 
-- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
+- 状态：ready（综合实现与验收完成；等待 T-07 baseline 总复核通过后转 done）
 - Blocked by：T-02
 - 契约与实现引用：`需求方案.md` §二（记录页）、§三「记录修正」；`CONTEXT.md` StudyLog；`docs/agents/workflow-state.md` FLOW-01-L；`src/study/studyWorkflow.ts` 与 `src/pages/RecordPage.tsx`。
 

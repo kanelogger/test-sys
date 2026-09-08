@@ -1,6 +1,6 @@
 import { Icon, type IconName } from "./Icon";
 
-/** §11 行内反馈条：就地展示，不用全局 toast */
+/** 就地展示行内反馈，不使用全局 toast。 */
 export function InlineAlert({
   kind,
   text,

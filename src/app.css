@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap");
 
-/* ===== DESIGN.md §2 色板与角色 ===== */
+/* ===== 色板与角色 ===== */
 :root {
   --bg: #f6f6f4;
   --surface: #ffffff;
@@ -83,7 +83,7 @@ body {
   stroke: currentColor;
 }
 
-/* ===== DESIGN.md §4 侧边导航 / §5 布局 ===== */
+/* ===== 侧边导航与布局 ===== */
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;

@@ -11,7 +11,7 @@ export function CompleteFormSlot({
 }: {
   feedback: RowFeedback;
   note?: ReactNode;
-  /** 页级其他命令（如补建）的提交中状态：与表单自身提交互斥（§11-2） */
+  /** 页级其他命令（如补建）的提交状态与表单自身提交互斥。 */
   externalBusy?: boolean;
 }) {
   const form = feedback.openForm;
@@ -36,7 +36,7 @@ export function CompleteFormSlot({
 }
 
 /**
- * 孤儿表单面板：目标行在他处被移动/删除而从视图消失时（FLOW-01-R / §11-5），
+ * 孤儿表单面板：目标行在他处被移动或删除而从视图消失时，
  * 表单与错误条在列表之外存活，输入保留，直到用户重新查询或取消。
  */
 export function OrphanCompleteForm({

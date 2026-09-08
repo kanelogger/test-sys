@@ -4,7 +4,7 @@ import type { LogFieldName, LogFields } from "./useRowFeedback";
 /**
  * 完成行内表单（展示组件；今日页「完成」与记录页「记录完成」共用）：
  * 仅日志三字段 + 固定显示学习日；提交中禁用；失败保留输入；
- * 状态与提交逻辑由 useRowFeedback 持有（§11-1/2/3/5/7）。
+ * 状态与提交逻辑由 useRowFeedback 持有。
  */
 export function CompleteForm({
   planDate,

@@ -1,7 +1,7 @@
 import type { FailureCode } from "../study";
 import { InlineAlert } from "./InlineAlert";
 
-/** §11-6/7 页级错误：原因 + 建议操作，不展示假数据；STORAGE_FAILURE 明确告知未写入 */
+/** 页级错误包含原因与建议操作；存储失败明确告知未写入。 */
 export function PageError({
   code,
   reason,

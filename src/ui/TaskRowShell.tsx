@@ -3,9 +3,7 @@ import type { PlanRow } from "../study";
 import { InlineAlert } from "./InlineAlert";
 
 /**
- * 今日页/记录页共用的任务行骨架（DESIGN.md §4 Task Row）：
- * 头部（序号/科目/标题/分钟）、完成标准直展、日志行、状态底色与一次性脉冲；
- * 操作区与表单由使用方以插槽提供。
+ * 今日、记录、计划与历史共用的任务行骨架：头部、完成标准、日志、状态与操作插槽。
  */
 export function TaskRowShell({
   row,

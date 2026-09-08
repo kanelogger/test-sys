@@ -1,7 +1,4 @@
-/**
- * lucide 内联 SVG（stroke 1.75，颜色继承文字；DESIGN.md §8）。
- * 路径取自 designs/study-assistant-design-spec/reference/app.js 的既定图标集。
- */
+/** Lucide 图标路径：统一 1.75 描边并继承当前文字颜色。 */
 const ICON_PATHS = {
   "calendar-check":
     '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>',

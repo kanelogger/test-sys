@@ -209,6 +209,7 @@ export default function TodayPage() {
             feedback={feedback}
             busy={busy}
             onMoveTomorrow={() => void runPendingAction(row, "tomorrow")}
+            onSkip={() => void runPendingAction(row, "skip")}
           />
         ))}
         <OrphanCompleteForm
@@ -227,12 +228,14 @@ function TodayTaskRow({
   feedback,
   busy,
   onMoveTomorrow,
+  onSkip,
 }: {
   row: PlanRow;
   orderLabel: number;
   feedback: RowFeedback;
   busy: boolean;
   onMoveTomorrow: () => void;
+  onSkip: () => void;
 }) {
   const form = feedback.openForm;
   const formOpenHere = form?.planId === row.plan.id;
@@ -262,6 +265,15 @@ function TodayTaskRow({
               >
                 <Icon name="move-right" />
                 移到明天
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                disabled={busy}
+                onClick={onSkip}
+              >
+                <Icon name="skip" />
+                跳过
               </button>
               <button
                 type="button"

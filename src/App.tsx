@@ -6,7 +6,7 @@ import RecordPage from "./pages/RecordPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import TodayPage from "./pages/TodayPage";
 
-/** §10.1 PC 侧边导航：五项顺序固定。 */
+/** PC 侧边导航：五项顺序固定。 */
 const NAV_ITEMS: ReadonlyArray<{
   to: string;
   label: string;

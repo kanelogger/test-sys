@@ -24,9 +24,9 @@ const EMPTY_LOG_FIELDS: LogFields = {
 };
 
 /**
- * 今日页/记录页共用的完成反馈状态（§11-1/2/3/5/7）。
+ * 今日页与记录页共用的完成反馈状态。
  * 表单字段状态提升至此：目标行在他处被移动/删除而从视图消失时，
- * 已填输入与错误条不随行卸载，直到用户重新查询或取消（FLOW-01-R / DESIGN §11-5）。
+ * 已填输入与错误条不随行卸载，直到用户重新查询或取消（FLOW-01-R）。
  * 成功后主动重查；STATE_CHANGED/INVALID_STATE 后主动重查视图但保留输入。
  */
 export function useRowFeedback(reload: () => Promise<void>) {
@@ -80,7 +80,7 @@ export function useRowFeedback(reload: () => Promise<void>) {
         : {}),
     });
     if (result.ok) {
-      // §11-3：收起表单、主动重查、行级成功条与一次性脉冲
+      // 收起表单、主动重查，并给出行级成功条与一次性脉冲。
       const planId = openForm.planId;
       const logDate = result.value.log.date;
       setSubmitting(false);
@@ -91,7 +91,7 @@ export function useRowFeedback(reload: () => Promise<void>) {
     setSubmitting(false);
     const failure = result.error;
     if (failure.code === "INVALID_INPUT") {
-      // §11-1：字段级错误，保留全部输入
+      // 字段级错误保留全部输入。
       if (
         failure.field === "actualMinutes" ||
         failure.field === "summary" ||
@@ -112,14 +112,14 @@ export function useRowFeedback(reload: () => Promise<void>) {
       return;
     }
     if (failure.code === "STATE_CHANGED") {
-      // §11-5：错误条 + 重新查询入口；同时主动重查当前视图，输入保留
+      // 错误条提供重新查询入口；主动重查当前视图并保留输入。
       setAlert({
         text: "任务状态已在别处变更。已保留你的输入，请核对最新状态后重试。",
       });
       void reload();
       return;
     }
-    // §11-7：明确告知未写入
+    // 其他错误明确告知本次未写入。
     setAlert({ text: `${failure.reason}（未写入）` });
   };
 

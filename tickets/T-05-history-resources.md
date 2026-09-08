@@ -1,6 +1,6 @@
 # T-05 历史与资源
 
-- 状态：done（2026-09-08；纳入 T-07 baseline 总复核）
+- 状态：pending（综合实现与验收完成；等待 T-03/T-04 随 baseline 总复核转 done）
 - Blocked by：T-03, T-04
 - 契约与实现引用：`需求方案.md` §二（历史/资源页）、§七；`CONTEXT.md`；`docs/agents/workflow-state.md` FLOW-01-L 与 PROTO-01 历史结论；`src/pages/HistoryPage.tsx`、`src/pages/ResourcesPage.tsx`。
 
