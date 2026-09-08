@@ -101,7 +101,7 @@ describe("事务语义", () => {
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.title).toBe(
-      "数据库：事务、并发控制与分布式"
+      "数据库模式、关系代数、规范化入门"
     );
     expect(after.value.items[0]?.log?.summary).toBe("已完成的原始状态");
     expect(after.value.items[0]?.log?.actualMinutes).toBe(30);

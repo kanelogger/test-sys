@@ -14,14 +14,14 @@ describe("complete", () => {
     const before = await kit.workflow.recording("2026-09-08");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
-    expect(before.value.items).toHaveLength(3);
+    expect(before.value.items).toHaveLength(5);
     const ref = before.value.items[0]?.pending;
     expect(ref).toBeDefined();
     if (!ref) return;
 
     const done = await kit.workflow.complete(ref, {
       actualMinutes: 45,
-      summary: "  昨天已学，今天补记需求工程  ",
+      summary: "  昨天已学，今天补记导学定位  ",
     });
     expect(done.ok).toBe(true);
     if (!done.ok) return;
@@ -31,20 +31,20 @@ describe("complete", () => {
     expect(done.value.log.date).toBe("2026-09-08");
     expect(done.value.log.planItemId).toBe(done.value.plan.id);
     // 总结按 trim 后规范形存储
-    expect(done.value.log.summary).toBe("昨天已学，今天补记需求工程");
+    expect(done.value.log.summary).toBe("昨天已学，今天补记导学定位");
 
-    // 任务总数不增：当日仍 3 项；原任务不再逾期
+    // 任务总数不增：当日仍 5 项；原任务不再逾期
     const after = await kit.workflow.recording("2026-09-08");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items).toHaveLength(3);
+    expect(after.value.items).toHaveLength(5);
     expect(after.value.items[0]?.plan.status).toBe("completed");
     expect(after.value.items[0]?.pending).toBeUndefined();
 
     const today = await kit.workflow.today();
     expect(today.ok).toBe(true);
     if (!today.ok) return;
-    expect(today.value.overdue).toHaveLength(14);
+    expect(today.value.overdue).toHaveLength(8);
   });
 
   it("完成与唯一日志：同引用重复 complete 为 STATE_CHANGED 且零修改", async () => {

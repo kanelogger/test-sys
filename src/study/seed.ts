@@ -244,10 +244,10 @@ export function parseAndValidateSeed(text: string): SeedResult {
   }
   const coverageStart = startDate;
   const coverageEnd = endDate;
-  // 覆盖窗口须与冻结的备考执行窗口一致（需求 §三）：起于 2026-09-06、止于考试前一日
-  if (coverageStart !== "2026-09-06") {
+  // 覆盖窗口须与当前备考执行窗口一致（需求 §三）：起于 2026-09-08、止于考试前一日
+  if (coverageStart !== "2026-09-08") {
     return invalid(
-      "coverage.startDate 与备考执行窗口起点 2026-09-06 不一致",
+      "coverage.startDate 与备考执行窗口起点 2026-09-08 不一致",
       "coverage"
     );
   }

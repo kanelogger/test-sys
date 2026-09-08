@@ -15,24 +15,24 @@ describe("initialize", () => {
     if (!result.ok) return;
     expect(result.value.outcome).toBe("initialized");
     expect(result.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-06.v1"
+      "sysanalyst-2026-09-08.v1"
     );
 
     const view = await kit.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
-    // 种子 2026-09-08 当日三项（真实内容字面量）
+    // 种子 2026-09-08 当日五项（真实内容字面量）
     expect(view.value.date).toBe("2026-09-08");
-    expect(view.value.items).toHaveLength(3);
+    expect(view.value.items).toHaveLength(5);
     const first = view.value.items[0];
     expect(first?.plan.subject).toBe("综合知识");
-    expect(first?.plan.title).toBe("需求工程：获取、分析、验证与管理");
-    expect(first?.plan.plannedMinutes).toBe(30);
+    expect(first?.plan.title).toBe("导学与教材定位");
+    expect(first?.plan.plannedMinutes).toBe(15);
     expect(first?.plan.status).toBe("pending");
     expect(first?.plan.source).toBe("seed");
     expect(first?.plan.lineageId).toBe(first?.plan.id);
     expect(first?.resource?.type).toBe("web");
-    // 预算：当日 pending 之和 30+45+15=90，Y=90；考试 2026-10-24 距今 46 天
+    // 预算：当日 pending 之和 15+35+15+20+5=90，Y=90；考试 2026-10-24 距今 46 天
     expect(view.value.budget).toEqual({
       plannedMinutes: 90,
       referenceMinutes: 90,
@@ -51,10 +51,10 @@ describe("initialize", () => {
     expect(again.ok).toBe(true);
     if (!again.ok) return;
     expect(again.value.outcome).toBe("already-initialized");
-    expect(again.value.initializedSeedVersion).toBe("sysanalyst-2026-09-06.v1");
+    expect(again.value.initializedSeedVersion).toBe("sysanalyst-2026-09-08.v1");
 
     const view = await kit.workflow.today();
-    expect(view.ok && view.value.items).toHaveLength(3);
+    expect(view.ok && view.value.items).toHaveLength(5);
   });
 
   it("删空计划后不重新灌入（初始化与否只看标记）", async () => {
@@ -106,12 +106,12 @@ describe("initialize", () => {
     );
     expect(outcomes.sort()).toEqual(["already-initialized", "initialized"]);
 
-    // 四部分无重复写入：当日仍为种子三项
+    // 四部分无重复写入：当日仍为种子五项
     kitA.setLocal(2026, 9, 8);
     const view = await kitA.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
-    expect(view.value.items).toHaveLength(3);
+    expect(view.value.items).toHaveLength(5);
   });
 
   it("随包种子升级不覆盖已有数据（第二连接携带新版种子）", async () => {
@@ -131,11 +131,11 @@ describe("initialize", () => {
     if (!result.ok) return;
     expect(result.value.outcome).toBe("already-initialized");
     expect(result.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-06.v1"
+      "sysanalyst-2026-09-08.v1"
     );
 
     const view = await kit.workflow.today();
-    expect(view.ok && view.value.items).toHaveLength(3);
+    expect(view.ok && view.value.items).toHaveLength(5);
   });
 
   it("种子拉取失败为 SEED_UNAVAILABLE，且不留半成品", async () => {
@@ -217,7 +217,7 @@ describe("initialize", () => {
       loader: mutatedSeedLoader((seed) => {
         seed.planItems = (
           seed.planItems as Array<Record<string, unknown>>
-        ).filter((p) => p.date !== "2026-09-06");
+        ).filter((p) => p.date !== "2026-09-08");
       }),
       field: "coverage" as string | undefined,
     },

@@ -18,11 +18,11 @@ describe("createBackfill", () => {
     kit.setLocal(2026, 9, 10, 8, 30);
     await kit.workflow.initialize();
 
-    const view = await kit.workflow.recording("2026-09-07");
+    const view = await kit.workflow.recording("2026-09-08");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
-    // 当日有 3 个不相关 seed pending，不阻止合法补建
-    expect(view.value.items).toHaveLength(3);
+    // 当日有 5 个不相关 seed pending，不阻止合法补建
+    expect(view.value.items).toHaveLength(5);
 
     const done = await kit.workflow.createBackfill({
       draft: view.value.draft,
@@ -38,15 +38,15 @@ describe("createBackfill", () => {
     expect(done.value.plan.status).toBe("completed");
     expect(done.value.plan.source).toBe("backfill");
     expect(done.value.plan.lineageId).toBe(done.value.plan.id);
-    expect(done.value.plan.date).toBe("2026-09-07");
-    expect(done.value.log.date).toBe("2026-09-07");
+    expect(done.value.plan.date).toBe("2026-09-08");
+    expect(done.value.log.date).toBe("2026-09-08");
     expect(done.value.log.planItemId).toBe(done.value.plan.id);
 
-    // 当日列表变为 4 项；补建行 completed、带日志、无可完成引用
-    const after = await kit.workflow.recording("2026-09-07");
+    // 当日列表变为 6 项；补建行 completed、带日志、无可完成引用
+    const after = await kit.workflow.recording("2026-09-08");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.items).toHaveLength(4);
+    expect(after.value.items).toHaveLength(6);
     const row = after.value.items.find((r) => r.plan.id === done.value.plan.id);
     expect(row?.plan.source).toBe("backfill");
     expect(row?.plan.status).toBe("completed");
@@ -60,7 +60,7 @@ describe("createBackfill", () => {
     kit.setLocal(2026, 9, 10, 8, 30);
     await kit.workflow.initialize();
 
-    const view = await kit.workflow.recording("2026-09-07");
+    const view = await kit.workflow.recording("2026-09-08");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const input = {
@@ -72,7 +72,7 @@ describe("createBackfill", () => {
     const first = await kit.workflow.createBackfill(input);
     expect(first.ok).toBe(true);
 
-    const afterFirst = await kit.workflow.recording("2026-09-07");
+    const afterFirst = await kit.workflow.recording("2026-09-08");
     expect(afterFirst.ok).toBe(true);
     if (!afterFirst.ok) return;
     const beforeRetry = snapshotRows(afterFirst.value);
@@ -84,7 +84,7 @@ describe("createBackfill", () => {
     expect(second.error.code).toBe("DUPLICATE_SUBMISSION");
 
     // 零修改：字段级快照与首次提交后一致（仍只一对任务与日志）
-    const after = await kit.workflow.recording("2026-09-07");
+    const after = await kit.workflow.recording("2026-09-08");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeRetry);
@@ -95,7 +95,7 @@ describe("createBackfill", () => {
     kitA.setLocal(2026, 9, 10, 8, 30);
     await kitA.workflow.initialize();
 
-    const view = await kitA.workflow.recording("2026-09-07");
+    const view = await kitA.workflow.recording("2026-09-08");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const ref = view.value.items[0]?.pending;
@@ -106,12 +106,12 @@ describe("createBackfill", () => {
     kitB.setLocal(2026, 9, 10, 8, 30);
     const done = await kitB.workflow.complete(ref, {
       actualMinutes: 30,
-      summary: "补记 9/7 第一项",
+      summary: "补记 9/8 第一项",
     });
     expect(done.ok).toBe(true);
 
     // 事实变更后的字段级快照（作为旧提交零修改的基准）
-    const beforeStaleView = await kitA.workflow.recording("2026-09-07");
+    const beforeStaleView = await kitA.workflow.recording("2026-09-08");
     expect(beforeStaleView.ok).toBe(true);
     if (!beforeStaleView.ok) return;
     const beforeStale = snapshotRows(beforeStaleView.value);
@@ -126,7 +126,7 @@ describe("createBackfill", () => {
     if (stale.ok) return;
     expect(stale.error.code).toBe("STATE_CHANGED");
 
-    const after = await kitA.workflow.recording("2026-09-07");
+    const after = await kitA.workflow.recording("2026-09-08");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeStale);
@@ -141,8 +141,8 @@ describe("createBackfill", () => {
 
     // 两连接同时读取同日，各自获得绑定同一事实的草稿
     const [viewA, viewB] = await Promise.all([
-      kitA.workflow.recording("2026-09-07"),
-      kitB.workflow.recording("2026-09-07"),
+      kitA.workflow.recording("2026-09-08"),
+      kitB.workflow.recording("2026-09-08"),
     ]);
     expect(viewA.ok && viewB.ok).toBe(true);
     if (!viewA.ok || !viewB.ok) return;
@@ -156,7 +156,7 @@ describe("createBackfill", () => {
     });
     expect(first.ok).toBe(true);
 
-    const afterFirst = await kitA.workflow.recording("2026-09-07");
+    const afterFirst = await kitA.workflow.recording("2026-09-08");
     expect(afterFirst.ok).toBe(true);
     if (!afterFirst.ok) return;
     const beforeStale = snapshotRows(afterFirst.value);
@@ -172,11 +172,13 @@ describe("createBackfill", () => {
     if (stale.ok) return;
     expect(stale.error.code).toBe("STATE_CHANGED");
 
-    const after = await kitA.workflow.recording("2026-09-07");
+    const after = await kitA.workflow.recording("2026-09-08");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeStale);
-    expect(after.value.items[3]?.plan.title).toBe("B 的补录");
+    expect(
+      after.value.items.find((row) => row.plan.title === "B 的补录")
+    ).toBeDefined();
   });
 
   it("绑定今天的补建草稿提交为 INVALID_INPUT 且零修改", async () => {
@@ -256,7 +258,7 @@ describe("createBackfill", () => {
       kit.setLocal(2026, 9, 10, 8, 30);
       await kit.workflow.initialize();
 
-      const view = await kit.workflow.recording("2026-09-07");
+      const view = await kit.workflow.recording("2026-09-08");
       expect(view.ok).toBe(true);
       if (!view.ok) return;
       const before = snapshotRows(view.value);
@@ -275,7 +277,7 @@ describe("createBackfill", () => {
       expect(done.error.field).toBe(field);
 
       // 失败后原状态：全部行字段级不变（不只数量）
-      const after = await kit.workflow.recording("2026-09-07");
+      const after = await kit.workflow.recording("2026-09-08");
       expect(after.ok).toBe(true);
       if (!after.ok) return;
       expect(snapshotRows(after.value)).toEqual(before);
@@ -289,7 +291,7 @@ describe("createBackfill", () => {
     const kitB = makeKit({ dbName: kitA.dbName });
     kitB.setLocal(2026, 9, 10, 8, 30);
 
-    const view = await kitA.workflow.recording("2026-09-07");
+    const view = await kitA.workflow.recording("2026-09-08");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const input = {
@@ -307,14 +309,14 @@ describe("createBackfill", () => {
     );
     expect(outcomes.sort()).toEqual(["DUPLICATE_SUBMISSION", "ok"]);
 
-    const after = await kitA.workflow.recording("2026-09-07");
+    const after = await kitA.workflow.recording("2026-09-08");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     // 同次提交只创建一对任务与日志；行与赢家的 Recorded 逐字段一致
     const backfillRows = after.value.items.filter(
       (r) => r.plan.source === "backfill"
     );
-    expect(after.value.items).toHaveLength(4);
+    expect(after.value.items).toHaveLength(6);
     expect(backfillRows).toHaveLength(1);
     const winner = [resultA, resultB].find((r) => r.ok);
     if (!winner || !winner.ok) return;

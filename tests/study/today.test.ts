@@ -16,7 +16,7 @@ describe("today", () => {
     if (!view.ok) return;
 
     expect(view.value.date).toBe("2026-09-10");
-    // 种子 9/10 当日三项（真实内容字面量）
+    // 种子 9/10 当日四项（真实内容字面量）
     expect(
       view.value.items.map((row) => [
         row.plan.order,
@@ -24,9 +24,10 @@ describe("today", () => {
         row.plan.plannedMinutes,
       ])
     ).toEqual([
-      [0, "数据库：事务、并发控制与分布式", 30],
-      [1, "整理数据库高频易混点", 40],
-      [2, "数据库分类题验证", 20],
+      [0, "数据库模式、关系代数、规范化入门", 45],
+      [1, "候选键与范式例题", 20],
+      [2, "专题题订正", 20],
+      [3, "记录", 5],
     ]);
     expect(view.value.items.every((row) => row.plan.status === "pending")).toBe(
       true
@@ -51,18 +52,18 @@ describe("today", () => {
     expect(view.ok).toBe(true);
     if (!view.ok) return;
 
-    // 9/6(6 项)+9/7(3)+9/8(3)+9/9(3)=15 项过去 pending
-    expect(view.value.overdue).toHaveLength(15);
+    // 9/8(5 项)+9/9(4)=9 项过去 pending；9/1—9/7 旧日程不进入种子
+    expect(view.value.overdue).toHaveLength(9);
     expect(
       view.value.overdue.every((row) => row.plan.status === "pending")
     ).toBe(true);
-    // 首日第一项（真实种子字面量）
+    // 覆盖首日第一项（真实种子字面量）
     const first = view.value.overdue[0];
-    expect(first?.plan.date).toBe("2026-09-06");
+    expect(first?.plan.date).toBe("2026-09-08");
     expect(first?.plan.order).toBe(0);
     expect(first?.plan.subject).toBe("综合知识");
-    expect(first?.plan.title).toBe("公共课导学：从零建立三科知识地图");
-    expect(first?.plan.plannedMinutes).toBe(30);
+    expect(first?.plan.title).toBe("导学与教材定位");
+    expect(first?.plan.plannedMinutes).toBe(15);
     // 排序：日期升序，同日 order 升序
     const keys = view.value.overdue.map(
       (row) => [row.plan.date, row.plan.order] as const
@@ -85,7 +86,7 @@ describe("today", () => {
     expect(view.ok).toBe(true);
     if (!view.ok) return;
 
-    // 种子 9/12 周六四项共 240 分钟 > Y=90
+    // 种子 9/12 周六三项共 240 分钟 > Y=90
     expect(view.value.budget).toEqual({
       plannedMinutes: 240,
       referenceMinutes: 90,
@@ -125,7 +126,7 @@ describe("today", () => {
     if (!ref) return;
     const done = await kit.workflow.complete(ref, {
       actualMinutes: 35,
-      summary: "完成事务与并发控制章节",
+      summary: "完成数据库模式、关系代数与规范化入门",
       scoreText: "18/20",
     });
     expect(done.ok).toBe(true);
@@ -137,12 +138,14 @@ describe("today", () => {
     expect(completed?.plan.status).toBe("completed");
     expect(completed?.pending).toBeUndefined();
     expect(completed?.log?.actualMinutes).toBe(35);
-    expect(completed?.log?.summary).toBe("完成事务与并发控制章节");
+    expect(completed?.log?.summary).toBe(
+      "完成数据库模式、关系代数与规范化入门"
+    );
     expect(completed?.log?.scoreText).toBe("18/20");
     expect(completed?.log?.date).toBe("2026-09-10");
-    // 预算仍含 completed：30+40+20=90
+    // 预算仍含 completed：45+20+20+5=90
     expect(view.value.budget.plannedMinutes).toBe(90);
-    // 当日其余两项仍 pending 并携带引用
+    // 当日其余三项仍 pending 并携带引用
     expect(view.value.items[1]?.plan.status).toBe("pending");
     expect(view.value.items[1]?.pending).toBeDefined();
   });
