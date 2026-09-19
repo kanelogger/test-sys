@@ -98,7 +98,7 @@ export function makeKit(
   } = {}
 ): WorkflowKit {
   const { dbName: sharedDbName, ...rest } = options;
-  let now = new Date(2026, 8, 8, 9, 0, 0);
+  let now = new Date(2026, 8, 20, 9, 0, 0);
   const dbName = sharedDbName ?? `study-test-${crypto.randomUUID()}`;
   const workflow = createStudyWorkflow({
     ...rest,

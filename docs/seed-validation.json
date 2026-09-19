@@ -1,537 +1,269 @@
 {
   "evidenceLevel": "static-data-validation",
-  "requirementsVersion": "v2.6",
-  "sourcePlan": "docs/study-guide.md",
-  "sourcePlanUpdatedAt": "2026-09-08",
+  "sourcePlanUpdatedAt": "2026-09-20",
   "seedPath": "public/data/study-plan.seed.json",
-  "seedVersion": "sysanalyst-2026-09-08.v1",
-  "seedSha256": "b5f1c242e02b4b0996197ebcd2696742d1c122acf25b0b59a30cdb5ce0bf2ddb",
+  "seedVersion": "sysanalyst-2026-09-20.v1",
+  "seedSha256": "24166645aa54ca04524096fb8434c25a07be3bd13a4a5f8853def3a7d6f17cb8",
   "coverage": {
-    "startDate": "2026-09-08",
+    "startDate": "2026-09-20",
     "endDate": "2026-10-23"
   },
-  "coverageConventionStatus": "confirmed-top-level-inclusive; source-window-refreshed-2026-09-08",
-  "days": 46,
+  "days": 34,
   "resources": 17,
-  "planItems": 139,
+  "planItems": 101,
   "studyLogs": 0,
-  "lineages": 139,
-  "statusCounts": {
-    "pending": 139,
-    "completed": 0,
-    "moved": 0,
-    "skipped": 0
-  },
-  "webResources": 10,
-  "localFileResources": 7,
-  "totalPlannedMinutes": 5340,
-  "totalBudgetMinutes": 5730,
-  "spareMinutes": 390,
-  "settings": {
-    "examDate": "2026-10-24",
-    "defaultDailyMinutes": 90
-  },
-  "tasksWithResource": 118,
-  "tasksWithoutResource": 21,
-  "allTasksHaveResource": false,
-  "usedResources": 13,
-  "allResourcesUsed": false,
-  "referenceOnlyResourceIds": [
-    "resource-web-daily",
-    "resource-web-essay",
-    "resource-web-exam-notice-shanghai",
-    "resource-web-exam-rules-beijing"
-  ],
-  "checks": {
-    "jsonAndSeedShape": true,
-    "noStudyLogsOrAppMetaInSeed": true,
-    "uniqueIdsPerEntity": true,
-    "resourceDiscriminatedUnion": true,
-    "resourceCatalogMatchesSourcePlan": true,
-    "httpUrls": true,
-    "localFileBasenamesMatchObservedInventory": true,
-    "noEmbeddedPdfOrPrivateAbsolutePaths": true,
-    "positiveIntegerPlannedMinutes": true,
-    "nonemptyCompletionCriteria": true,
-    "allSeedPendingRoots": true,
-    "allReferencesResolve": true,
-    "lineagesAreNonbranchingAcyclicRootedChains": true,
-    "exactDailyCoverage": true,
-    "dailyScheduleMatchesSourceRows": true,
-    "allDailyBudgetsWithinCaps": true,
-    "perDayOrderUniqueZeroBased": true,
-    "sevenAnnualTrainingGroups": true,
-    "sixCaseTemplates": true,
-    "sixEssayOutlines": true,
-    "twoEssayDraftsAndRevisions": true
-  },
+  "totalPlannedMinutes": 3900,
+  "totalBudgetMinutes": 4260,
+  "spareMinutes": 360,
   "daily": [
     {
-      "date": "2026-09-08",
-      "weekday": "周二",
-      "taskCount": 5,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-09",
-      "weekday": "周三",
-      "taskCount": 4,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-10",
-      "weekday": "周四",
-      "taskCount": 4,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-11",
-      "weekday": "周五",
-      "taskCount": 3,
-      "plannedMinutes": 60,
-      "budgetMinutes": 60,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-12",
-      "weekday": "周六",
-      "taskCount": 3,
-      "plannedMinutes": 240,
-      "budgetMinutes": 240,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
-    },
-    {
-      "date": "2026-09-13",
-      "weekday": "周日",
-      "taskCount": 5,
-      "plannedMinutes": 180,
-      "budgetMinutes": 240,
-      "spareMinutes": 60,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
-    },
-    {
-      "date": "2026-09-14",
-      "weekday": "周一",
-      "taskCount": 3,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-15",
-      "weekday": "周二",
-      "taskCount": 3,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-16",
-      "weekday": "周三",
-      "taskCount": 3,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-17",
-      "weekday": "周四",
-      "taskCount": 3,
-      "plannedMinutes": 90,
-      "budgetMinutes": 90,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-18",
-      "weekday": "周五",
-      "taskCount": 3,
-      "plannedMinutes": 60,
-      "budgetMinutes": 60,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
-    },
-    {
-      "date": "2026-09-19",
-      "weekday": "周六",
-      "taskCount": 3,
-      "plannedMinutes": 240,
-      "budgetMinutes": 240,
-      "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
-    },
-    {
       "date": "2026-09-20",
-      "weekday": "周日",
-      "taskCount": 3,
-      "plannedMinutes": 180,
+      "plannedMinutes": 90,
       "budgetMinutes": 240,
-      "spareMinutes": 60,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "spareMinutes": 150,
+      "tasks": 5
     },
     {
       "date": "2026-09-21",
-      "weekday": "周一",
-      "taskCount": 2,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 4
     },
     {
       "date": "2026-09-22",
-      "weekday": "周二",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 4
     },
     {
       "date": "2026-09-23",
-      "weekday": "周三",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 2
     },
     {
       "date": "2026-09-24",
-      "weekday": "周四",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-09-25",
-      "weekday": "周五",
-      "taskCount": 2,
       "plannedMinutes": 60,
       "budgetMinutes": 60,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 2
     },
     {
       "date": "2026-09-26",
-      "weekday": "周六",
-      "taskCount": 3,
       "plannedMinutes": 240,
       "budgetMinutes": 240,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 3
     },
     {
       "date": "2026-09-27",
-      "weekday": "周日",
-      "taskCount": 3,
-      "plannedMinutes": 180,
+      "plannedMinutes": 240,
       "budgetMinutes": 240,
-      "spareMinutes": 60,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "spareMinutes": 0,
+      "tasks": 4
     },
     {
       "date": "2026-09-28",
-      "weekday": "周一",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 2
     },
     {
       "date": "2026-09-29",
-      "weekday": "周二",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-09-30",
-      "weekday": "周三",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-01",
-      "weekday": "周四",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-02",
-      "weekday": "周五",
-      "taskCount": 2,
       "plannedMinutes": 60,
       "budgetMinutes": 60,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 2
     },
     {
       "date": "2026-10-03",
-      "weekday": "周六",
-      "taskCount": 3,
       "plannedMinutes": 240,
       "budgetMinutes": 240,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 3
     },
     {
       "date": "2026-10-04",
-      "weekday": "周日",
-      "taskCount": 3,
       "plannedMinutes": 180,
       "budgetMinutes": 240,
       "spareMinutes": 60,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 3
     },
     {
       "date": "2026-10-05",
-      "weekday": "周一",
-      "taskCount": 2,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 2
     },
     {
       "date": "2026-10-06",
-      "weekday": "周二",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-07",
-      "weekday": "周三",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-08",
-      "weekday": "周四",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-09",
-      "weekday": "周五",
-      "taskCount": 1,
       "plannedMinutes": 60,
       "budgetMinutes": 60,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 1
     },
     {
       "date": "2026-10-10",
-      "weekday": "周六",
-      "taskCount": 4,
       "plannedMinutes": 240,
       "budgetMinutes": 240,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 4
     },
     {
       "date": "2026-10-11",
-      "weekday": "周日",
-      "taskCount": 4,
       "plannedMinutes": 180,
       "budgetMinutes": 240,
       "spareMinutes": 60,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 4
     },
     {
       "date": "2026-10-12",
-      "weekday": "周一",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-13",
-      "weekday": "周二",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-14",
-      "weekday": "周三",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-15",
-      "weekday": "周四",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-16",
-      "weekday": "周五",
-      "taskCount": 3,
       "plannedMinutes": 60,
       "budgetMinutes": 60,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-17",
-      "weekday": "周六",
-      "taskCount": 2,
       "plannedMinutes": 240,
       "budgetMinutes": 240,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 2
     },
     {
       "date": "2026-10-18",
-      "weekday": "周日",
-      "taskCount": 3,
       "plannedMinutes": 180,
       "budgetMinutes": 240,
       "spareMinutes": 60,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": true
+      "tasks": 3
     },
     {
       "date": "2026-10-19",
-      "weekday": "周一",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-20",
-      "weekday": "周二",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-21",
-      "weekday": "周三",
-      "taskCount": 3,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 3
     },
     {
       "date": "2026-10-22",
-      "weekday": "周四",
-      "taskCount": 4,
       "plannedMinutes": 90,
       "budgetMinutes": 90,
       "spareMinutes": 0,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 4
     },
     {
       "date": "2026-10-23",
-      "weekday": "周五",
-      "taskCount": 2,
       "plannedMinutes": 30,
       "budgetMinutes": 60,
       "spareMinutes": 30,
-      "uiReferenceMinutes": 90,
-      "exceedsUiReference": false
+      "tasks": 2
     }
   ],
-  "notVerified": [
-    "在线链接当前可用性、登录权限与题目完整性",
-    "PDF 内容、版本与页码",
-    "已经按旧 seedVersion 初始化的浏览器数据自动迁移（产品契约明确不自动覆盖）",
-    "真实导出一致快照与备份完整替换",
-    "全量 PC UI、部署和无上传网络终验"
-  ]
+  "checks": {
+    "uniquePlanIds": true,
+    "uniqueResourceIds": true,
+    "pendingSeedRoots": true,
+    "validResourceReferences": true,
+    "positiveMinutesAndCompletionCriteria": true,
+    "noPriorDates": true,
+    "dailyCoverage": true,
+    "noStudyLogsOrAppMeta": true,
+    "perDayOrder": true
+  }
 }

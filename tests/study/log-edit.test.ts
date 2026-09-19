@@ -4,10 +4,10 @@ import { makeKit } from "./kit";
 describe("editLog", () => {
   it("只修正日志三字段，任务终态和日期保持不变", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
-    const before = await kit.workflow.recording("2026-09-10");
+    const before = await kit.workflow.recording("2026-09-22");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
     const pending = before.value.items[0]?.pending;
@@ -22,7 +22,7 @@ describe("editLog", () => {
     expect(completed.ok).toBe(true);
     if (!completed.ok) return;
 
-    const completedView = await kit.workflow.recording("2026-09-10");
+    const completedView = await kit.workflow.recording("2026-09-22");
     expect(completedView.ok).toBe(true);
     if (!completedView.ok) return;
     const row = completedView.value.items.find(
@@ -46,7 +46,7 @@ describe("editLog", () => {
       },
     });
 
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     const editedRow = after.value.items.find(
@@ -54,7 +54,7 @@ describe("editLog", () => {
     );
     expect(editedRow?.plan).toEqual(planBefore);
     expect(editedRow?.plan.status).toBe("completed");
-    expect(editedRow?.log?.date).toBe("2026-09-10");
+    expect(editedRow?.log?.date).toBe("2026-09-22");
     expect(editedRow?.log?.actualMinutes).toBe(42);
     expect(editedRow?.log?.summary).toBe("修正后的总结");
     expect(editedRow?.log?.scoreText).toBeUndefined();
@@ -62,9 +62,9 @@ describe("editLog", () => {
 
   it("非法修正拒绝且完整日志保持不变", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
-    const before = await kit.workflow.recording("2026-09-10");
+    const before = await kit.workflow.recording("2026-09-22");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
     const pending = before.value.items[0]?.pending;
@@ -74,7 +74,7 @@ describe("editLog", () => {
       summary: "不可被失败编辑覆盖",
       scoreText: "50/75",
     });
-    const completed = await kit.workflow.recording("2026-09-10");
+    const completed = await kit.workflow.recording("2026-09-22");
     expect(completed.ok).toBe(true);
     if (!completed.ok) return;
     const row = completed.value.items[0];
@@ -96,7 +96,7 @@ describe("editLog", () => {
     if (invalidSummary.ok) return;
     expect(invalidSummary.error.field).toBe("summary");
 
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.log).toEqual(original);

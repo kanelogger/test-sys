@@ -10,12 +10,12 @@ import { makeKit } from "./kit";
 describe("事务语义", () => {
   it("两个独立连接竞争完成同一 pending：恰一个成功且只有一条日志", async () => {
     const kitA = makeKit();
-    kitA.setLocal(2026, 9, 10, 8, 30);
+    kitA.setLocal(2026, 9, 22, 8, 30);
     await kitA.workflow.initialize();
     const kitB = makeKit({ dbName: kitA.dbName });
-    kitB.setLocal(2026, 9, 10, 8, 30);
+    kitB.setLocal(2026, 9, 22, 8, 30);
 
-    const view = await kitA.workflow.recording("2026-09-10");
+    const view = await kitA.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const ref = view.value.items[0]?.pending;
@@ -38,7 +38,7 @@ describe("事务语义", () => {
     const winner = [resultA, resultB].find((r) => r.ok);
     if (!winner || !winner.ok) return;
 
-    const after = await kitA.workflow.recording("2026-09-10");
+    const after = await kitA.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.status).toBe("completed");
@@ -54,9 +54,9 @@ describe("事务语义", () => {
 
   it("写事务中途 abort：先前写入一并回滚，重开查询保持原状态", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
-    const view = await kit.workflow.recording("2026-09-10");
+    const view = await kit.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const ref = view.value.items[0]?.pending;
@@ -84,7 +84,7 @@ describe("事务语义", () => {
       tx.objectStore("studyLogs").put({
         id: crypto.randomUUID(),
         planItemId: done.value.plan.id,
-        date: "2026-09-10",
+        date: "2026-09-22",
         actualMinutes: 1,
         summary: "违反唯一日志不变量的第二条日志",
       });
@@ -97,7 +97,7 @@ describe("事务语义", () => {
     }
 
     // 重开查询（seam）：标题未改、仍只有原日志
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.title).toBe(

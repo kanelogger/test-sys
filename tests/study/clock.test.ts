@@ -7,31 +7,31 @@ import { makeKit } from "./kit";
 describe("本地日历跨日", () => {
   it("跨日子夜前后：今日、逾期与考试天数按本地日历切换", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 12, 23, 59);
+    kit.setLocal(2026, 9, 24, 23, 59);
     await kit.workflow.initialize();
 
     const before = await kit.workflow.today();
     expect(before.ok).toBe(true);
     if (!before.ok) return;
-    expect(before.value.date).toBe("2026-09-12");
-    // 种子 9/12 当日 3 项；过去 pending 9/8..9/11 共 5+4+4+3=16 项
+    expect(before.value.date).toBe("2026-09-24");
+    // 种子 9/24 当日 3 项；过去 pending 9/20..9/23 共 5+4+4+2=15 项
     expect(before.value.items).toHaveLength(3);
-    expect(before.value.overdue).toHaveLength(16);
-    expect(before.value.daysUntilExam).toBe(42);
+    expect(before.value.overdue).toHaveLength(15);
+    expect(before.value.daysUntilExam).toBe(30);
 
     // 本地日历进入次日（23:59 → 00:01，只过 2 分钟）
-    kit.setLocal(2026, 9, 13, 0, 1);
+    kit.setLocal(2026, 9, 25, 0, 1);
     const after = await kit.workflow.today();
     expect(after.ok).toBe(true);
     if (!after.ok) return;
-    expect(after.value.date).toBe("2026-09-13");
-    // 种子 9/13 当日 5 项；9/12 的 3 项转为逾期 → 19 项
-    expect(after.value.items).toHaveLength(5);
-    expect(after.value.overdue).toHaveLength(19);
-    expect(after.value.daysUntilExam).toBe(41);
+    expect(after.value.date).toBe("2026-09-25");
+    // 种子 9/25 当日 2 项；9/24 的 3 项转为逾期 → 18 项
+    expect(after.value.items).toHaveLength(2);
+    expect(after.value.overdue).toHaveLength(18);
+    expect(after.value.daysUntilExam).toBe(29);
 
-    // 昨天登记成为历史路径：recording(9/12) 允许且草稿可补建（绑定历史日期）
-    const recording = await kit.workflow.recording("2026-09-12");
+    // 昨天登记成为历史路径：recording(9/24) 允许且草稿可补建（绑定历史日期）
+    const recording = await kit.workflow.recording("2026-09-24");
     expect(recording.ok).toBe(true);
     if (!recording.ok) return;
     const backfilled = await kit.workflow.createBackfill({
@@ -43,10 +43,10 @@ describe("本地日历跨日", () => {
         completionCriteria: "整理出错误分类清单。",
         plannedMinutes: 15,
       },
-      log: { actualMinutes: 15, summary: "9/12 已学，跨日后补录" },
+      log: { actualMinutes: 15, summary: "9/24 已学，跨日后补录" },
     });
     expect(backfilled.ok).toBe(true);
     if (!backfilled.ok) return;
-    expect(backfilled.value.log.date).toBe("2026-09-12");
+    expect(backfilled.value.log.date).toBe("2026-09-24");
   });
 });

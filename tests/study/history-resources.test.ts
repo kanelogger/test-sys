@@ -4,9 +4,9 @@ import { makeKit } from "./kit";
 describe("历史与资源查询", () => {
   it("历史投影如实展示 moved/skipped/backfill、计划实际和完整链摘要", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 9, 0);
+    kit.setLocal(2026, 9, 22, 9, 0);
     await kit.workflow.initialize();
-    const original = await kit.workflow.plan("2026-09-08");
+    const original = await kit.workflow.plan("2026-09-20");
     expect(original.ok).toBe(true);
     if (!original.ok) return;
     const moveRef = original.value.items[0]?.pending;
@@ -17,7 +17,7 @@ describe("历史与资源查询", () => {
     expect(moved.ok).toBe(true);
     if (!moved.ok || moved.value.outcome !== "moved") return;
     const movedResult = moved.value;
-    const executionDay = await kit.workflow.plan("2026-09-10");
+    const executionDay = await kit.workflow.plan("2026-09-22");
     expect(executionDay.ok).toBe(true);
     if (!executionDay.ok) return;
     const successor = executionDay.value.items.find(
@@ -30,7 +30,7 @@ describe("历史与资源查询", () => {
     });
     await kit.workflow.skipPlan(skipRef);
 
-    const recording = await kit.workflow.recording("2026-09-08");
+    const recording = await kit.workflow.recording("2026-09-20");
     expect(recording.ok).toBe(true);
     if (!recording.ok) return;
     await kit.workflow.createBackfill({
@@ -45,7 +45,7 @@ describe("历史与资源查询", () => {
       log: { actualMinutes: 18, summary: "历史补建完成" },
     });
 
-    const history = await kit.workflow.history("2026-09-08");
+    const history = await kit.workflow.history("2026-09-20");
     expect(history.ok).toBe(true);
     if (!history.ok) return;
     expect(history.value.items.some((row) => row.plan.status === "moved")).toBe(
@@ -54,7 +54,7 @@ describe("历史与资源查询", () => {
     expect(
       history.value.items.find((row) => row.plan.status === "moved")
         ?.movedToDate
-    ).toBe("2026-09-10");
+    ).toBe("2026-09-22");
     expect(
       history.value.items.some((row) => row.plan.status === "skipped")
     ).toBe(true);
@@ -68,7 +68,7 @@ describe("历史与资源查询", () => {
     );
     expect(summary).toEqual({
       lineageId: movedResult.original.lineageId,
-      originalDate: "2026-09-08",
+      originalDate: "2026-09-20",
       finalStatus: "completed",
       movedCount: 1,
       pendingCount: 0,

@@ -8,22 +8,23 @@ import { makeKit, mutatedSeedLoader } from "./kit";
 describe("initialize", () => {
   it("首次初始化返回 initialized 并直接取 seedVersion，随后查询可见种子内容", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 8);
+    kit.setLocal(2026, 9, 20);
 
     const result = await kit.workflow.initialize();
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.value.outcome).toBe("initialized");
     expect(result.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-08.v1"
+      "sysanalyst-2026-09-20.v1"
     );
 
     const view = await kit.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
-    // 种子 2026-09-08 当日五项（真实内容字面量）
-    expect(view.value.date).toBe("2026-09-08");
+    // 种子 2026-09-20 当日五项（真实内容字面量）
+    expect(view.value.date).toBe("2026-09-20");
     expect(view.value.items).toHaveLength(5);
+    expect(view.value.overdue).toHaveLength(0);
     const first = view.value.items[0];
     expect(first?.plan.subject).toBe("综合知识");
     expect(first?.plan.title).toBe("导学与教材定位");
@@ -32,26 +33,26 @@ describe("initialize", () => {
     expect(first?.plan.source).toBe("seed");
     expect(first?.plan.lineageId).toBe(first?.plan.id);
     expect(first?.resource?.type).toBe("web");
-    // 预算：当日 pending 之和 15+35+15+20+5=90，Y=90；考试 2026-10-24 距今 46 天
+    // 预算：当日 pending 之和 15+35+15+20+5=90，Y=90；考试 2026-10-24 距今 34 天
     expect(view.value.budget).toEqual({
       plannedMinutes: 90,
       referenceMinutes: 90,
       exceeded: false,
     });
     expect(view.value.examDate).toBe("2026-10-24");
-    expect(view.value.daysUntilExam).toBe(46);
+    expect(view.value.daysUntilExam).toBe(34);
   });
 
   it("非空标记返回 already-initialized 且零修改", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 8);
+    kit.setLocal(2026, 9, 20);
     await kit.workflow.initialize();
 
     const again = await kit.workflow.initialize();
     expect(again.ok).toBe(true);
     if (!again.ok) return;
     expect(again.value.outcome).toBe("already-initialized");
-    expect(again.value.initializedSeedVersion).toBe("sysanalyst-2026-09-08.v1");
+    expect(again.value.initializedSeedVersion).toBe("sysanalyst-2026-09-20.v1");
 
     const view = await kit.workflow.today();
     expect(view.ok && view.value.items).toHaveLength(5);
@@ -59,7 +60,7 @@ describe("initialize", () => {
 
   it("删空计划后不重新灌入（初始化与否只看标记）", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 8);
+    kit.setLocal(2026, 9, 20);
     await kit.workflow.initialize();
 
     // 环境前态构造（FLOW-01-T 特许）：以原始连接清空 planItems，模拟用户删空计划
@@ -107,7 +108,7 @@ describe("initialize", () => {
     expect(outcomes.sort()).toEqual(["already-initialized", "initialized"]);
 
     // 四部分无重复写入：当日仍为种子五项
-    kitA.setLocal(2026, 9, 8);
+    kitA.setLocal(2026, 9, 20);
     const view = await kitA.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
@@ -116,7 +117,7 @@ describe("initialize", () => {
 
   it("随包种子升级不覆盖已有数据（第二连接携带新版种子）", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 8);
+    kit.setLocal(2026, 9, 20);
     await kit.workflow.initialize();
 
     const upgraded = makeKit({
@@ -131,7 +132,7 @@ describe("initialize", () => {
     if (!result.ok) return;
     expect(result.value.outcome).toBe("already-initialized");
     expect(result.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-08.v1"
+      "sysanalyst-2026-09-20.v1"
     );
 
     const view = await kit.workflow.today();
@@ -259,7 +260,7 @@ describe("initialize", () => {
       loader: mutatedSeedLoader((seed) => {
         seed.planItems = (
           seed.planItems as Array<Record<string, unknown>>
-        ).filter((p) => p.date !== "2026-09-08");
+        ).filter((p) => p.date !== "2026-09-20");
       }),
       field: "coverage" as string | undefined,
     },
@@ -289,7 +290,7 @@ describe("initialize", () => {
       name: "工作日单日预计分钟超过 90",
       loader: mutatedSeedLoader((seed) => {
         const plans = seed.planItems as Array<Record<string, unknown>>;
-        const first = plans.find((plan) => plan.date === "2026-09-08")!;
+        const first = plans.find((plan) => plan.date === "2026-09-21")!;
         first.plannedMinutes = Number(first.plannedMinutes) + 1;
       }),
       field: "plannedMinutes" as string | undefined,
@@ -355,7 +356,7 @@ describe("initialize", () => {
     if (today.ok) return;
     expect(today.error.code).toBe("NOT_INITIALIZED");
 
-    const recording = await kit.workflow.recording("2026-09-08");
+    const recording = await kit.workflow.recording("2026-09-20");
     expect(recording.ok).toBe(false);
     if (recording.ok) return;
     expect(recording.error.code).toBe("NOT_INITIALIZED");
@@ -363,7 +364,7 @@ describe("initialize", () => {
     // 结构合法的 ref 来自另一个已初始化库；本库未初始化 → NOT_INITIALIZED
     const other = makeKit();
     await other.workflow.initialize();
-    const otherView = await other.workflow.recording("2026-09-08");
+    const otherView = await other.workflow.recording("2026-09-20");
     expect(otherView.ok).toBe(true);
     if (!otherView.ok) return;
     const ref = otherView.value.items[0]?.pending;

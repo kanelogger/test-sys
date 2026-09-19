@@ -10,7 +10,7 @@ import { isRecord } from "./guard";
 import { CURRENT_SEED_VERSION } from "./seedVersions";
 import type { PlanItem, Resource, Settings } from "./types";
 
-const FROZEN_COVERAGE_START = "2026-09-08";
+const FROZEN_COVERAGE_START = "2026-09-20";
 const FROZEN_COVERAGE_END = "2026-10-23";
 const DEFAULT_EXAM_DATE = "2026-10-24";
 const DEFAULT_DAILY_MINUTES = 90;

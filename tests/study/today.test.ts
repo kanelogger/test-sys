@@ -8,15 +8,15 @@ import { makeKit } from "./kit";
 describe("today", () => {
   it("当日任务按 order 排列，预算与考试天数按口径计算", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
     const view = await kit.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
 
-    expect(view.value.date).toBe("2026-09-10");
-    // 种子 9/10 当日四项（真实内容字面量）
+    expect(view.value.date).toBe("2026-09-22");
+    // 种子 9/22 当日四项（真实内容字面量）
     expect(
       view.value.items.map((row) => [
         row.plan.order,
@@ -40,26 +40,26 @@ describe("today", () => {
       exceeded: false,
     });
     expect(view.value.examDate).toBe("2026-10-24");
-    expect(view.value.daysUntilExam).toBe(44);
+    expect(view.value.daysUntilExam).toBe(32);
   });
 
   it("逾期待处理列出全部过去 pending，按日期再按 order 排列", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
     const view = await kit.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
 
-    // 9/8(5 项)+9/9(4)=9 项过去 pending；9/1—9/7 旧日程不进入种子
+    // 9/20(5 项)+9/21(4)=9 项过去 pending；9/1—9/19 旧日程不进入种子
     expect(view.value.overdue).toHaveLength(9);
     expect(
       view.value.overdue.every((row) => row.plan.status === "pending")
     ).toBe(true);
     // 覆盖首日第一项（真实种子字面量）
     const first = view.value.overdue[0];
-    expect(first?.plan.date).toBe("2026-09-08");
+    expect(first?.plan.date).toBe("2026-09-20");
     expect(first?.plan.order).toBe(0);
     expect(first?.plan.subject).toBe("综合知识");
     expect(first?.plan.title).toBe("导学与教材定位");
@@ -79,14 +79,14 @@ describe("today", () => {
 
   it("周末日预算超过通用参考线时 exceeded 为 true（仅提示口径）", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 12, 10, 0);
+    kit.setLocal(2026, 9, 26, 10, 0);
     await kit.workflow.initialize();
 
     const view = await kit.workflow.today();
     expect(view.ok).toBe(true);
     if (!view.ok) return;
 
-    // 种子 9/12 周六三项共 240 分钟 > Y=90
+    // 种子 9/26 周六三项共 240 分钟 > Y=90
     expect(view.value.budget).toEqual({
       plannedMinutes: 240,
       referenceMinutes: 90,
@@ -115,10 +115,10 @@ describe("today", () => {
 
   it("完成后当日行展示日志且 X 仍计入 completed", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
-    const before = await kit.workflow.recording("2026-09-10");
+    const before = await kit.workflow.recording("2026-09-22");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
     const ref = before.value.items[0]?.pending;
@@ -142,7 +142,7 @@ describe("today", () => {
       "完成数据库模式、关系代数与规范化入门"
     );
     expect(completed?.log?.scoreText).toBe("18/20");
-    expect(completed?.log?.date).toBe("2026-09-10");
+    expect(completed?.log?.date).toBe("2026-09-22");
     // 预算仍含 completed：45+20+20+5=90
     expect(view.value.budget.plannedMinutes).toBe(90);
     // 当日其余三项仍 pending 并携带引用

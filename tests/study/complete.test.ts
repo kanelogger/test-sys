@@ -8,10 +8,10 @@ import { makeKit, snapshotRows } from "./kit";
 describe("complete", () => {
   it("补记历史 pending：任务总数不增、解除逾期、日志留在计划日、source 不变", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
-    const before = await kit.workflow.recording("2026-09-08");
+    const before = await kit.workflow.recording("2026-09-20");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
     expect(before.value.items).toHaveLength(5);
@@ -27,14 +27,14 @@ describe("complete", () => {
     if (!done.ok) return;
     expect(done.value.plan.status).toBe("completed");
     expect(done.value.plan.source).toBe("seed");
-    expect(done.value.plan.date).toBe("2026-09-08");
-    expect(done.value.log.date).toBe("2026-09-08");
+    expect(done.value.plan.date).toBe("2026-09-20");
+    expect(done.value.log.date).toBe("2026-09-20");
     expect(done.value.log.planItemId).toBe(done.value.plan.id);
     // 总结按 trim 后规范形存储
     expect(done.value.log.summary).toBe("昨天已学，今天补记导学定位");
 
     // 任务总数不增：当日仍 5 项；原任务不再逾期
-    const after = await kit.workflow.recording("2026-09-08");
+    const after = await kit.workflow.recording("2026-09-20");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items).toHaveLength(5);
@@ -49,10 +49,10 @@ describe("complete", () => {
 
   it("完成与唯一日志：同引用重复 complete 为 STATE_CHANGED 且零修改", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
-    const view = await kit.workflow.recording("2026-09-10");
+    const view = await kit.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const ref = view.value.items[0]?.pending;
@@ -64,7 +64,7 @@ describe("complete", () => {
     });
     expect(first.ok).toBe(true);
 
-    const afterFirst = await kit.workflow.recording("2026-09-10");
+    const afterFirst = await kit.workflow.recording("2026-09-22");
     expect(afterFirst.ok).toBe(true);
     if (!afterFirst.ok) return;
     const beforeSecond = snapshotRows(afterFirst.value);
@@ -78,7 +78,7 @@ describe("complete", () => {
     expect(second.error.code).toBe("STATE_CHANGED");
 
     // 零修改：全部行字段级快照与首次完成后一致（仍只有原日志）
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeSecond);
@@ -100,10 +100,10 @@ describe("complete", () => {
     "非法输入为 INVALID_INPUT（$field）且零修改",
     async ({ actualMinutes, summary, scoreText, field }) => {
       const kit = makeKit();
-      kit.setLocal(2026, 9, 10, 8, 30);
+      kit.setLocal(2026, 9, 22, 8, 30);
       await kit.workflow.initialize();
 
-      const view = await kit.workflow.recording("2026-09-10");
+      const view = await kit.workflow.recording("2026-09-22");
       expect(view.ok).toBe(true);
       if (!view.ok) return;
       const ref = view.value.items[0]?.pending;
@@ -121,7 +121,7 @@ describe("complete", () => {
       expect(done.error.field).toBe(field);
 
       // 失败后原状态：全部行字段级不变（不只数量）
-      const after = await kit.workflow.recording("2026-09-10");
+      const after = await kit.workflow.recording("2026-09-22");
       expect(after.ok).toBe(true);
       if (!after.ok) return;
       expect(snapshotRows(after.value)).toEqual(before);
@@ -130,7 +130,7 @@ describe("complete", () => {
 
   it("伪造或不合法引用为 INVALID_INPUT", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
     for (const fake of ["garbage", '{"v":1,"kind":"backfill-draft"}', "{}"]) {
@@ -146,10 +146,10 @@ describe("complete", () => {
 
   it("选中 pending 被另一连接完成后，旧提交为 STATE_CHANGED 零修改", async () => {
     const kitA = makeKit();
-    kitA.setLocal(2026, 9, 10, 8, 30);
+    kitA.setLocal(2026, 9, 22, 8, 30);
     await kitA.workflow.initialize();
 
-    const view = await kitA.workflow.recording("2026-09-10");
+    const view = await kitA.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const ref = view.value.items[0]?.pending;
@@ -157,14 +157,14 @@ describe("complete", () => {
 
     // 第二个独立连接拿到同一目标并完成
     const kitB = makeKit({ dbName: kitA.dbName });
-    kitB.setLocal(2026, 9, 10, 8, 30);
+    kitB.setLocal(2026, 9, 22, 8, 30);
     const first = await kitB.workflow.complete(ref, {
       actualMinutes: 30,
       summary: "另一标签页先完成",
     });
     expect(first.ok).toBe(true);
 
-    const afterFirst = await kitA.workflow.recording("2026-09-10");
+    const afterFirst = await kitA.workflow.recording("2026-09-22");
     expect(afterFirst.ok).toBe(true);
     if (!afterFirst.ok) return;
     const beforeStale = snapshotRows(afterFirst.value);
@@ -179,7 +179,7 @@ describe("complete", () => {
     expect(stale.error.code).toBe("STATE_CHANGED");
 
     // 零修改：字段级快照与另一连接完成后一致
-    const after = await kitA.workflow.recording("2026-09-10");
+    const after = await kitA.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeStale);
@@ -187,12 +187,12 @@ describe("complete", () => {
 
   it("两个不同 lineage 可并行完成", async () => {
     const kitA = makeKit();
-    kitA.setLocal(2026, 9, 10, 8, 30);
+    kitA.setLocal(2026, 9, 22, 8, 30);
     await kitA.workflow.initialize();
     const kitB = makeKit({ dbName: kitA.dbName });
-    kitB.setLocal(2026, 9, 10, 8, 30);
+    kitB.setLocal(2026, 9, 22, 8, 30);
 
-    const view = await kitA.workflow.recording("2026-09-10");
+    const view = await kitA.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const ref0 = view.value.items[0]?.pending;
@@ -215,7 +215,7 @@ describe("complete", () => {
     expect(done0.ok).toBe(true);
     expect(done1.ok).toBe(true);
 
-    const after = await kitA.workflow.recording("2026-09-10");
+    const after = await kitA.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.status).toBe("completed");
@@ -225,10 +225,10 @@ describe("complete", () => {
 
   it("同 lineage 存量多个 pending 时完成为 INVALID_STATE 零修改", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
-    const view = await kit.workflow.recording("2026-09-10");
+    const view = await kit.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const target = view.value.items[0]?.plan;
@@ -258,7 +258,7 @@ describe("complete", () => {
     }
 
     // 零修改：全部行字段级不变（含塞入的第二个 pending 原样保留）
-    const beforeFailView = await kit.workflow.recording("2026-09-10");
+    const beforeFailView = await kit.workflow.recording("2026-09-22");
     expect(beforeFailView.ok).toBe(true);
     if (!beforeFailView.ok) return;
     const beforeFail = snapshotRows(beforeFailView.value);
@@ -270,7 +270,7 @@ describe("complete", () => {
     if (done.ok) return;
     expect(done.error.code).toBe("INVALID_STATE");
 
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeFail);
@@ -278,10 +278,10 @@ describe("complete", () => {
 
   it("存量 pending 却带有日志为 INVALID_STATE（非 STATE_CHANGED）且零修改", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
 
-    const view = await kit.workflow.recording("2026-09-10");
+    const view = await kit.workflow.recording("2026-09-22");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const target = view.value.items[0]?.plan;
@@ -313,7 +313,7 @@ describe("complete", () => {
     }
 
     // 环境构造后的字段级快照（作为零修改基准，含塞入的日志）
-    const beforeFailView = await kit.workflow.recording("2026-09-10");
+    const beforeFailView = await kit.workflow.recording("2026-09-22");
     expect(beforeFailView.ok).toBe(true);
     if (!beforeFailView.ok) return;
     const beforeFail = snapshotRows(beforeFailView.value);
@@ -327,7 +327,7 @@ describe("complete", () => {
     expect(done.error.code).toBe("INVALID_STATE");
     expect(done.error.reason).toContain("日志");
 
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(beforeFail);
@@ -335,9 +335,9 @@ describe("complete", () => {
 
   it("完成命令第二步写入故障时，日志与 completed 状态一并回滚", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
-    const before = await kit.workflow.recording("2026-09-10");
+    const before = await kit.workflow.recording("2026-09-22");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
     const ref = before.value.items[0]?.pending;
@@ -374,7 +374,7 @@ describe("complete", () => {
       IDBObjectStore.prototype.put = originalPut;
     }
 
-    const after = await kit.workflow.recording("2026-09-10");
+    const after = await kit.workflow.recording("2026-09-22");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items[0]?.plan.status).toBe("pending");

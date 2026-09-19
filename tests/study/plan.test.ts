@@ -4,10 +4,10 @@ import { makeKit, snapshotRows } from "./kit";
 describe("计划与设置", () => {
   it("设置只改变考试倒计时和预算参考线，不修改任务", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 8, 9, 0);
+    kit.setLocal(2026, 9, 20, 9, 0);
     await kit.workflow.initialize();
 
-    const before = await kit.workflow.plan("2026-09-08");
+    const before = await kit.workflow.plan("2026-09-20");
     expect(before.ok).toBe(true);
     if (!before.ok) return;
     const rowsBefore = snapshotRows(before.value);
@@ -24,14 +24,14 @@ describe("计划与设置", () => {
     const today = await kit.workflow.today();
     expect(today.ok).toBe(true);
     if (!today.ok) return;
-    expect(today.value.daysUntilExam).toBe(54);
+    expect(today.value.daysUntilExam).toBe(42);
     expect(today.value.budget).toEqual({
       plannedMinutes: 90,
       referenceMinutes: 75,
       exceeded: true,
     });
 
-    const after = await kit.workflow.plan("2026-09-08");
+    const after = await kit.workflow.plan("2026-09-20");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(snapshotRows(after.value)).toEqual(rowsBefore);
@@ -39,11 +39,11 @@ describe("计划与设置", () => {
 
   it("添加 manual 根并持久化日内排序，旧排序快照不覆盖新事实", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 8, 9, 0);
+    kit.setLocal(2026, 9, 20, 9, 0);
     await kit.workflow.initialize();
 
     const created = await kit.workflow.addPlan({
-      date: "2026-09-08",
+      date: "2026-09-20",
       subject: "案例分析",
       title: "手工追加任务",
       completionCriteria: "完成一题并核对答案。",
@@ -56,7 +56,7 @@ describe("计划与设置", () => {
     expect(created.value.source).toBe("manual");
     expect(created.value.lineageId).toBe(created.value.id);
 
-    const beforeOrder = await kit.workflow.plan("2026-09-08");
+    const beforeOrder = await kit.workflow.plan("2026-09-20");
     expect(beforeOrder.ok).toBe(true);
     if (!beforeOrder.ok) return;
     expect(beforeOrder.value.items).toHaveLength(6);
@@ -70,7 +70,7 @@ describe("计划与设置", () => {
     );
     expect(reordered.ok).toBe(true);
 
-    const after = await kit.workflow.plan("2026-09-08");
+    const after = await kit.workflow.plan("2026-09-20");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(after.value.items.map((row) => row.plan.id)).toEqual(reversedIds);
@@ -85,7 +85,7 @@ describe("计划与设置", () => {
     expect(stale.ok).toBe(false);
     if (stale.ok) return;
     expect(stale.error.code).toBe("STATE_CHANGED");
-    const unchanged = await kit.workflow.plan("2026-09-08");
+    const unchanged = await kit.workflow.plan("2026-09-20");
     expect(unchanged.ok).toBe(true);
     if (!unchanged.ok) return;
     expect(unchanged.value.items.map((row) => row.plan.id)).toEqual(
@@ -95,9 +95,9 @@ describe("计划与设置", () => {
 
   it("连续移动保持单链，同日不修改，末端只能继续移动或跳过", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 23, 30);
+    kit.setLocal(2026, 9, 22, 23, 30);
     await kit.workflow.initialize();
-    const originalDay = await kit.workflow.plan("2026-09-08");
+    const originalDay = await kit.workflow.plan("2026-09-20");
     expect(originalDay.ok).toBe(true);
     if (!originalDay.ok) return;
     const originalRef = originalDay.value.items[0]?.pending;
@@ -111,12 +111,12 @@ describe("计划与设置", () => {
     if (!firstMove.ok || firstMove.value.outcome !== "moved") return;
     const firstMoved = firstMove.value;
     expect(firstMoved.original.status).toBe("moved");
-    expect(firstMoved.successor.date).toBe("2026-09-11");
+    expect(firstMoved.successor.date).toBe("2026-09-23");
     expect(firstMoved.original.movedToPlanItemId).toBe(firstMoved.successor.id);
     expect(firstMoved.successor.lineageId).toBe(firstMoved.original.lineageId);
     expect(firstMoved.successor.source).toBe(firstMoved.original.source);
 
-    const tomorrow = await kit.workflow.plan("2026-09-11");
+    const tomorrow = await kit.workflow.plan("2026-09-23");
     expect(tomorrow.ok).toBe(true);
     if (!tomorrow.ok) return;
     const successorRow = tomorrow.value.items.find(
@@ -127,7 +127,7 @@ describe("计划与设置", () => {
 
     const sameDate = await kit.workflow.movePlan(successorRow.pending, {
       kind: "date",
-      date: "2026-09-11",
+      date: "2026-09-23",
     });
     expect(sameDate).toEqual({
       ok: true,
@@ -136,7 +136,7 @@ describe("计划与设置", () => {
 
     const continued = await kit.workflow.movePlan(successorRow.pending, {
       kind: "date",
-      date: "2026-09-12",
+      date: "2026-09-24",
     });
     expect(continued.ok).toBe(true);
     if (!continued.ok || continued.value.outcome !== "moved") return;
@@ -146,7 +146,7 @@ describe("计划与设置", () => {
       firstMoved.original.lineageId
     );
 
-    const finalDay = await kit.workflow.plan("2026-09-12");
+    const finalDay = await kit.workflow.plan("2026-09-24");
     expect(finalDay.ok).toBe(true);
     if (!finalDay.ok) return;
     const finalRow = finalDay.value.items.find(
@@ -171,7 +171,7 @@ describe("计划与设置", () => {
     expect(stale.error.code).toBe("STATE_CHANGED");
 
     const chainDays = await Promise.all(
-      ["2026-09-08", "2026-09-11", "2026-09-12"].map((date) =>
+      ["2026-09-20", "2026-09-23", "2026-09-24"].map((date) =>
         kit.workflow.plan(date)
       )
     );
@@ -189,12 +189,12 @@ describe("计划与设置", () => {
 
   it("根 pending 可删除，竞争跳过与删除只有一个提交", async () => {
     const kitA = makeKit();
-    kitA.setLocal(2026, 9, 8);
+    kitA.setLocal(2026, 9, 20);
     await kitA.workflow.initialize();
     const kitB = makeKit({ dbName: kitA.dbName });
-    kitB.setLocal(2026, 9, 8);
+    kitB.setLocal(2026, 9, 20);
 
-    const view = await kitA.workflow.plan("2026-09-08");
+    const view = await kitA.workflow.plan("2026-09-20");
     expect(view.ok).toBe(true);
     if (!view.ok) return;
     const first = view.value.items[0]?.pending;
@@ -214,7 +214,7 @@ describe("计划与设置", () => {
     const loser = [skip, remove].find((result) => !result.ok);
     expect(loser && !loser.ok ? loser.error.code : "").toBe("STATE_CHANGED");
 
-    const after = await kitA.workflow.plan("2026-09-08");
+    const after = await kitA.workflow.plan("2026-09-20");
     expect(after.ok).toBe(true);
     if (!after.ok) return;
     expect(

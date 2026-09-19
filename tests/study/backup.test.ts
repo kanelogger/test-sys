@@ -2,79 +2,80 @@ import { describe, expect, it } from "vitest";
 import { makeKit } from "./kit";
 
 describe("备份恢复", () => {
-  it("导出完整快照，兼容历史 seedVersion，并原子完整替换全部数据", async () => {
-    const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
-    await kit.workflow.initialize();
-    const day = await kit.workflow.plan("2026-09-10");
-    expect(day.ok).toBe(true);
-    if (!day.ok) return;
-    const pending = day.value.items[0]?.pending;
-    expect(pending).toBeDefined();
-    if (!pending) return;
-    await kit.workflow.complete(pending, {
-      actualMinutes: 35,
-      summary: "纳入备份的完成记录",
-    });
+  it.each(["sysanalyst-2026-09-06.v1", "sysanalyst-2026-09-08.v1"])(
+    "导出完整快照，兼容历史 %s，并原子完整替换全部数据",
+    async (historicalVersion) => {
+      const kit = makeKit();
+      kit.setLocal(2026, 9, 22, 8, 30);
+      await kit.workflow.initialize();
+      const day = await kit.workflow.plan("2026-09-22");
+      expect(day.ok).toBe(true);
+      if (!day.ok) return;
+      const pending = day.value.items[0]?.pending;
+      expect(pending).toBeDefined();
+      if (!pending) return;
+      await kit.workflow.complete(pending, {
+        actualMinutes: 35,
+        summary: "纳入备份的完成记录",
+      });
 
-    const exported = await kit.workflow.exportBackup();
-    expect(exported.ok).toBe(true);
-    if (!exported.ok) return;
-    expect(Object.keys(exported.value)).toEqual([
-      "schemaVersion",
-      "exportedAt",
-      "appMeta",
-      "settings",
-      "resources",
-      "planItems",
-      "studyLogs",
-    ]);
-    expect(exported.value.schemaVersion).toBe(1);
-    expect(exported.value.studyLogs).toHaveLength(1);
+      const exported = await kit.workflow.exportBackup();
+      expect(exported.ok).toBe(true);
+      if (!exported.ok) return;
+      expect(Object.keys(exported.value)).toEqual([
+        "schemaVersion",
+        "exportedAt",
+        "appMeta",
+        "settings",
+        "resources",
+        "planItems",
+        "studyLogs",
+      ]);
+      expect(exported.value.schemaVersion).toBe(1);
+      expect(exported.value.studyLogs).toHaveLength(1);
 
-    const historical = {
-      ...exported.value,
-      appMeta: { initializedSeedVersion: "sysanalyst-2026-09-06.v1" },
-    };
-    const prepared = await kit.workflow.prepareImport(
-      JSON.stringify(historical)
-    );
-    expect(prepared.ok).toBe(true);
-    if (!prepared.ok) return;
-    expect(prepared.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-06.v1"
-    );
+      const historical = {
+        ...exported.value,
+        appMeta: { initializedSeedVersion: historicalVersion },
+      };
+      const prepared = await kit.workflow.prepareImport(
+        JSON.stringify(historical)
+      );
+      expect(prepared.ok).toBe(true);
+      if (!prepared.ok) return;
+      expect(prepared.value.initializedSeedVersion).toBe(historicalVersion);
 
-    await kit.workflow.addPlan({
-      date: "2026-09-10",
-      subject: "临时",
-      title: "恢复时必须被完整替换",
-      completionCriteria: "不存在于备份中",
-      plannedMinutes: 5,
-    });
-    const restored = await kit.workflow.restoreBackup({
-      draft: prepared.value.draft,
-      confirmed: true,
-    });
-    expect(restored.ok).toBe(true);
+      await kit.workflow.addPlan({
+        date: "2026-09-22",
+        subject: "临时",
+        title: "恢复时必须被完整替换",
+        completionCriteria: "不存在于备份中",
+        plannedMinutes: 5,
+      });
+      const restored = await kit.workflow.restoreBackup({
+        draft: prepared.value.draft,
+        confirmed: true,
+      });
+      expect(restored.ok).toBe(true);
 
-    const after = await kit.workflow.exportBackup();
-    expect(after.ok).toBe(true);
-    if (!after.ok) return;
-    expect(after.value.appMeta.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-06.v1"
-    );
-    expect(after.value.planItems).toEqual(historical.planItems);
-    expect(after.value.studyLogs).toEqual(historical.studyLogs);
-    expect(after.value.settings).toEqual(historical.settings);
-    expect(after.value.resources).toEqual(historical.resources);
-  });
+      const after = await kit.workflow.exportBackup();
+      expect(after.ok).toBe(true);
+      if (!after.ok) return;
+      expect(after.value.appMeta.initializedSeedVersion).toBe(
+        historicalVersion
+      );
+      expect(after.value.planItems).toEqual(historical.planItems);
+      expect(after.value.studyLogs).toEqual(historical.studyLogs);
+      expect(after.value.settings).toEqual(historical.settings);
+      expect(after.value.resources).toEqual(historical.resources);
+    }
+  );
 
   it("非法备份逐类拒绝，准备与恢复失败均不修改原数据", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
-    const day = await kit.workflow.plan("2026-09-10");
+    const day = await kit.workflow.plan("2026-09-22");
     expect(day.ok).toBe(true);
     if (!day.ok) return;
     const pending = day.value.items[0]?.pending;
@@ -166,7 +167,7 @@ describe("备份恢复", () => {
       },
       {
         name: "日志日期不等于计划日",
-        mutate: (backup) => (backup.studyLogs[0]!.date = "2026-09-09"),
+        mutate: (backup) => (backup.studyLogs[0]!.date = "2026-09-21"),
       },
       {
         name: "同 lineage 多个 pending",
@@ -233,10 +234,10 @@ describe("备份恢复", () => {
 
   it("并发完成、移动、补录期间的只读快照始终可通过导入校验", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
-    const today = await kit.workflow.plan("2026-09-10");
-    const history = await kit.workflow.recording("2026-09-08");
+    const today = await kit.workflow.plan("2026-09-22");
+    const history = await kit.workflow.recording("2026-09-20");
     expect(today.ok && history.ok).toBe(true);
     if (!today.ok || !history.ok) return;
     const completeRef = today.value.items[0]?.pending;
@@ -275,7 +276,7 @@ describe("备份恢复", () => {
 
   it("恢复清表后的写入故障回滚，原五部分逐项保持", async () => {
     const kit = makeKit();
-    kit.setLocal(2026, 9, 10, 8, 30);
+    kit.setLocal(2026, 9, 22, 8, 30);
     await kit.workflow.initialize();
     const exported = await kit.workflow.exportBackup();
     expect(exported.ok).toBe(true);
