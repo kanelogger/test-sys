@@ -1,0 +1,170 @@
+[p1 "系统分析师学习助手" | space "学习助手从今天启动"(9): 1 managed, 0 untracked — p1* "系统分析师学习助手"]
+root
+  container
+    container
+      text "系统分析师学习助手"
+      container
+        anchor [ref=77, loc=href:/test-sys/#/, url=http://127.0.0.1:5173/test-sys/#/]
+          svg_root
+          text "今日"
+        anchor [ref=78, loc=href:/test-sys/#/plan, url=http://127.0.0.1:5173/test-sys/#/plan]
+          svg_root
+          text "计划"
+        anchor [ref=79, loc=href:/test-sys/#/record, url=http://127.0.0.1:5173/test-sys/#/record]
+          svg_root
+          text "记录"
+        anchor [ref=80, loc=href:/test-sys/#/history, url=http://127.0.0.1:5173/test-sys/#/history]
+          svg_root
+          text "历史"
+        anchor [ref=81, loc=href:/test-sys/#/resources, url=http://127.0.0.1:5173/test-sys/#/resources]
+          svg_root
+          text "资源"
+      text "数据仅保存在本机浏览器"
+    container
+      container
+        heading
+          text "今天 ·"
+          text "2026-09-20"
+          text "星期"
+          text "日"
+        container
+          container
+            text "距考试"
+            text "34"
+            text "天"
+          container
+            text "今日已计划"
+            text "90"
+            text "/"
+            text "90"
+            text "分钟"
+      container
+        container
+          container
+            container
+              text "1"
+              text "."
+            text "综合知识"
+            text "导学与教材定位"
+            container
+              text "15"
+              text "分钟"
+          paragraph
+            text "完成标准："
+            text "看总导学，并在《一本全》中定位软件工程、需求、设计、数据库四个目录入口，留下可再次查找的位置。"
+          container
+            anchor [ref=82, url=https://space.bilibili.com/112111328/lists/3187606?type=season]
+              svg_root
+              text "架构和系分公共课（超级重点）"
+            container
+              button [ref=83]
+                svg_root
+                text "移到明天"
+              button [ref=84]
+                svg_root
+                text "跳过"
+              button [ref=85]
+                text "完成"
+        container
+          container
+            container
+              text "2"
+              text "."
+            text "综合知识"
+            text "软件工程入门"
+            container
+              text "35"
+              text "分钟"
+          paragraph
+            text "完成标准："
+            text "完成软件工程与开发模型入门片段，写下关键概念和仍不理解的问题。"
+          container
+            anchor [ref=86, url=https://space.bilibili.com/112111328/lists/3187606?type=season]
+              svg_root
+              text "架构和系分公共课（超级重点）"
+            container
+              button [ref=87]
+                svg_root
+                text "移到明天"
+              button [ref=88]
+                svg_root
+                text "跳过"
+              button [ref=89]
+                text "完成"
+        container
+          container
+            container
+              text "3"
+              text "."
+            text "综合知识"
+            text "开发模型对比"
+            container
+              text "15"
+              text "分钟"
+          paragraph
+            text "完成标准："
+            text "闭卷列出瀑布、迭代、原型、敏捷的适用情形，卡住处直接标问号。"
+          container
+            anchor [ref=90, url=https://space.bilibili.com/112111328/lists/3187606?type=season]
+              svg_root
+              text "架构和系分公共课（超级重点）"
+            container
+              button [ref=91]
+                svg_root
+                text "移到明天"
+              button [ref=92]
+                svg_root
+                text "跳过"
+              button [ref=93]
+                text "完成"
+        container
+          container
+            container
+              text "4"
+              text "."
+            text "综合知识"
+            text "做题订正"
+            container
+              text "20"
+              text "分钟"
+          paragraph
+            text "完成标准："
+            text "对错、猜和不确定项完成定位，写下错误原因、正确规则、识别信号及重做结果；尚未完成的复盘项单列。"
+          container
+            container
+              svg_root
+              text "选择真题分类解析.pdf"
+              button [ref=94]
+                svg_root
+                text "复制文件名"
+            container
+              button [ref=95]
+                svg_root
+                text "移到明天"
+              button [ref=96]
+                svg_root
+                text "跳过"
+              button [ref=97]
+                text "完成"
+        container
+          container
+            container
+              text "5"
+              text "."
+            text "复盘"
+            text "记录"
+            container
+              text "5"
+              text "分钟"
+          paragraph
+            text "完成标准："
+            text "在记录页填写当天真实分钟、完成产出、主要错误和下一次第一件事；未完成项不得勾成完成。"
+          container
+            button [ref=98]
+              svg_root
+              text "移到明天"
+            button [ref=99]
+              svg_root
+              text "跳过"
+            button [ref=100]
+              text "完成"

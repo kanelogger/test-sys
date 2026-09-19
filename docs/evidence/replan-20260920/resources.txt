@@ -1,0 +1,210 @@
+[p1 "系统分析师学习助手" | space "学习助手从今天启动"(9): 1 managed, 0 untracked — p1* "系统分析师学习助手"]
+root
+  container
+    container
+      text "系统分析师学习助手"
+      container
+        anchor [ref=50, loc=href:/test-sys/#/, url=http://127.0.0.1:5173/test-sys/#/]
+          svg_root
+          text "今日"
+        anchor [ref=51, loc=href:/test-sys/#/plan, url=http://127.0.0.1:5173/test-sys/#/plan]
+          svg_root
+          text "计划"
+        anchor [ref=52, loc=href:/test-sys/#/record, url=http://127.0.0.1:5173/test-sys/#/record]
+          svg_root
+          text "记录"
+        anchor [ref=53, loc=href:/test-sys/#/history, url=http://127.0.0.1:5173/test-sys/#/history]
+          svg_root
+          text "历史"
+        anchor [ref=54, loc=href:/test-sys/#/resources, url=http://127.0.0.1:5173/test-sys/#/resources]
+          svg_root
+          text "资源"
+      text "数据仅保存在本机浏览器"
+    container
+      container
+        heading
+          text "资源"
+        paragraph
+          text "网页在新标签页打开；本地 PDF 只保留并复制文件名。"
+      container
+        container
+          heading
+            text "网页资源"
+          container
+            text "10"
+            text "项"
+        container
+          container
+            anchor [ref=57, url=https://rsj.beijing.gov.cn/ywsite/bjpta/fwzn/cjwt/zyzgks/202603/t20260319_4561593.html]
+              svg_root
+              text "2026 考试问题解答（北京官方）"
+            text "rsj.beijing.gov.cn"
+          container
+            anchor [ref=58, loc=href:https://rsj.sh.gov.cn/tkwap_17826/20260811/t0035_1443017.html, url=https://rsj.sh.gov.cn/tkwap_17826/20260811/t0035_1443017.html]
+              svg_root
+              text "2026 下半年考试通知（上海官方）"
+            text "rsj.sh.gov.cn"
+          container
+            anchor [ref=59, loc=href:https://www.cheko.cc/chapter?courseId=7, url=https://www.cheko.cc/chapter?courseId=7]
+              svg_root
+              text "案例专业课"
+            text "www.cheko.cc"
+          container
+            anchor [ref=60, loc=href:https://space.bilibili.com/112111328/lists/3187606?type=season, url=https://space.bilibili.com/112111328/lists/3187606?type=season]
+              svg_root
+              text "架构和系分公共课（超级重点）"
+            text "space.bilibili.com"
+          container
+            anchor [ref=61, loc=href:https://www.cheko.cc/chapter?courseId=8, url=https://www.cheko.cc/chapter?courseId=8]
+              svg_root
+              text "论文专业课"
+            text "www.cheko.cc"
+          container
+            anchor [ref=62, loc=href:https://bm.ruankao.org.cn/sign/welcome, url=https://bm.ruankao.org.cn/sign/welcome]
+              svg_root
+              text "全国计算机技术与软件专业技术资格考试报名平台"
+            text "bm.ruankao.org.cn"
+          container
+            anchor [ref=63, loc=href:https://www.cheko.cc/past_exam?subject=1, url=https://www.cheko.cc/past_exam?subject=1]
+              svg_root
+              text "系统分析师历年真题"
+            text "www.cheko.cc"
+          container
+            anchor [ref=64, loc=href:https://www.cheko.cc/daily_practice?subject=1, url=https://www.cheko.cc/daily_practice?subject=1]
+              svg_root
+              text "系统分析师每日一练"
+            text "www.cheko.cc"
+          container
+            anchor [ref=65, loc=href:https://www.ruankao.org.cn/, url=https://www.ruankao.org.cn/]
+              svg_root
+              text "中国计算机技术职业资格网：考试用书与机考说明"
+            text "www.ruankao.org.cn"
+          container
+            anchor [ref=66, loc=href:https://www.cheko.cc/chapter?courseId=6, url=https://www.cheko.cc/chapter?courseId=6]
+              svg_root
+              text "综合知识专业课"
+            text "www.cheko.cc"
+      container
+        container
+          heading
+            text "本地 PDF 文件名"
+          container
+            text "7"
+            text "项"
+        container
+          container
+            svg_root
+            text "案例冲刺宝典.pdf"
+            button [ref=67]
+              svg_root
+              text "复制文件名"
+          container
+            svg_root
+            text "案例真题分类解析.pdf"
+            button [ref=68]
+              svg_root
+              text "复制文件名"
+          container
+            svg_root
+            text "红宝书一本全.pdf"
+            button [ref=69]
+              svg_root
+              text "复制文件名"
+          container
+            svg_root
+            text "考前指南.pdf"
+            button [ref=70]
+              svg_root
+              text "复制文件名"
+          container
+            svg_root
+            text "论文写作宝典.pdf"
+            button [ref=71]
+              svg_root
+              text "复制文件名"
+          container
+            svg_root
+            text "论文押题.pdf"
+            button [ref=72]
+              svg_root
+              text "复制文件名"
+          container
+            svg_root
+            text "选择真题分类解析.pdf"
+            button [ref=73]
+              svg_root
+              text "复制文件名"
+      container
+        heading
+          text "备考执行指南"
+        paragraph
+          text "长期执行规则集中在这里；逐日任务以计划页为准，实际结果写入记录页。"
+        container
+          heading
+            text "执行窗口与目标"
+          paragraph
+            text "执行期为 2026-09-20 至 2026-10-23，考试倒排日期暂按 2026-10-24；个人考区、批次和准考证信息以本人准考证为准。"
+          paragraph
+            text "必做任务共 65 小时，另留 6 小时缓冲。周一至周四参考 90 分钟，周五 60 分钟，周六日 240 分钟；应用中的默认每日分钟只是显示参考，不会自动改排任..."
+          unordered_list
+            list_item
+              text "综合知识：4 次年度题组（第 4 次分段）、1 次模拟；最近 3 份完整且未见答案卷以 70% 作为训练目标，不足 3 份时标记证据不足。"
+            list_item
+              text "案例分析：6 个主题模板，至少 1 次两道完整案例组合训练，另做 1 次模拟。"
+            list_item
+              text "论文：真实项目素材库、6 份提纲、2 篇限时全文，每篇至少修改 1 次。"
+        container
+          heading
+            text "每天怎么执行"
+          paragraph
+            text "输入之后立即输出：题目订正、对比表、案例答案或提纲至少留下一个可检查产出。看过视频不等于完成，实际分钟、产出、错误和下一步都在记录页�..."
+          paragraph
+            text "时间不足时使用 30 分钟最低版：10 分钟闭卷回忆，15 分钟做题订正或重写一个小问/段落，5 分钟记录；它维持节奏，不直接计作原任务全部完成。"
+          unordered_list
+            list_item
+              text "错题包含题源、考点、错误原因、正确规则、识别信号、重做日期与结果；2—3 天内重做关键错误。"
+            list_item
+              text "案例按“限时独立写 → 对照任务词 → 拆得分点 → 重写失分小问 → 隔两天再答”执行。"
+            list_item
+              text "论文使用能说明本人职责的真实项目；无法核实的数字留空或标记待核实，不编造。"
+        container
+          heading
+            text "每周调整"
+          paragraph
+            text "每周复盘记录必做分钟、三科产出、三个反复错误、下周优先漏洞和删减项。完成率按达到完成标准的计划任务分钟计算，额外观看视频不能冲抵未完�..."
+          unordered_list
+            list_item
+              text "完成率 ≥90%：保持计划，缓冲用于关键错误重做或休息。"
+            list_item
+              text "完成率 70%—89%：减少低收益视频、笔记整理和重复回看，保住限时输出与订正。"
+            list_item
+              text "完成率 <70%：先用缓冲，把一次新题组改为纠错，至少保留一次案例作答和一次论文输出。连续两周低于 70% 时按真实完成量重估数量，不熬夜追赶。"
+            list_item
+              text "同周欠账优先顺序：关键订正 → 案例作答与重写、论文全文与修改 → 新题组 → 弱项教材/视频 → 笔记美化。"
+        container
+          heading
+            text "资料与成果"
+          paragraph
+            text "资源页保留课程、真题、每日练习和 7 个本地 PDF 文件名。课程总入口为 https://www.cheko.cc/course；页面数量、时长和题库完整性只作使用前核对，不代表�..."
+          paragraph
+            text "学习成果按以下位置保存：学习成果/高频知识与易混概念.md、学习成果/选择题错题库.md、学习成果/案例主题模板.md、学习成果/论文项目素材库.md，以�..."
+        container
+          heading
+            text "考务提醒"
+          paragraph
+            text "报名与缴费沿用已完成状态；本人考区、准考证打印开放日与截止日、个人考试日期和批次仍需以本人信息补齐。不要直接套用其他考区通知。"
+      container
+        heading
+          text "本地备份与恢复"
+        paragraph
+          text "JSON 是唯一数据保护方式；恢复为完整替换。"
+        button [ref=74]
+          svg_root
+          text "导出 JSON"
+        container
+          svg_root
+          text "选择 JSON 恢复"
+          textbox [ref=75]
+            button [ref=76]
+              text "选择文件"
+            text "未选择任何文件"

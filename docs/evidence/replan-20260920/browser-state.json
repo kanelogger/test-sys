@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "initializedSeedVersion": "sysanalyst-2026-09-20.v1"
+  },
+  "planCount": 101,
+  "logCount": 0,
+  "todayCount": 5,
+  "overdueCount": 0,
+  "allPending": true
+}
