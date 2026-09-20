@@ -26,7 +26,7 @@ describe("计划与设置", () => {
     if (!today.ok) return;
     expect(today.value.daysUntilExam).toBe(42);
     expect(today.value.budget).toEqual({
-      plannedMinutes: 90,
+      plannedMinutes: 115,
       referenceMinutes: 75,
       exceeded: true,
     });

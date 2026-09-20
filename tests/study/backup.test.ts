@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import { makeKit } from "./kit";
 
 describe("备份恢复", () => {
-  it.each(["sysanalyst-2026-09-06.v1", "sysanalyst-2026-09-08.v1"])(
+  it.each([
+    "sysanalyst-2026-09-06.v1",
+    "sysanalyst-2026-09-08.v1",
+    "sysanalyst-2026-09-20.v1",
+  ])(
     "导出完整快照，兼容历史 %s，并原子完整替换全部数据",
     async (historicalVersion) => {
       const kit = makeKit();

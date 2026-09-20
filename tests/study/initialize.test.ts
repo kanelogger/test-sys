@@ -15,7 +15,7 @@ describe("initialize", () => {
     if (!result.ok) return;
     expect(result.value.outcome).toBe("initialized");
     expect(result.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-20.v1"
+      "sysanalyst-2026-09-20.v2"
     );
 
     const view = await kit.workflow.today();
@@ -33,11 +33,11 @@ describe("initialize", () => {
     expect(first?.plan.source).toBe("seed");
     expect(first?.plan.lineageId).toBe(first?.plan.id);
     expect(first?.resource?.type).toBe("web");
-    // 预算：当日 pending 之和 15+35+15+20+5=90，Y=90；考试 2026-10-24 距今 34 天
+    // 预算：当日 pending 之和 15+60+15+20+5=115，Y=90；考试 2026-10-24 距今 34 天
     expect(view.value.budget).toEqual({
-      plannedMinutes: 90,
+      plannedMinutes: 115,
       referenceMinutes: 90,
-      exceeded: false,
+      exceeded: true,
     });
     expect(view.value.examDate).toBe("2026-10-24");
     expect(view.value.daysUntilExam).toBe(34);
@@ -52,7 +52,7 @@ describe("initialize", () => {
     expect(again.ok).toBe(true);
     if (!again.ok) return;
     expect(again.value.outcome).toBe("already-initialized");
-    expect(again.value.initializedSeedVersion).toBe("sysanalyst-2026-09-20.v1");
+    expect(again.value.initializedSeedVersion).toBe("sysanalyst-2026-09-20.v2");
 
     const view = await kit.workflow.today();
     expect(view.ok && view.value.items).toHaveLength(5);
@@ -132,7 +132,7 @@ describe("initialize", () => {
     if (!result.ok) return;
     expect(result.value.outcome).toBe("already-initialized");
     expect(result.value.initializedSeedVersion).toBe(
-      "sysanalyst-2026-09-20.v1"
+      "sysanalyst-2026-09-20.v2"
     );
 
     const view = await kit.workflow.today();

@@ -2,8 +2,8 @@
   "evidenceLevel": "static-data-validation",
   "sourcePlanUpdatedAt": "2026-09-20",
   "seedPath": "public/data/study-plan.seed.json",
-  "seedVersion": "sysanalyst-2026-09-20.v1",
-  "seedSha256": "24166645aa54ca04524096fb8434c25a07be3bd13a4a5f8853def3a7d6f17cb8",
+  "seedVersion": "sysanalyst-2026-09-20.v2",
+  "seedSha256": "60fd9785a97be9b1728533ac07c8bf2191f66607fe0ba1f629431ed1c6f47bab",
   "coverage": {
     "startDate": "2026-09-20",
     "endDate": "2026-10-23"
@@ -12,15 +12,15 @@
   "resources": 17,
   "planItems": 101,
   "studyLogs": 0,
-  "totalPlannedMinutes": 3900,
+  "totalPlannedMinutes": 3925,
   "totalBudgetMinutes": 4260,
-  "spareMinutes": 360,
+  "spareMinutes": 335,
   "daily": [
     {
       "date": "2026-09-20",
-      "plannedMinutes": 90,
+      "plannedMinutes": 115,
       "budgetMinutes": 240,
-      "spareMinutes": 150,
+      "spareMinutes": 125,
       "tasks": 5
     },
     {
